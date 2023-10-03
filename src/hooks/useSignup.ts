@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   UserCredential,
   sendEmailVerification,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "@/db/firebase.config";
 import { UseFormReturn, useForm } from "react-hook-form";
@@ -58,18 +59,16 @@ const useSignup = () => {
       );
       if (!userCred) return;
 
+      // adding display name and photourl in firebase authentication
+      await updateProfile(auth.currentUser!, {
+        displayName: fullName,
+      });
+
       await sendEmailVerification(userCred.user); // Firebase function for sending email verification to created user
       setOpenEmailSent(true); // it opens Email sent Modal
       setEmailSentTo(userCred.user.email!); // This will set the user email we have sent email in above line which we will use in dialog modal
       setLoading(false);
-
-      await addUserToDB({
-        fullName,
-        email,
-        gender,
-        password,
-        userCred,
-      });
+      form.reset();
     } catch (error) {
       console.log(error);
       setLoading(false);

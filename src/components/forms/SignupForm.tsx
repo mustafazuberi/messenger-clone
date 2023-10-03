@@ -24,14 +24,7 @@ import EmailSentDialog from "../auth/EmailSentDialog";
 
 const SignupForm = () => {
   const [isClient, setIsClient] = useState(false); // this is for solving hydration UI error on dialog
-  const {
-    form,
-    onSubmit,
-    loading,
-    openEmailSent,
-    setOpenEmailSent,
-    emailSentTo,
-  } = useSignup();
+  const { form, onSubmit, loading, openEmailSent, emailSentTo } = useSignup();
 
   useEffect(() => {
     setIsClient(true);
@@ -115,29 +108,19 @@ const SignupForm = () => {
               </FormItem>
             )}
           />
+
+          
+
           <Button type="submit" className="mt-6" variant={"outline"}>
             {loading ? "Please Wait..." : "Continue"}
           </Button>
         </form>
       </Form>
-      {/* {openEmailSent ? (
-        <section>
-          {isClient && (
-            <EmailSentDialog
-              openEmailSent={openEmailSent}
-              setOpenEmailSent={setOpenEmailSent}
-            />
-          )}
-        </section>
-      ) : null} */}
+
+      {/* This Dialog Modal Will opens on signup after sending verification email */}
       {openEmailSent && isClient && (
-        <EmailSentDialog
-          openEmailSent={openEmailSent}
-          setOpenEmailSent={setOpenEmailSent}
-          email={emailSentTo}
-        />
+        <EmailSentDialog openEmailSent={openEmailSent} email={emailSentTo} />
       )}
-      {/* Email sent dialog will opens after successfull signup  */}
     </main>
   );
 };
