@@ -1,6 +1,6 @@
 "use client";
 
-import React, { SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import {
   createUserWithEmailAndPassword,
   UserCredential,
@@ -20,11 +20,8 @@ type AuthDetails = {
   userCred: UserCredential;
 };
 
-type HookProps = {
-  setOpenEmailSent?: React.Dispatch<SetStateAction<boolean>>;
-};
-
-const useSignup = ({ setOpenEmailSent }: HookProps) => {
+const useSignup = () => {
+  const [openEmailSent, setOpenEmailSent] = React.useState<boolean>(false);
   const [emailSentTo, setEmailSentTo] = React.useState<string>("");
   const [loading, setLoading] = useState(false);
 
@@ -39,14 +36,6 @@ const useSignup = ({ setOpenEmailSent }: HookProps) => {
       password: "",
     },
   });
-
-  const handleEmailSentModal = (userEmail: string) => {
-    if (setOpenEmailSent) {
-      console.log("opening modal");
-      setOpenEmailSent(true); // it opens Email sent Modal
-      setEmailSentTo(userEmail); // This will set the user email we have sent email in above line which we will use in dialog modal
-    }
-  };
 
   const addUserToDB = async (authDetails: AuthDetails) => {
     try {
@@ -67,9 +56,11 @@ const useSignup = ({ setOpenEmailSent }: HookProps) => {
         email,
         password
       );
+      if (!userCred) return;
 
       await sendEmailVerification(userCred.user); // Firebase function for sending email verification to created user
-      handleEmailSentModal(userCred.user.email!); //Opens Modal
+      setOpenEmailSent(true); // it opens Email sent Modal
+      setEmailSentTo(userCred.user.email!); // This will set the user email we have sent email in above line which we will use in dialog modal
       setLoading(false);
 
       await addUserToDB({
@@ -81,10 +72,18 @@ const useSignup = ({ setOpenEmailSent }: HookProps) => {
       });
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   }
 
-  return { form, onSubmit, emailSentTo, loading };
+  return {
+    form,
+    onSubmit,
+    emailSentTo,
+    loading,
+    openEmailSent,
+    setOpenEmailSent,
+  };
 };
 
 export default useSignup;

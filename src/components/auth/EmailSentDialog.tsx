@@ -1,18 +1,17 @@
 "use client";
-
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Image from "next/image";
 import envelopeMailImage from "@/../assets/images/emailsentenvelop.png";
-import useSignup from "@/hooks/useSignup";
 import React, { SetStateAction } from "react";
 
 type Props = {
   openEmailSent: boolean;
   setOpenEmailSent: React.Dispatch<SetStateAction<boolean>>;
+  email: string;
 };
 
-const EmailSentDialog = ({ openEmailSent, setOpenEmailSent }: Props) => {
-  const { emailSentTo } = useSignup({});
+const EmailSentDialog = ({ openEmailSent, setOpenEmailSent, email }: Props) => {
+  console.log("emailSentTo----", email);
   return (
     <main>
       <Dialog open={openEmailSent} onOpenChange={setOpenEmailSent}>
@@ -32,7 +31,7 @@ const EmailSentDialog = ({ openEmailSent, setOpenEmailSent }: Props) => {
             <section>
               <p>
                 We have sent email to
-                <span className="text-blue-500">{emailSentTo}</span>
+                <span className="text-blue-500"> {email} </span>
                 to confirm the validity of our email address. After receiving
                 the email follow the link provided to complete your
                 registration.

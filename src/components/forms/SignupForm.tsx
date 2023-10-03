@@ -24,10 +24,14 @@ import EmailSentDialog from "../auth/EmailSentDialog";
 
 const SignupForm = () => {
   const [isClient, setIsClient] = useState(false); // this is for solving hydration UI error on dialog
-  const [openEmailSent, setOpenEmailSent] = React.useState<boolean>(false);
-  const { form, onSubmit, loading } = useSignup({
-    setOpenEmailSent: setOpenEmailSent,
-  });
+  const {
+    form,
+    onSubmit,
+    loading,
+    openEmailSent,
+    setOpenEmailSent,
+    emailSentTo,
+  } = useSignup();
 
   useEffect(() => {
     setIsClient(true);
@@ -116,14 +120,24 @@ const SignupForm = () => {
           </Button>
         </form>
       </Form>
-
-      {/* Email sent dialog will opens after successfull signup  */}
-      {isClient && openEmailSent && (
+      {/* {openEmailSent ? (
+        <section>
+          {isClient && (
+            <EmailSentDialog
+              openEmailSent={openEmailSent}
+              setOpenEmailSent={setOpenEmailSent}
+            />
+          )}
+        </section>
+      ) : null} */}
+      {openEmailSent && isClient && (
         <EmailSentDialog
           openEmailSent={openEmailSent}
           setOpenEmailSent={setOpenEmailSent}
+          email={emailSentTo}
         />
       )}
+      {/* Email sent dialog will opens after successfull signup  */}
     </main>
   );
 };
