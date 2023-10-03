@@ -7,7 +7,7 @@ type Props = {
 
 const SocialLoginButtons = ({ usedOn }: Props) => {
   return (
-    <section className="w-full flex flex-col gap-y-4">
+    <div className="w-full flex flex-col gap-y-4">
       <h4 className="text-center">Or</h4>
       <Button className="flex flex-row gap-x-3 w-full">
         <BsGoogle style={{ fontSize: "1.5rem" }} />
@@ -21,7 +21,7 @@ const SocialLoginButtons = ({ usedOn }: Props) => {
         <BsGithub style={{ fontSize: "1.5rem" }} />
         {usedOn === "signup" ? "Continue" : "Login"} with Github
       </Button>
-    </section>
+    </div>
   );
 };
 
