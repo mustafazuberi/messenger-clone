@@ -76,7 +76,7 @@ const SignupForm = () => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="password" {...field} />
+                  <Input placeholder="password" type="password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -109,7 +109,20 @@ const SignupForm = () => {
             )}
           />
 
-          
+          {/* Profile Photo */}
+          <FormField
+            control={form.control}
+            name="profilePhoto"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Profile Photo</FormLabel>
+                <FormControl>
+                  <Input id="picture" type="file" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <Button type="submit" className="mt-6" variant={"outline"}>
             {loading ? "Please Wait..." : "Continue"}

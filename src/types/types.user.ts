@@ -1,11 +1,12 @@
 type User = {
-  fullName: string;
   email: string;
   password: string;
-  gender: "male" | "female" | "other" | string;
+  uid: string;
   emailVerified: boolean;
+  displayName: string;
+  gender: "male" | "female" | "other" | string;
+  photoUrl: string;
   friends: User[] | [];
-  isAuthenticated: boolean;
 };
 
 export default User;
