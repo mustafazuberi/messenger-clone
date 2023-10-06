@@ -30,24 +30,6 @@ const formSchema = z.object({
   gender: z.string().refine((value) => !!value, {
     message: "Gender is required.",
   }),
-
-  profilePhoto: z.string().refine(
-    (value) => {
-      if (!value) {
-        return false; // Empty value, validation fails
-      }
-      const fileParts = value.split(".");
-      if (fileParts.length < 2) {
-        return false; // No file extension found, validation fails
-      }
-      const allowedExtensions = ["png", "jpg", "jpeg"];
-      const fileExtension = fileParts[fileParts.length - 1].toLowerCase();
-      return allowedExtensions.includes(fileExtension.toLocaleLowerCase());
-    },
-    {
-      message: "Profile Photo must be a PNG or JPG file.",
-    }
-  ),
 });
 
 export default formSchema;

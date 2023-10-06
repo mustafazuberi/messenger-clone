@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import useSignup from "@/hooks/useSignup";
 import EmailSentDialog from "../auth/EmailSentDialog";
+import { PasswordInput } from "../ui/PasswordInput";
 
 const SignupForm = () => {
   const [isClient, setIsClient] = useState(false); // this is for solving hydration UI error on dialog
@@ -45,7 +46,7 @@ const SignupForm = () => {
               <FormItem>
                 <FormLabel>Full Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Full Name" {...field} />
+                  <Input placeholder="First Last" {...field} />
                 </FormControl>
                 <FormDescription className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400">
                   This is your public display name.
@@ -62,7 +63,7 @@ const SignupForm = () => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="Email" {...field} />
+                  <Input placeholder="m@example.com" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -76,7 +77,8 @@ const SignupForm = () => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="password" type="password" {...field} />
+                  {/* <Input placeholder="password" type="password" /> */}
+                  <PasswordInput type="password" placeholder="password"   {...field}/>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -109,20 +111,7 @@ const SignupForm = () => {
             )}
           />
 
-          {/* Profile Photo */}
-          <FormField
-            control={form.control}
-            name="profilePhoto"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Profile Photo</FormLabel>
-                <FormControl>
-                  <Input id="picture" type="file" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        
 
           <Button type="submit" className="mt-6" variant={"outline"}>
             {loading ? "Please Wait..." : "Continue"}

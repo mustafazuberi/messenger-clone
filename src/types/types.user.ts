@@ -5,7 +5,7 @@ type User = {
   emailVerified: boolean;
   displayName: string;
   gender: "male" | "female" | "other" | string;
-  photoUrl: string;
+  photoUrl?: string;
   friends: User[] | [];
 };
 

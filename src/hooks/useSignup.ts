@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 import { UseFormReturn, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -10,19 +12,21 @@ import {
   sendEmailVerification,
   updateProfile,
 } from "firebase/auth";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { auth, storage, db } from "@/db/firebase.config";
-import formSchema from "@/schema/schema.signupForm";
+import { auth, db } from "@/db/firebase.config";
 import { doc, setDoc } from "firebase/firestore";
+import bcrypt from "bcryptjs";
+import formSchema from "@/schema/schema.signupForm";
 import User from "@/types/types.user";
+import getErrorMessage from "@/services/getErrorMessage";
 
 type UserToAddInDb = {
   values: z.infer<typeof formSchema>;
   userCred: UserCredential;
-  PhotoUrlFirebase: string;
+  PhotoUrlFirebase?: string;
 };
 
 const useSignup = () => {
+  const { toast } = useToast();
   const [openEmailSent, setOpenEmailSent] = React.useState<boolean>(false);
   const [emailSentTo, setEmailSentTo] = React.useState<string>("");
   const [loading, setLoading] = React.useState(false);
@@ -36,22 +40,31 @@ const useSignup = () => {
       email: "",
       gender: "",
       password: "",
-      profilePhoto: "",
     },
   });
 
+  const createHashedPassword = (password: string): string => {
+    var salt = bcrypt.genSaltSync(10);
+    var hash = bcrypt.hashSync(password, salt);
+    return hash;
+  };
+
   const addUserToDB = async (userDetails: UserToAddInDb): Promise<void> => {
-    const { values, userCred, PhotoUrlFirebase } = userDetails;
+    const { values, userCred } = userDetails;
+    const hashedPassword = createHashedPassword(values.password);
+
     const userObj: User = {
       email: values?.email,
-      password: values?.password,
+      password: hashedPassword, //created hashed password using bcrypt & storing in DB
       displayName: values?.fullName,
       gender: values.gender,
       emailVerified: false,
-      photoUrl: PhotoUrlFirebase,
       friends: [],
       uid: userCred.user.uid,
     };
+    if (userDetails.PhotoUrlFirebase) {
+      userObj["photoUrl"] = userDetails.PhotoUrlFirebase;
+    }
     try {
       await setDoc(doc(db, "users", userCred.user.uid), userObj);
     } catch (error) {
@@ -68,20 +81,11 @@ const useSignup = () => {
     setEmailSentTo(userCred.user.email!); // This will set the user email we have sent email in above line which we will use in dialog modal
   };
 
-  const createImageUrlFirebase = async (file: string): Promise<string> => {
-    const fileBlob = new Blob([file]);
-    const storageRef = ref(storage, `images/profile pictures`);
-    const snapshot = await uploadBytes(storageRef, fileBlob);
-    const url = await getDownloadURL(snapshot.ref);
-    return url;
-  };
-
   // This function will execute on clicking signup form submit button
   async function onSubmit(values: z.infer<typeof formSchema>): Promise<void> {
-    const { fullName, email, password, profilePhoto } = values;
+    const { fullName, email, password } = values;
     try {
       setLoading(true);
-      const PhotoUrlFirebase = await createImageUrlFirebase(profilePhoto); // Creating Image Url Using Firebae Storage for setting it in profile image
 
       const userCred: UserCredential = await createUserWithEmailAndPassword(
         auth,
@@ -93,18 +97,23 @@ const useSignup = () => {
       // adding display name and photourl in firebase authentication profile
       await updateProfile(auth.currentUser!, {
         displayName: fullName,
-        photoURL: PhotoUrlFirebase,
       });
 
-      await addUserToDB({ values, userCred, PhotoUrlFirebase }); // This will add user details in firestore
-
+      await addUserToDB({ values, userCred }); // This will add user details in firestore
       await sendVerificationEmail(userCred); // Firebase email verification
-
       setLoading(false); // setting loading of submit button false
       form.reset(); // React hook form function to reset form
-    } catch (error) {
+    } catch (error: unknown) {
       setLoading(false);
-      throw new Error("Error in Signup Function!");
+      const message = getErrorMessage(error);
+      const errToShow = message.includes("auth/email-already-in-use")
+        ? "Email already in use!"
+        : message;
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: errToShow,
+      });
     }
   }
 

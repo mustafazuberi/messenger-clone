@@ -17,7 +17,7 @@ import { RootState } from "@/store";
 type Checked = DropdownMenuCheckboxItemProps["checked"];
 
 function ProfileDropDown() {
-    const {currentUser} = useSelector((state:RootState) => state)
+    const currentUser = useSelector((state:RootState) => state.currentUser)
 
   const [showStatusBar, setShowStatusBar] = React.useState<Checked>(true);
   const [showActivityBar, setShowActivityBar] = React.useState<Checked>(false);
