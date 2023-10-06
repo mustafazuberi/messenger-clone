@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { ALL_USERS_INITIAL_STATE } from "../intialState";
+import getAllUsers from "@/services/firebase-firestore/getAllUsers";
+import User from "@/types/types.user";
 
 export const STATUSES = Object.freeze({
   IDLE: "idle",
@@ -7,12 +8,22 @@ export const STATUSES = Object.freeze({
   LOADING: "loading",
 });
 
-const productSlice = createSlice({
-  name: "users",
-  initialState: {
-    allUsers: ALL_USERS_INITIAL_STATE,
-    status: "",
-  },
+export const ALL_USERS_INITIAL_STATE = {
+  allUsers: [] as User[],
+  status: STATUSES.IDLE as string,
+};
+
+export const fetchUsers = createAsyncThunk(
+  "users/fetch",
+  async (): Promise<User[]> => {
+    const users: User[] = await getAllUsers();
+    return users;
+  }
+);
+
+const allUsersSlice = createSlice({
+  name: "allUsers",
+  initialState: ALL_USERS_INITIAL_STATE,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -29,12 +40,4 @@ const productSlice = createSlice({
   },
 });
 
-// export const { setProducts, setStatus } = productSlice.actions;
-export default productSlice.reducer;
-
-// Thunks
-export const fetchUsers = createAsyncThunk("users/fetch", async () => {
-  const res = await fetch("https://fakestoreapi.com/products");
-  const data = await res.json();
-  return data;
-});
+export default allUsersSlice.reducer;

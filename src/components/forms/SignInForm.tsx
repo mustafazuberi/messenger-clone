@@ -13,7 +13,8 @@ import {
 import useSignin from "@/hooks/useSignin";
 
 const SigninForm = () => {
-  const { form, onSubmit } = useSignin();
+  const { form, onSubmit ,loading} = useSignin();
+
   return (
     <Form {...form}>
       <form
@@ -50,7 +51,7 @@ const SigninForm = () => {
         />
 
         <Button type="submit" className="mt-6" variant={"outline"}>
-          Sign In
+          {loading ? 'Please wait...' : 'Sign In'}
         </Button>
       </form>
     </Form>

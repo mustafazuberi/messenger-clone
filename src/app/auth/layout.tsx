@@ -1,13 +1,7 @@
-import "./globals.css";
-import type { Metadata } from "next";
+import Navbar from "@/components/web/navbar/Navbar";
 import { Inter } from "next/font/google";
-import StoreProvider from "@/providers/StoreProvider";
 
 const inter = Inter({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "Messenger",
-};
 
 export default function RootLayout({
   children,
@@ -17,7 +11,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <StoreProvider>{children}</StoreProvider>
+        <Navbar />
+        {children}
       </body>
     </html>
   );

@@ -7,7 +7,7 @@ const SignUp = () => {
   return (
     <main className="flex flex-col justify-center items-center px-4">
       <section className="flex flex-col gap-y-6 w-full max-w-xl my-12">
-        <AuthNavbar />
+        {/* <AuthNavbar /> */}
         <SignupForm />
         <SocialLoginButtons usedOn="signup" />
         <AlreadyHaveAnAccount />
