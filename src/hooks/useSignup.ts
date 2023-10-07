@@ -73,6 +73,7 @@ const useSignup = () => {
     }
   };
 
+  // Firebase function to send email
   const sendVerificationEmail = async (
     userCred: UserCredential
   ): Promise<void> => {
@@ -103,6 +104,9 @@ const useSignup = () => {
       await sendVerificationEmail(userCred); // Firebase email verification
       setLoading(false); // setting loading of submit button false
       form.reset(); // React hook form function to reset form
+      toast({
+        description: "Congrats! You have successfully created account!",
+      });
     } catch (error: unknown) {
       setLoading(false);
       const message = getErrorMessage(error);
@@ -111,8 +115,8 @@ const useSignup = () => {
         : message;
       toast({
         variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: errToShow,
+        title: errToShow,
+        description: "Uh oh! Something went wrong.",
       });
     }
   }

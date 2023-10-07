@@ -6,7 +6,7 @@ import { RootState } from "@/store";
 import ProfileDropDown from "./ProfileDropDown";
 
 const ThemeAndProfileImage = () => {
-  const theme = useSelector((state:RootState) => state.theme)
+  const theme = useSelector((state: RootState) => state.theme);
   const dispatch = useDispatch();
 
   return (
