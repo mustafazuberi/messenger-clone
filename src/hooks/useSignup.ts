@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 import { UseFormReturn, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,8 +11,8 @@ import {
   sendEmailVerification,
   updateProfile,
 } from "firebase/auth";
-import { auth, db } from "@/db/firebase.config";
 import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "@/db/firebase.config";
 import bcrypt from "bcryptjs";
 import formSchema from "@/schema/schema.signupForm";
 import User from "@/types/types.user";
@@ -93,9 +92,16 @@ const useSignup = () => {
         email,
         password
       ); // creating user using email and password in firebase
-      if (!userCred) return;
+      if (!userCred) {
+        toast({
+          variant: "destructive",
+          title: "Something went wrong!",
+        });
+        setLoading(false);
+        return;
+      }
 
-      // adding display name and photourl in firebase authentication profile
+      // adding display name in firebase authentication profile
       await updateProfile(auth.currentUser!, {
         displayName: fullName,
       });
@@ -103,9 +109,9 @@ const useSignup = () => {
       await addUserToDB({ values, userCred }); // This will add user details in firestore
       await sendVerificationEmail(userCred); // Firebase email verification
       setLoading(false); // setting loading of submit button false
-      form.reset(); // React hook form function to reset form
+
       toast({
-        description: "Congrats! You have successfully created account!",
+        description: "Congrats! Account created account!",
       });
     } catch (error: unknown) {
       setLoading(false);

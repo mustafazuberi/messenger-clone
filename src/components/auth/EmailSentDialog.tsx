@@ -2,6 +2,7 @@
 import { Dialog, DialogContentWithoutX } from "@/components/ui/dialog";
 import Image from "next/image";
 import messengerLogo from "@/../assets/images/messengerlogo.png";
+import { TypographyH1 } from "../web/TypographyH1";
 
 type Props = {
   openEmailSent: boolean;
@@ -17,12 +18,9 @@ const EmailSentDialog = ({ openEmailSent, email }: Props) => {
             <Image
               src={messengerLogo}
               alt="envelopeMailImage"
-              width={100}
-              height={100}
+              className="sm:w-24 sm:h-24 w-16 h-16"
             />
-            <h1 className="text-[#393939] font-medium text-2xl">
-              Email Confirmation
-            </h1>
+            <TypographyH1 text="Email Confirmation" />
           </section>
           <section>
             <p>

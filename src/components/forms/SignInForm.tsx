@@ -11,9 +11,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import useSignin from "@/hooks/useSignin";
+import { PasswordInput } from "../ui/PasswordInput";
 
 const SigninForm = () => {
-  const { form, onSubmit ,loading} = useSignin();
+  const { form, onSubmit, loading } = useSignin();
 
   return (
     <Form {...form}>
@@ -43,15 +44,19 @@ const SigninForm = () => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="password" type="password" {...field} />
+                <PasswordInput
+                  type="password"
+                  placeholder="password"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <Button type="submit" className="mt-6" variant={"outline"}>
-          {loading ? 'Please wait...' : 'Sign In'}
+        <Button type="submit" className="mt-6" variant={"default"}>
+          {loading ? "Please wait..." : "Sign In"}
         </Button>
       </form>
     </Form>

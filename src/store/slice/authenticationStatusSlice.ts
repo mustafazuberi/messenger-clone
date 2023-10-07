@@ -7,6 +7,7 @@ const authenticationStatusSlice = createSlice({
   initialState,
   reducers: {
     setAuthenticationStatus: (state: boolean, action) => {
+      state = action.payload;
       return state;
     },
   },

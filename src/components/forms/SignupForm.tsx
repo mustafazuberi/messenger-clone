@@ -77,8 +77,11 @@ const SignupForm = () => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  {/* <Input placeholder="password" type="password" /> */}
-                  <PasswordInput type="password" placeholder="password"   {...field}/>
+                  <PasswordInput
+                    type="password"
+                    placeholder="password"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -111,9 +114,7 @@ const SignupForm = () => {
             )}
           />
 
-        
-
-          <Button type="submit" className="mt-6" variant={"outline"}>
+          <Button type="submit" className="mt-6" variant={"default"}>
             {loading ? "Please Wait..." : "Continue"}
           </Button>
         </form>
