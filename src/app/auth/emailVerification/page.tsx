@@ -6,7 +6,15 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth, db } from "@/db/firebase.config";
-import { collection, getDoc, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import User from "@/types/types.user";
 
 type Props = {
@@ -30,24 +38,27 @@ const EmailVerification = async ({ searchParams }: Props) => {
 
   const email = verificationInfo.data.email;
   const q = query(collection(db, "users"), where("email", "==", email));
-  const docs = await getDocs(q);
+  const verfUsers = await getDocs(q);
 
-  let dbUser: User | null = null;
-  docs.forEach((doc) => {
-    const d: User = doc.data() as User;
+  let verifiedUserName: string = "";
+  verfUsers.forEach((vfUserDoc) => {
+    const d: User = vfUserDoc.data() as User;
     if (d.email === verificationInfo.data.email) {
-      dbUser = d;
+      const ref = doc(db, "users", vfUserDoc.id);
+      updateDoc(ref, {
+        emailVerified: true,
+      });
+      verifiedUserName = d.displayName;
       return;
     }
   });
 
-  if (!dbUser) return;
-
-  // const userCred = signInWithEmailAndPassword(auth,dbUser.)
-
   return (
     <div className="flex justify-center items-center w-full h-[90vh]">
-      <EmailVerifiedCard email={verificationInfo.data.email} />
+      <EmailVerifiedCard
+        email={verificationInfo.data.email}
+        displayName={verifiedUserName}
+      />
     </div>
   );
 };
