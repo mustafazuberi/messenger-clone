@@ -1,8 +1,9 @@
 "use client";
 
 import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import store, { persistor } from "@/store";
 import { ThemeProvider } from "@/components/theme-provider";
-import store from "@/store";
 
 type Props = {
   children?: React.ReactNode;
@@ -11,9 +12,11 @@ type Props = {
 const StoreProvider = ({ children }: Props) => {
   return (
     <Provider store={store}>
-      <ThemeProvider attribute="class" defaultTheme="light">
-        {children}
-      </ThemeProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <ThemeProvider attribute="class" defaultTheme="light">
+          {children}
+        </ThemeProvider>
+      </PersistGate>
     </Provider>
   );
 };

@@ -1,6 +1,6 @@
-import AuthNavbar from "@/components/auth/AuthNavbar";
-import SocialLoginButtons from "@/components/auth/SocialLoginButtons";
-import SignInForm from "@/components/forms/SignInForm";
+import AuthNavbar from "@/custom-components/auth/AuthNavbar";
+import SocialLoginButtons from "@/custom-components/auth/SocialLoginButtons";
+import SignInForm from "@/custom-components/forms/SignInForm";
 import { TypographyH1 } from "@/components/web/TypographyH1";
 import Link from "next/link";
 

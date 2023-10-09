@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import useSignin from "@/hooks/useSignin";
-import { PasswordInput } from "../ui/PasswordInput";
+import { PasswordInput } from "../../components/ui/PasswordInput";
 
 const SigninForm = () => {
   const { form, onSubmit, loading } = useSignin();

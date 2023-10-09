@@ -1,4 +1,4 @@
-import { SelectDate } from "@/components/auth/SelectDate";
+import { SelectDate } from "@/custom-components/auth/SelectDate";
 
 type Props = {
   name?: string;

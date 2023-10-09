@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import EmailVerifiedCard from "@/components/auth/EmailVerifiedCard";
+import EmailVerifiedCard from "@/custom-components/auth/EmailVerifiedCard";
 import {
   checkActionCode,
   signInWithEmailAndPassword,

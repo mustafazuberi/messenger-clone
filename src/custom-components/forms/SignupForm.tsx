@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import useSignup from "@/hooks/useSignup";
 import EmailSentDialog from "../auth/EmailSentDialog";
-import { PasswordInput } from "../ui/PasswordInput";
+import { PasswordInput } from "../../components/ui/PasswordInput";
 
 const SignupForm = () => {
   const [isClient, setIsClient] = useState(false); // this is for solving hydration UI error on dialog

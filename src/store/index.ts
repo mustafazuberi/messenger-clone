@@ -1,18 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "@/store/slice/userSlice";
-import allUsersReducer from "@/store/slice/allUsersSlice";
-import authenticationStatusSliceReducer from "@/store/slice/authenticationStatusSlice";
-import themeReducer from "@/store/slice/themeSlice";
-
-const store = configureStore({
-  reducer: {
-    currentUser: userReducer,
-    allUsers: allUsersReducer,
-    authenticationStatus: authenticationStatusSliceReducer,
-    theme: themeReducer,
-  },
-});
+import persistStore from "redux-persist/es/persistStore";
+import thunk from "redux-thunk";
+import persistedReducer from "./persistConfig";
 
 export type RootState = ReturnType<typeof store.getState>;
+
+const store = configureStore({
+  reducer: persistedReducer,
+  middleware: [thunk],
+});
+
+export const persistor = persistStore(store);
 
 export default store;
