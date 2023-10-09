@@ -10,3 +10,5 @@ export const USER_INITIAL_STATE: User = {
   gender: "",
   photoUrl: "",
 };
+
+export const USERS_INITIAL_STATE: User[] = [];

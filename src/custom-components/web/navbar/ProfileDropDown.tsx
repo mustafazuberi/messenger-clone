@@ -12,8 +12,10 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { Avatar } from "@radix-ui/react-avatar";
 import { CiLogout, CiSettings } from "react-icons/ci";
+import useHome from "@/hooks/useHome";
 
 function ProfileDropDown() {
+  const { handleSignOut } = useHome();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   return (
     <DropdownMenu>
@@ -28,7 +30,10 @@ function ProfileDropDown() {
         <DropdownMenuCheckboxItem className="flex flex-row gap-x-3 py-3 cursor-pointer">
           <CiSettings className="text-[20px]" /> Settings
         </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem className="flex flex-row gap-x-3 py-3 cursor-pointer">
+        <DropdownMenuCheckboxItem
+          className="flex flex-row gap-x-3 py-3 cursor-pointer"
+          onClick={handleSignOut}
+        >
           <CiLogout className="text-[20px]" /> Sign Out
         </DropdownMenuCheckboxItem>
       </DropdownMenuContent>

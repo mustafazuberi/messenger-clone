@@ -1,11 +1,11 @@
 import SocialLoginButtons from "@/custom-components/auth/SocialLoginButtons";
 import Link from "next/link";
 import SignupForm from "@/custom-components/forms/SignupForm";
-import { TypographyH1 } from "@/components/web/TypographyH1";
+import { TypographyH1 } from "@/custom-components/web/TypographyH1";
 
 const SignUp = () => {
   return (
-    <main className="flex flex-col justify-center items-center px-4">
+    <main className="flex flex-col justify-center items-center px-4 mt-4">
       <section className="flex flex-col gap-y-6 w-full max-w-lg my-3 border sm:px-8 px-3 py-12">
         <TypographyH1 text="Create an account" />
         <SignupForm />

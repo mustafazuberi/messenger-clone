@@ -1,12 +1,11 @@
-import AuthNavbar from "@/custom-components/auth/AuthNavbar";
 import SocialLoginButtons from "@/custom-components/auth/SocialLoginButtons";
 import SignInForm from "@/custom-components/forms/SignInForm";
-import { TypographyH1 } from "@/components/web/TypographyH1";
+import { TypographyH1 } from "@/custom-components/web/TypographyH1";
 import Link from "next/link";
 
 const SignIn = () => {
   return (
-    <main className="flex flex-col justify-center items-center px-4">
+    <main className="flex flex-col justify-center items-center px-4 mt-4">
       <section className="flex flex-col gap-y-6 w-full max-w-lg my-3 border sm:px-8 px-3 py-12">
         <TypographyH1 text="Sign In" />
         <SignInForm />
