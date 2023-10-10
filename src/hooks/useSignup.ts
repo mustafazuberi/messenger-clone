@@ -10,13 +10,21 @@ import {
   UserCredential,
   sendEmailVerification,
   updateProfile,
+  GoogleAuthProvider,
+  signInWithPopup,
+  FacebookAuthProvider,
+  signInWithRedirect,
+  getRedirectResult,
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/db/firebase.config";
-import bcrypt from "bcryptjs";
 import formSchema from "@/schema/schema.signupForm";
 import User from "@/types/types.user";
 import getErrorMessage from "@/services/getErrorMessage";
+import { useDispatch } from "react-redux";
+import { updateUserDetails } from "@/store/slice/userSlice";
+import { useRouter } from "next/navigation";
+import { setAuthenticationStatus } from "@/store/slice/authenticationStatusSlice";
 
 type UserToAddInDb = {
   values: z.infer<typeof formSchema>;
@@ -25,10 +33,13 @@ type UserToAddInDb = {
 };
 
 const useSignup = () => {
+  const dispatch = useDispatch();
+  const router = useRouter();
   const { toast } = useToast();
   const [openEmailSent, setOpenEmailSent] = React.useState<boolean>(false);
   const [emailSentTo, setEmailSentTo] = React.useState<string>("");
   const [loading, setLoading] = React.useState(false);
+  const [loadingCwg, setLoadingCwg] = React.useState<boolean>(false);
 
   const form: UseFormReturn<z.infer<typeof formSchema>> = useForm<
     z.infer<typeof formSchema>
@@ -42,19 +53,11 @@ const useSignup = () => {
     },
   });
 
-  const createHashedPassword = (password: string): string => {
-    var salt = bcrypt.genSaltSync(10);
-    var hash = bcrypt.hashSync(password, salt);
-    return hash;
-  };
-
   const addUserToDB = async (userDetails: UserToAddInDb): Promise<void> => {
     const { values, userCred } = userDetails;
-    const hashedPassword = createHashedPassword(values.password);
 
     const userObj: User = {
       email: values?.email,
-      password: hashedPassword, //created hashed password using bcrypt & storing in DB
       displayName: values?.fullName,
       gender: values.gender,
       emailVerified: false,
@@ -127,6 +130,74 @@ const useSignup = () => {
     }
   }
 
+  // Social Logins
+
+  const continueWithGoogle = async (): Promise<void> => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const userCred: UserCredential | null = await signInWithPopup(
+        auth,
+        provider
+      );
+      if (!userCred) return;
+      setLoadingCwg(true); // enable signin with google loading till navigate to /
+      const userObj: User | null = await addUserToDbAuthGoogle(userCred);
+      if (!userObj) return;
+
+      dispatch(updateUserDetails({ ...userObj }));
+      dispatch(setAuthenticationStatus(true));
+      toast({
+        description: `Welcome ,${userObj.displayName}!`,
+      });
+      router.push("/");
+
+      setTimeout(() => {
+        setLoadingCwg(false);
+      }, 2000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addUserToDbAuthGoogle = async (
+    userCred: UserCredential
+  ): Promise<User | null> => {
+    const { user } = userCred;
+
+    try {
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (userDoc.exists()) {
+        // checking if this user data already exists in firestore then return
+        return userDoc.data() as User;
+      }
+
+      const userObj: User = {
+        displayName: user.displayName || "",
+        email: user.email || "",
+        emailVerified: user.emailVerified,
+        friends: [],
+        gender: "",
+        uid: user.uid,
+      };
+
+      await setDoc(doc(db, "users", user.uid), { ...userObj });
+      return userObj;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  };
+
+  const continueWithFacebook = async (): Promise<void> => {
+    try {
+      const provider = new FacebookAuthProvider();
+      const user = await signInWithPopup(auth, provider);
+      console.log(user);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     form,
     onSubmit,
@@ -134,6 +205,9 @@ const useSignup = () => {
     loading,
     openEmailSent,
     setOpenEmailSent,
+    continueWithGoogle,
+    loadingCwg,
+    continueWithFacebook,
   };
 };
 
