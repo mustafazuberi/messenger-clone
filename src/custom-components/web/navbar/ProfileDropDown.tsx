@@ -1,5 +1,5 @@
 "use client";
-import * as React from "react";
+import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -15,6 +15,7 @@ import { CiLogout, CiSettings } from "react-icons/ci";
 import useHome from "@/hooks/useHome";
 
 function ProfileDropDown() {
+  const router = useRouter();
   const { handleSignOut } = useHome();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   return (
@@ -27,7 +28,10 @@ function ProfileDropDown() {
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>{currentUser.displayName}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuCheckboxItem className="flex flex-row gap-x-3 py-3 cursor-pointer">
+        <DropdownMenuCheckboxItem
+          className="flex flex-row gap-x-3 py-3 cursor-pointer"
+          onClick={() => router.push("/settings")}
+        >
           <CiSettings className="text-[20px]" /> Settings
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem

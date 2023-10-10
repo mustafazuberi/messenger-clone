@@ -1,6 +1,6 @@
-"use client";
-
 import React from "react";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { UseFormReturn, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,24 +13,15 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   FacebookAuthProvider,
-  signInWithRedirect,
-  getRedirectResult,
 } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/db/firebase.config";
+import { updateUserDetails } from "@/store/slice/userSlice";
+import { setAuthenticationStatus } from "@/store/slice/authenticationStatusSlice";
+import { FirebaseError } from "firebase/app";
 import formSchema from "@/schema/schema.signupForm";
 import User from "@/types/types.user";
-import getErrorMessage from "@/services/getErrorMessage";
-import { useDispatch } from "react-redux";
-import { updateUserDetails } from "@/store/slice/userSlice";
-import { useRouter } from "next/navigation";
-import { setAuthenticationStatus } from "@/store/slice/authenticationStatusSlice";
-
-type UserToAddInDb = {
-  values: z.infer<typeof formSchema>;
-  userCred: UserCredential;
-  PhotoUrlFirebase?: string;
-};
+import handleFirebaseError from "@/services/firebase-firestore/firebaseErrorHandling";
 
 const useSignup = () => {
   const dispatch = useDispatch();
@@ -53,25 +44,25 @@ const useSignup = () => {
     },
   });
 
-  const addUserToDB = async (userDetails: UserToAddInDb): Promise<void> => {
-    const { values, userCred } = userDetails;
-
+  const addUserToDB = async ({
+    values,
+    uid,
+  }: {
+    values: z.infer<typeof formSchema>;
+    uid: string;
+  }): Promise<void> => {
     const userObj: User = {
-      email: values?.email,
+      email: values.email,
       displayName: values?.fullName,
       gender: values.gender,
       emailVerified: false,
       friends: [],
-      uid: userCred.user.uid,
+      uid: uid,
     };
-    if (userDetails.PhotoUrlFirebase) {
-      userObj["photoUrl"] = userDetails.PhotoUrlFirebase;
-    }
     try {
-      await setDoc(doc(db, "users", userCred.user.uid), userObj);
+      await setDoc(doc(db, "users", uid), userObj);
     } catch (error) {
       console.log(error);
-      throw new Error("Error while adding user in firestore Database!");
     }
   };
 
@@ -79,9 +70,14 @@ const useSignup = () => {
   const sendVerificationEmail = async (
     userCred: UserCredential
   ): Promise<void> => {
-    await sendEmailVerification(userCred.user); // Firebase function for sending email verification to created user
-    setOpenEmailSent(true); // it opens Email sent Modal
-    setEmailSentTo(userCred.user.email!); // This will set the user email we have sent email in above line which we will use in dialog modal
+    try {
+      await sendEmailVerification(userCred.user); // Firebase function for sending email verification to created user
+      setOpenEmailSent(true); // it opens Email sent Modal
+      setEmailSentTo(userCred.user.email!); // This will set the user email we have sent email in above line which we will use in dialog modal
+    } catch (error) {
+      const message = handleFirebaseError(error as FirebaseError);
+      toast({ variant: "destructive", description: message });
+    }
   };
 
   // This function will execute on clicking signup form submit button
@@ -109,7 +105,7 @@ const useSignup = () => {
         displayName: fullName,
       });
 
-      await addUserToDB({ values, userCred }); // This will add user details in firestore
+      await addUserToDB({ values, uid: userCred.user.uid }); // This will add user details in firestore
       await sendVerificationEmail(userCred); // Firebase email verification
       setLoading(false); // setting loading of submit button false
 
@@ -117,16 +113,8 @@ const useSignup = () => {
         description: "Congrats! Account created account!",
       });
     } catch (error: unknown) {
-      setLoading(false);
-      const message = getErrorMessage(error);
-      const errToShow = message.includes("auth/email-already-in-use")
-        ? "Email already in use!"
-        : message;
-      toast({
-        variant: "destructive",
-        title: errToShow,
-        description: "Uh oh! Something went wrong.",
-      });
+      const message = handleFirebaseError(error as FirebaseError);
+      toast({ variant: "destructive", description: message });
     }
   }
 
@@ -140,10 +128,9 @@ const useSignup = () => {
         provider
       );
       if (!userCred) return;
-      setLoadingCwg(true); // enable signin with google loading till navigate to /
+      setLoadingCwg(true); // enable signin with google loading till navigate to '/'
       const userObj: User | null = await addUserToDbAuthGoogle(userCred);
       if (!userObj) return;
-
       dispatch(updateUserDetails({ ...userObj }));
       dispatch(setAuthenticationStatus(true));
       toast({
@@ -155,7 +142,8 @@ const useSignup = () => {
         setLoadingCwg(false);
       }, 2000);
     } catch (error) {
-      console.log(error);
+      const message = handleFirebaseError(error as FirebaseError);
+      toast({ variant: "destructive", description: message });
     }
   };
 
@@ -183,7 +171,8 @@ const useSignup = () => {
       await setDoc(doc(db, "users", user.uid), { ...userObj });
       return userObj;
     } catch (error) {
-      console.log(error);
+      const message = handleFirebaseError(error as FirebaseError);
+      toast({ variant: "destructive", description: message });
       return null;
     }
   };
@@ -194,7 +183,8 @@ const useSignup = () => {
       const user = await signInWithPopup(auth, provider);
       console.log(user);
     } catch (error) {
-      console.log(error);
+      const message = handleFirebaseError(error as FirebaseError);
+      toast({ variant: "destructive", description: message });
     }
   };
 
