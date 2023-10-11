@@ -181,6 +181,8 @@ const useSignup = () => {
     try {
       const provider = new FacebookAuthProvider();
       const userCred: UserCredential = await signInWithPopup(auth, provider);
+      console.log(userCred);
+
       const userObj: User | null = await addUserToDbSocialAuth(userCred);
       if (!userObj) return;
 
