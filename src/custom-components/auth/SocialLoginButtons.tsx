@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { BsFacebook, BsGoogle } from "react-icons/bs";
 import useSignup from "@/hooks/useSignup";
+import React from "react";
 
 const SocialLoginButtons = () => {
   const { continueWithGoogle, continueWithFacebook } = useSignup();

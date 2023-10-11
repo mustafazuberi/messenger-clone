@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
-import { Avatar } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { CiLogout, CiSettings } from "react-icons/ci";
 import useHome from "@/hooks/useHome";
 
@@ -22,7 +22,16 @@ function ProfileDropDown() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div className="flex justify-center items-center border w-[45px] h-[45px] rounded-full cursor-pointer">
-          <Avatar>{currentUser.displayName.charAt(0)[0]?.toUpperCase()}</Avatar>
+          <Avatar>
+            <AvatarImage
+              src={currentUser.photoUrl}
+              className="rounded-full"
+              alt="@shadcn"
+            />
+            <AvatarFallback className="rounded-full">
+              {currentUser.displayName.charAt(0)[0]?.toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">

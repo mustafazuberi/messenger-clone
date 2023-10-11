@@ -162,10 +162,11 @@ const useSignup = () => {
       const userObj: User = {
         displayName: user.displayName || "",
         email: user.email || "",
-        emailVerified: user.emailVerified,
+        emailVerified: true,
         friends: [],
         gender: "",
         uid: user.uid,
+        photoUrl: user.photoURL!,
       };
 
       await setDoc(doc(db, "users", user.uid), { ...userObj });

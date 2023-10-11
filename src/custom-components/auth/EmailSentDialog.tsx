@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import { Dialog, DialogContentWithoutX } from "@/components/ui/dialog";
 import Image from "next/image";
 import messengerLogo from "@/../assets/images/messengerlogo.png";

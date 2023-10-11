@@ -2,6 +2,7 @@
 import { Input } from "@/components/ui/input";
 import ChatsNavDropDown from "./ChatsNavDropDown";
 import useHome from "@/hooks/useHome";
+import React from "react";
 
 const ChatsBoxNav = () => {
   const {handleOnSearchMessenger} = useHome();

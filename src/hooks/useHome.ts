@@ -11,6 +11,7 @@ const useHome = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { toast } = useToast();
+
   const handleOnSearchMessenger = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.value);
   };
