@@ -1,32 +1,22 @@
-"use client";
-import { DialogContentWithoutX } from "@/components/ui/dialog";
-import { Dialog } from "@radix-ui/react-dialog";
-
-const LoadingContinueWithGoogle = ({ loadingCwg }: { loadingCwg: boolean }) => {
-  return (
-    <Dialog open={loadingCwg}>
-      <DialogContentWithoutX className="sm:max-w-[475px] max-w-[260px] h-56">
-        <section className="flex px-4 justify-center items-center flex-col gap-y-3">
-          <h3 className="text-2xl font-medium">Please wait...</h3>
-          <TailwindSpinner />
-        </section>
-      </DialogContentWithoutX>
-    </Dialog>
-  );
-};
-
-export default LoadingContinueWithGoogle;
-
-export const TailwindSpinner = () => {
+const TailwindSpinner = () => {
   return (
     <div role="status">
       <svg
         aria-hidden="true"
-        className="inline w-20 h-20 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+        className="inline w-20 h-20 mr-2 text-gray-200 animate-spin dark:text-gray-600 "
+        fill="url(#gradient)"
         viewBox="0 0 100 101"
-        fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
+        <defs>
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="blue" stopOpacity="1" />
+              <stop offset="50%" stopColor="purple" stopOpacity="1" />
+              <stop offset="100%" stopColor="pink" stopOpacity="1" />
+            </linearGradient>
+          </defs>
+        </defs>
         <path
           d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
           fill="currentColor"
@@ -36,7 +26,8 @@ export const TailwindSpinner = () => {
           fill="currentFill"
         />
       </svg>
-      <span className="sr-only">Loading...</span>
     </div>
   );
 };
+
+export default TailwindSpinner;

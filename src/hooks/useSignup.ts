@@ -30,7 +30,6 @@ const useSignup = () => {
   const [openEmailSent, setOpenEmailSent] = React.useState<boolean>(false);
   const [emailSentTo, setEmailSentTo] = React.useState<string>("");
   const [loading, setLoading] = React.useState(false);
-  const [loadingCwg, setLoadingCwg] = React.useState<boolean>(false);
 
   const form: UseFormReturn<z.infer<typeof formSchema>> = useForm<
     z.infer<typeof formSchema>
@@ -128,26 +127,27 @@ const useSignup = () => {
         provider
       );
       if (!userCred) return;
-      setLoadingCwg(true); // enable signin with google loading till navigate to '/'
-      const userObj: User | null = await addUserToDbAuthGoogle(userCred);
+
+      const userObj: User | null = await addUserToDbSocialAuth(userCred);
+
       if (!userObj) return;
+
       dispatch(updateUserDetails({ ...userObj }));
       dispatch(setAuthenticationStatus(true));
+
       toast({
         description: `Welcome ,${userObj.displayName}!`,
       });
       router.push("/");
-
-      setTimeout(() => {
-        setLoadingCwg(false);
-      }, 2000);
     } catch (error) {
       const message = handleFirebaseError(error as FirebaseError);
-      toast({ variant: "destructive", description: message });
+      if (message) {
+        toast({ variant: "destructive", description: message });
+      }
     }
   };
 
-  const addUserToDbAuthGoogle = async (
+  const addUserToDbSocialAuth = async (
     userCred: UserCredential
   ): Promise<User | null> => {
     const { user } = userCred;
@@ -180,11 +180,20 @@ const useSignup = () => {
   const continueWithFacebook = async (): Promise<void> => {
     try {
       const provider = new FacebookAuthProvider();
-      const user = await signInWithPopup(auth, provider);
-      console.log(user);
+      const userCred: UserCredential = await signInWithPopup(auth, provider);
+      const userObj: User | null = await addUserToDbSocialAuth(userCred);
+      if (!userObj) return;
+
+      dispatch(updateUserDetails({ ...userObj }));
+      dispatch(setAuthenticationStatus(true));
+
+      toast({
+        description: `Welcome ,${userObj.displayName}!`,
+      });
+      router.push("/");
     } catch (error) {
       const message = handleFirebaseError(error as FirebaseError);
-      toast({ variant: "destructive", description: message });
+      if (message) toast({ variant: "destructive", description: message });
     }
   };
 
@@ -196,7 +205,6 @@ const useSignup = () => {
     openEmailSent,
     setOpenEmailSent,
     continueWithGoogle,
-    loadingCwg,
     continueWithFacebook,
   };
 };

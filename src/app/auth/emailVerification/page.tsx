@@ -1,20 +1,15 @@
 import { redirect } from "next/navigation";
-import EmailVerifiedCard from "@/custom-components/auth/EmailVerifiedCard";
-import {
-  checkActionCode,
-  signInWithEmailAndPassword,
-  updateProfile,
-} from "firebase/auth";
+import { checkActionCode } from "firebase/auth";
 import { auth, db } from "@/db/firebase.config";
 import {
   collection,
   doc,
-  getDoc,
   getDocs,
   query,
   updateDoc,
   where,
 } from "firebase/firestore";
+import EmailVerifiedCard from "@/custom-components/auth/EmailVerifiedCard";
 import User from "@/types/types.user";
 
 type Props = {

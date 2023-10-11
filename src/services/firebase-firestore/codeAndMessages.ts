@@ -92,6 +92,8 @@ const firebaseErrorCodes: FirebaseErrorCodes = {
     "The domain of the continue URL is not whitelisted. Whitelist the domain in the Firebase Console.",
   "auth/user-not-found":
     "There is no existing user record corresponding to the provided identifier.",
+  "auth/account-exists-with-different-credential":
+    "An account with this email already exists. Please ensure that you sign in using the same method you used to create your account.",
 };
 
 export default firebaseErrorCodes;
