@@ -6,4 +6,4 @@ const getErrorMessage = (error: any): string => {
   }
 };
 
-export default getErrorMessage
+export default getErrorMessage;

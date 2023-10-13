@@ -10,10 +10,11 @@ import { setAuthenticationStatus } from "@/store/slice/authenticationStatusSlice
 import ProfileDropDown from "./ProfileDropDown";
 import ThemeDropDown from "./ThemeDropDown";
 import User from "@/types/types.user";
+import NotificationDropdown from "./NotificationDropdown";
 
 const ThemeAndProfileImage = () => {
   const dispatch = useDispatch();
-  const authenticationStatus = useSelector(
+  const authenticationStatus: boolean = useSelector(
     (state: RootState) => state.authenticationStatus
   );
 
@@ -36,7 +37,8 @@ const ThemeAndProfileImage = () => {
         <ThemeDropDown />
       </section>
       {authenticationStatus && (
-        <section>
+        <section className="flex flex-row gap-x-3 items-center">
+          <NotificationDropdown />
           <ProfileDropDown />
         </section>
       )}

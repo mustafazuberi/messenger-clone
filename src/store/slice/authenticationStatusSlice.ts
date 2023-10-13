@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 const initialState: boolean = false;
 
@@ -6,7 +6,7 @@ const authenticationStatusSlice = createSlice({
   name: "authenticationStatus",
   initialState,
   reducers: {
-    setAuthenticationStatus: (state: boolean, action) => {
+    setAuthenticationStatus: (state, action: PayloadAction<boolean>) => {
       state = action.payload;
       return state;
     },

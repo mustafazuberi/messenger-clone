@@ -15,7 +15,7 @@ import {
   BsFillArchiveFill,
 } from "react-icons/bs";
 import { AiOutlinePullRequest, AiOutlineCheck } from "react-icons/ai";
-import { redirect, usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 

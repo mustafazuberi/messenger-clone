@@ -1,17 +1,31 @@
-import getAllUsers from "@/services/firebase-firestore/getAllUsers";
-import User from "@/types/types.user";
+"use client";
+
+import { useEffect } from "react";
 import ChatsBoxNav from "./ChatsBoxNav";
 import FindFriends from "./FindFriends";
 import ChatUsers from "./ChatUsers";
+import useHome from "@/hooks/useHome";
+import { useSearchParams } from "next/navigation";
 
-const ChatsBox = async () => {
-  const users: User[] = await getAllUsers();
-  console.log(users);
+const ChatsBox = () => {
+  const params = useSearchParams();
+  const { getAllUsers } = useHome();
+  useEffect(() => {
+    getAllUsers();
+  }, []);
+
+  const findFriendsTab = params.get("tab") === "findFriends" ? true : false;
+
   return (
     <main className="w-80 border-r min-h-[90vh]">
-      <FindFriends users={users} />
-      <ChatsBoxNav />
-      <ChatUsers users={users} />
+      {findFriendsTab ? (
+        <FindFriends />
+      ) : (
+        <section>
+          <ChatsBoxNav />
+          <ChatUsers />
+        </section>
+      )}
     </main>
   );
 };
