@@ -5,8 +5,8 @@ type User = {
   displayName: string;
   gender?: "male" | "female" | "other" | string;
   photoUrl?: string;
-  friends: User[] | [];
   isActive?: false;
+  friends: User[] | [];
 };
 
 export default User;

@@ -1,11 +1,8 @@
 import { Input } from "@/components/ui/input";
-import { RootState } from "@/store";
 import Link from "next/link";
-import { useSelector } from "react-redux";
 
 const FindFriends = () => {
-  const allUsers = useSelector((state: RootState) => state.allUsers);
-  const findFriendsUsers = [];
+  
 
   return (
     <main className="p-2">
