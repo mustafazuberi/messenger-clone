@@ -55,7 +55,6 @@ const useSignup = () => {
       displayName: values?.fullName,
       gender: values.gender,
       emailVerified: false,
-      friends: [],
       uid: uid,
     };
     try {
@@ -163,7 +162,6 @@ const useSignup = () => {
         displayName: user.displayName || "",
         email: user.email || "",
         emailVerified: true,
-        friends: [],
         gender: "",
         uid: user.uid,
         photoUrl: user.photoURL!,

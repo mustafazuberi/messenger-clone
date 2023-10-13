@@ -45,7 +45,7 @@ const ChatUsers = () => {
 
 export default ChatUsers;
 
-const ChatUsersSkeleton = () => {
+export const ChatUsersSkeleton = () => {
   return (
     <main className="flex flex-col gap-y-8">
       <div className="flex items-center space-x-4">

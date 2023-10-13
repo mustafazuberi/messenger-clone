@@ -9,9 +9,10 @@ import { useSearchParams } from "next/navigation";
 
 const ChatsBox = () => {
   const params = useSearchParams();
-  const { getAllUsers } = useHome();
+  const { getAllUsers, getMyFriends } = useHome();
   useEffect(() => {
     getAllUsers();
+    getMyFriends();
   }, []);
 
   const findFriendsTab = params.get("tab") === "findFriends" ? true : false;
