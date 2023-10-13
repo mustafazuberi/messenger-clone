@@ -1,7 +1,7 @@
 import { useToast } from "@/components/ui/use-toast";
 import { auth, db } from "@/db/firebase.config";
 import { RootState } from "@/store";
-import { USER_INITIAL_STATE } from "@/store/intialState";
+import { STATUSES, USER_INITIAL_STATE } from "@/store/intialState";
 import { setAllUsers } from "@/store/slice/allUsersSlice";
 import { setAuthenticationStatus } from "@/store/slice/authenticationStatusSlice";
 import { setMyFriends } from "@/store/slice/friendsSlice";
@@ -26,7 +26,7 @@ const useHome = () => {
         const userData = doc.data() as User;
         users.push(userData);
       });
-      dispatch(setAllUsers(users));
+      dispatch(setAllUsers({ status: STATUSES.IDLE, data: users }));
     });
     return unsubscribe;
   };
@@ -41,7 +41,7 @@ const useHome = () => {
           users.push(userData);
         });
 
-        dispatch(setMyFriends(users));
+        dispatch(setMyFriends({ status: STATUSES.IDLE, data: users }));
       }
     );
     return unsubscribe;
@@ -61,9 +61,7 @@ const useHome = () => {
     }
   };
 
-  const handleAuthStateChange = () => {
-    
-  };
+  const handleAuthStateChange = () => {};
 
   const handleOnSearchMessenger = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.value);

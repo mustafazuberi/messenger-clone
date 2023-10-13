@@ -1,6 +1,15 @@
-import Friend from "@/types/type.friend";
-import Stranger from "@/types/types.stranger";
+import {
+  FriendsState,
+  StrangersState,
+  UsersState,
+} from "@/types/types.state";
 import User from "@/types/types.user";
+
+export const STATUSES = Object.freeze({
+  IDLE: "idle",
+  ERROR: "error",
+  LOADING: "loading",
+});
 
 export const USER_INITIAL_STATE: User = {
   email: "",
@@ -11,8 +20,17 @@ export const USER_INITIAL_STATE: User = {
   photoUrl: "",
 };
 
-export const USERS_INITIAL_STATE: User[] = [];
+export const USERS_INITIAL_STATE: UsersState = {
+  status: STATUSES.LOADING,
+  data: [],
+};
 
-export const FRIENDS_INITIAL_STATE: Friend[] = [];
+export const FRIENDS_INITIAL_STATE: FriendsState = {
+  status: STATUSES.LOADING,
+  data: [],
+};
 
-export const STRANGERS_INITIAL_STATE: Stranger[] = [];
+export const STRANGERS_INITIAL_STATE: StrangersState = {
+  status: STATUSES.LOADING,
+  data: [],
+};

@@ -1,12 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { USERS_INITIAL_STATE } from "../intialState";
-import User from "@/types/types.user";
+import { UsersState } from "@/types/types.state";
 
 const allUsersSlice = createSlice({
   name: "allUsers",
   initialState: USERS_INITIAL_STATE,
   reducers: {
-    setAllUsers: (state, action: { payload: User[] }) => {
+    setAllUsers: (state, action: { payload: UsersState }) => {
       state = action.payload;
       return state;
     },

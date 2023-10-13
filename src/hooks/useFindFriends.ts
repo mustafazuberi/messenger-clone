@@ -1,14 +1,20 @@
 import getStrangerUsers from "@/services/getStrangerUsers";
 import { RootState } from "@/store";
-import Friend from "@/types/type.friend";
+import { FriendsState, UsersState } from "@/types/types.state";
 import Stranger from "@/types/types.stranger";
-import User from "@/types/types.user";
 import { useSelector } from "react-redux";
 
 const useFindFriends = () => {
-  const allUsers: User[] = useSelector((state: RootState) => state.allUsers);
-  const friends: Friend[] = useSelector((state: RootState) => state.friends);
-  const strangers: Stranger[] = getStrangerUsers({ allUsers, friends });
+  const allUsers: UsersState = useSelector(
+    (state: RootState) => state.allUsers
+  );
+  const friends: FriendsState = useSelector(
+    (state: RootState) => state.friends
+  );
+  const strangers: Stranger[] = getStrangerUsers({
+    allUsers: allUsers.data,
+    friends: friends.data,
+  });
 
   return { strangers };
 };
