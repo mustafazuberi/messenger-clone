@@ -1,5 +1,5 @@
-import { SelectDate } from "@/custom-components/auth/SelectDate";
 import React from "react";
+import { SelectDate } from "./SelectDate";
 
 type Props = {
   name?: string;

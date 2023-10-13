@@ -1,7 +1,7 @@
-import SocialLoginButtons from "@/custom-components/auth/SocialLoginButtons";
+import SocialLoginButtons from "@/customComponents/auth/SocialLoginButtons";
+import SignupForm from "@/customComponents/forms/SignupForm";
+import { TypographyH1 } from "@/customComponents/web/TypographyH1";
 import Link from "next/link";
-import SignupForm from "@/custom-components/forms/SignupForm";
-import { TypographyH1 } from "@/custom-components/web/TypographyH1";
 
 const SignUp = () => {
   return (

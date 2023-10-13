@@ -6,11 +6,13 @@ import FindFriends from "./FindFriends";
 import ChatUsers from "./ChatUsers";
 import useHome from "@/hooks/useHome";
 import { useSearchParams } from "next/navigation";
+import useFCM from "@/hooks/useFCM";
 
 const ChatsBox = () => {
   const params = useSearchParams();
-  const { getAllUsers, getMyFriends, requestPermissionCloudMessaging } =
-    useHome();
+  const { getAllUsers, getMyFriends } = useHome();
+  const { requestPermissionCloudMessaging } = useFCM();
+
   useEffect(() => {
     getAllUsers();
     getMyFriends();

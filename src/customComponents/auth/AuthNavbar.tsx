@@ -1,6 +1,6 @@
 import messengerLogo from "@/../assets/images/messengerlogo.png";
 import Image from "next/image";
-import { TypographyH1 } from "../../components/web/TypographyH1";
+import { TypographyH1 } from "../web/TypographyH1";
 
 const AuthNavbar = () => {
   return (

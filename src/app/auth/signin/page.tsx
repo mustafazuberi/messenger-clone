@@ -1,6 +1,6 @@
-import SocialLoginButtons from "@/custom-components/auth/SocialLoginButtons";
-import SignInForm from "@/custom-components/forms/SignInForm";
-import { TypographyH1 } from "@/custom-components/web/TypographyH1";
+import SocialLoginButtons from "@/customComponents/auth/SocialLoginButtons";
+import SigninForm from "@/customComponents/forms/SignInForm";
+import { TypographyH1 } from "@/customComponents/web/TypographyH1";
 import Link from "next/link";
 
 const SignIn = () => {
@@ -8,7 +8,7 @@ const SignIn = () => {
     <main className="flex flex-col justify-center items-center px-4 mt-4">
       <section className="flex flex-col gap-y-6 w-full max-w-lg my-3 border sm:px-8 px-3 py-12">
         <TypographyH1 text="Sign In" />
-        <SignInForm />
+        <SigninForm />
         <SocialLoginButtons />
         <DontHaveAnAccount />
       </section>

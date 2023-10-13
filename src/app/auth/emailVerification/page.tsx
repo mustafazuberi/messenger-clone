@@ -9,8 +9,8 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import EmailVerifiedCard from "@/custom-components/auth/EmailVerifiedCard";
 import User from "@/types/types.user";
+import EmailVerifiedCard from "@/customComponents/auth/EmailVerifiedCard";
 
 type Props = {
   searchParams: {

@@ -1,4 +1,4 @@
-import ChatsBox from "@/custom-components/web/home/chats-box/ChatsBox";
+import ChatsBox from "@/customComponents/web/ChatsBox";
 
 export default function Home() {
   return (

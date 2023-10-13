@@ -3,7 +3,7 @@ import React from "react";
 import { Dialog, DialogContentWithoutX } from "@/components/ui/dialog";
 import Image from "next/image";
 import messengerLogo from "@/../assets/images/messengerlogo.png";
-import { TypographyH1 } from "@/custom-components/web/TypographyH1";
+import { TypographyH1 } from "../web/TypographyH1";
 
 type Props = {
   openEmailSent: boolean;

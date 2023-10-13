@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import handleFirebaseError from "@/services/firebase-firestore/firebaseErrorHandling";
 import { FirebaseError } from "firebase/app";
 
-const useChatRequests = () => {
+const useReq = () => {
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const { toast } = useToast();
 
@@ -104,4 +104,4 @@ const useChatRequests = () => {
   return { sendChatRequest };
 };
 
-export default useChatRequests;
+export default useReq;

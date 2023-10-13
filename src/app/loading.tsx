@@ -1,4 +1,4 @@
-import TailwindSpinner from "@/custom-components/web/modals/TailwindSpinner";
+import TailwindSpinner from "@/customComponents/web/TailwindSpinner";
 
 export default function Loading() {
   return (
