@@ -13,24 +13,9 @@ import User from "@/types/types.user";
 import NotificationDropdown from "./NotificationDropdown";
 
 const ThemeAndProfileImage = () => {
-  const dispatch = useDispatch();
   const authenticationStatus: boolean = useSelector(
     (state: RootState) => state.authenticationStatus
   );
-
-  // Auth state change by firebase to set in redux if something change in user data
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      let userDoc = await getDoc(doc(db, "users", user.uid));
-      if (!userDoc.data()) return;
-      let firestoreUser: User = userDoc.data() as User;
-      dispatch(updateUserDetails({ ...firestoreUser }));
-      dispatch(setAuthenticationStatus(true));
-      return;
-    } else {
-      dispatch(setAuthenticationStatus(false));
-    }
-  });
   return (
     <main className="flex flex-row gap-x-3 items-center justify-center">
       <section>

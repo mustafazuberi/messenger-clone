@@ -21,7 +21,7 @@ import { setAuthenticationStatus } from "@/store/slice/authenticationStatusSlice
 import { FirebaseError } from "firebase/app";
 import formSchema from "@/schema/schema.signupForm";
 import User from "@/types/types.user";
-import handleFirebaseError from "@/services/firebase-firestore/firebaseErrorHandling";
+import handleFirebaseError from "@/services/firebaseErrorHandling";
 
 const useSignup = () => {
   const dispatch = useDispatch();

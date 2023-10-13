@@ -21,11 +21,10 @@ const NotificationDropdown = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="rounded-full">
-          <RiNotification2Fill />
+          <RiNotification2Fill className="text-[20px]" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        {/* This is notification card*/}
         <NotificationCard />
       </DropdownMenuContent>
     </DropdownMenu>

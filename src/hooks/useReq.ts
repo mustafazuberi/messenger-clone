@@ -5,7 +5,7 @@ import Stranger from "@/types/types.stranger";
 import User from "@/types/types.user";
 import { useSelector } from "react-redux";
 import { useToast } from "@/components/ui/use-toast";
-import handleFirebaseError from "@/services/firebase-firestore/firebaseErrorHandling";
+import handleFirebaseError from "@/services/firebaseErrorHandling";
 import { FirebaseError } from "firebase/app";
 
 const useReq = () => {

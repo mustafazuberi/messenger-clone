@@ -11,7 +11,7 @@ import { setAuthenticationStatus } from "@/store/slice/authenticationStatusSlice
 import * as z from "zod";
 import formSchema from "@/schema/schema.signinform";
 import User from "@/types/types.user";
-import fetchUserByUid from "@/services/firebase-firestore/fetchUserByUid";
+import fetchUserByUid from "@/services/fetchUserByUid";
 import getErrorMessage from "@/services/getErrorMessage";
 
 const useSignin = () => {

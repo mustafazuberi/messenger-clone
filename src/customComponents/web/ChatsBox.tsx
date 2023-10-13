@@ -10,10 +10,11 @@ import useFCM from "@/hooks/useFCM";
 
 const ChatsBox = () => {
   const params = useSearchParams();
-  const { getAllUsers, getMyFriends } = useHome();
+  const { getAllUsers, getMyFriends, handleAuthStateChange } = useHome();
   const { requestPermissionCloudMessaging } = useFCM();
 
   useEffect(() => {
+    handleAuthStateChange();
     getAllUsers();
     getMyFriends();
     requestPermissionCloudMessaging();

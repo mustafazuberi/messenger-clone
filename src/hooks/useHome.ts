@@ -8,8 +8,8 @@ import { setMyFriends } from "@/store/slice/friendsSlice";
 import { updateUserDetails } from "@/store/slice/userSlice";
 import Friend from "@/types/type.friend";
 import User from "@/types/types.user";
-import { signOut } from "firebase/auth";
-import { collection, onSnapshot } from "firebase/firestore";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -61,6 +61,10 @@ const useHome = () => {
     }
   };
 
+  const handleAuthStateChange = () => {
+    
+  };
+
   const handleOnSearchMessenger = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.value);
   };
@@ -68,6 +72,7 @@ const useHome = () => {
   return {
     handleOnSearchMessenger,
     handleSignOut,
+    handleAuthStateChange,
     getAllUsers,
     getMyFriends,
   };
