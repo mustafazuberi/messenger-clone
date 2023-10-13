@@ -56,6 +56,7 @@ const useSignup = () => {
       gender: values.gender,
       emailVerified: false,
       uid: uid,
+      photoUrl: "",
     };
     try {
       await setDoc(doc(db, "users", uid), userObj);
@@ -116,8 +117,7 @@ const useSignup = () => {
     }
   }
 
-  // Social Logins
-
+  // Social Authentication
   const continueWithGoogle = async (): Promise<void> => {
     try {
       const provider = new GoogleAuthProvider();
