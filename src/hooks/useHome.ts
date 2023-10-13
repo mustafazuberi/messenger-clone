@@ -1,5 +1,6 @@
 import { useToast } from "@/components/ui/use-toast";
-import { auth, db } from "@/db/firebase.config";
+import { auth, db, messaging } from "@/db/firebase.config";
+import { getToken } from "firebase/messaging";
 import { RootState } from "@/store";
 import { USER_INITIAL_STATE } from "@/store/intialState";
 import { setAllUsers } from "@/store/slice/allUsersSlice";
@@ -47,6 +48,20 @@ const useHome = () => {
     return unsubscribe;
   };
 
+  const requestPermissionCloudMessaging = async () => {
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") {
+      // Generate token
+      const token = await getToken(messaging, {
+        vapidKey:
+          "BEqeZLQXRddjBldjjB7yYbpukTpJSkScJRgehWuStP_hpZxAAsSI3fsrdyOat9waVUoNO0vcbLGCfdJ9Z2hjfaw",
+      });
+      console.log("token generated---- ", token);
+    } else if (permission === "denied") {
+      alert("You denied for the notification");
+    }
+  };
+
   const handleOnSearchMessenger = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.value);
   };
@@ -65,7 +80,13 @@ const useHome = () => {
     }
   };
 
-  return { handleOnSearchMessenger, handleSignOut, getAllUsers, getMyFriends };
+  return {
+    handleOnSearchMessenger,
+    handleSignOut,
+    getAllUsers,
+    getMyFriends,
+    requestPermissionCloudMessaging,
+  };
 };
 
 export default useHome;

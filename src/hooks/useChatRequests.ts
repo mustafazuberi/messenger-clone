@@ -1,6 +1,6 @@
 import { RootState } from "@/store";
 import { DocumentReference, addDoc, collection, doc } from "firebase/firestore";
-import { db } from "@/db/firebase.config";
+import { auth, db } from "@/db/firebase.config";
 import Stranger from "@/types/types.stranger";
 import User from "@/types/types.user";
 import { useSelector } from "react-redux";
@@ -13,7 +13,7 @@ const useChatRequests = () => {
   const { toast } = useToast();
 
   //   THis for adding my requested Chats
-  const addRequestedUserInMyRequestedChats = async (
+  const addUserInSentReqs = async (
     user: User
   ): Promise<DocumentReference | null> => {
     const requestTo: Stranger = {
@@ -26,7 +26,7 @@ const useChatRequests = () => {
 
     try {
       const res: DocumentReference = await addDoc(
-        collection(db, "users", currentUser.uid, "myRequestedChats"),
+        collection(db, "users", currentUser.uid, "sent requests"),
         {
           ...requestTo,
         }
@@ -46,7 +46,7 @@ const useChatRequests = () => {
   };
 
   //   This for adding my reqest in requested user received requests
-  const addMyReqInRequestedUserReqs = async (
+  const addMeInStrangerReceivedReqs = async (
     user: User
   ): Promise<DocumentReference | null> => {
     const infoForMyReq: Stranger = {
@@ -58,7 +58,7 @@ const useChatRequests = () => {
     };
     try {
       const res: DocumentReference = await addDoc(
-        collection(db, "users", user.uid, "chatRequests"),
+        collection(db, "users", user.uid, "received requests"),
         {
           ...infoForMyReq,
         }
@@ -80,12 +80,24 @@ const useChatRequests = () => {
   const sendChatRequest = async (user: User) => {
     try {
       // here adding user in my requested chats
-      const addedInMyRequested = await addRequestedUserInMyRequestedChats(user);
-      if (!addedInMyRequested) return;
+      const addedInSentReqs = await addUserInSentReqs(user);
+      if (!addedInSentReqs) return;
 
       // here adding my request in friend requests of user i sent request
-      const addedInRequestedUser = await addMyReqInRequestedUserReqs(user);
-      if (!addedInRequestedUser) return;
+      const addedInStrangerReceivedReqs = await addMeInStrangerReceivedReqs(
+        user
+      );
+      if (!addedInStrangerReceivedReqs) return;
+
+      // Now Sending Notification to user
+      // Send the notification
+      const message = {
+        notification: {
+          title: "Sent a Request",
+          body: "test kar rah hun ke gai req?",
+        },
+        token: auth.currentUser?.getIdToken(),
+      };
     } catch (error) {}
   };
 

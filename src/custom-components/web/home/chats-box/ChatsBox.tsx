@@ -9,10 +9,12 @@ import { useSearchParams } from "next/navigation";
 
 const ChatsBox = () => {
   const params = useSearchParams();
-  const { getAllUsers, getMyFriends } = useHome();
+  const { getAllUsers, getMyFriends, requestPermissionCloudMessaging } =
+    useHome();
   useEffect(() => {
     getAllUsers();
     getMyFriends();
+    requestPermissionCloudMessaging();
   }, []);
 
   const findFriendsTab = params.get("tab") === "findFriends" ? true : false;
