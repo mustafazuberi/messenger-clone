@@ -1,5 +1,6 @@
 "use client";
 import { Input } from "@/components/ui/input";
+import { FaUserFriends } from "react-icons/fa";
 import ChatsNavDropDown from "./ChatsNavDropDown";
 import useHome from "@/hooks/useHome";
 import React from "react";
@@ -18,6 +19,12 @@ const ChatsBoxNav = () => {
             <span className="text-[12px] bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400">
               Find Friends
             </span>
+          </Link>
+          <Link
+            href={`/?tab=requests`}
+            className="p-2 text-2xl border rounded-full hover:opacity-60"
+          >
+            <FaUserFriends />
           </Link>
           <ChatsNavDropDown />
         </section>

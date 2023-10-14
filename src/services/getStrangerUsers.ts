@@ -7,7 +7,7 @@ type getStrangerUsersParamType = {
   friends: Friend[];
 };
 
-const getStrangerUsers = (users: getStrangerUsersParamType): Stranger[] => {
+const filterStrangerUsers = (users: getStrangerUsersParamType): Stranger[] => {
   const { allUsers, friends } = users;
 
   const strangers: Stranger[] = allUsers
@@ -32,4 +32,4 @@ const getStrangerUsers = (users: getStrangerUsersParamType): Stranger[] => {
   return strangers;
 };
 
-export default getStrangerUsers;
+export default filterStrangerUsers;

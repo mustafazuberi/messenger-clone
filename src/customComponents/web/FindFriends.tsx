@@ -1,24 +1,17 @@
 import { Input } from "@/components/ui/input";
-import useFindFriends from "@/hooks/useFindFriends";
 import Image from "next/image";
 import Link from "next/link";
 import { ChatUsersSkeleton } from "./ChatUsers";
-import { useDispatch, useSelector } from "react-redux";
-import { setStrangerUsers } from "@/store/slice/strangersSlice";
+import { useSelector } from "react-redux";
 import { STATUSES } from "@/store/intialState";
-import { useEffect } from "react";
 import { StrangersState } from "@/types/types.state";
 import { RootState } from "@/store";
+import { BiArrowBack } from "react-icons/bi";
 
 const FindFriends = () => {
   const strangersState: StrangersState = useSelector(
     (state: RootState) => state.strangers
   );
-  const dispatch = useDispatch();
-  const { strangers } = useFindFriends();
-  useEffect(() => {
-    dispatch(setStrangerUsers({ status: STATUSES.IDLE, data: strangers }));
-  }, []);
 
   return (
     <main className="p-2">
@@ -66,16 +59,12 @@ export default FindFriends;
 const FindFriendsNav = () => {
   return (
     <main className="flex flex-col gap-y-3 mt-2">
-      <section className="flex flex-row justify-between items-center w-full">
+      <section className="flex flex-row gap-x-2 items-center w-full">
+        <Link href={"/"}>
+          <BiArrowBack className="cursor-pointer text-2xl" />
+        </Link>
         <section>
           <h3 className="text-2xl font-bold">Find Friends</h3>
-        </section>
-        <section className="flex flex-row gap-x-2 items-center">
-          <Link href={`/`}>
-            <span className="text-[12px] bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400">
-              Chats
-            </span>
-          </Link>
         </section>
       </section>
       <section>

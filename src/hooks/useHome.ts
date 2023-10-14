@@ -8,24 +8,35 @@ import { setMyFriends } from "@/store/slice/friendsSlice";
 import { updateUserDetails } from "@/store/slice/userSlice";
 import Friend from "@/types/type.friend";
 import User from "@/types/types.user";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
+import { signOut } from "firebase/auth";
+import { collection, onSnapshot } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
+import { setStrangerUsers } from "@/store/slice/strangersSlice";
+import Stranger from "@/types/types.stranger";
+import { FriendsState, UsersState } from "@/types/types.state";
+import filterStrangerUsers from "@/services/getStrangerUsers";
 
 const useHome = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { toast } = useToast();
   const currentUser = useSelector((state: RootState) => state.currentUser);
+  const allUsers: UsersState = useSelector(
+    (state: RootState) => state.allUsers
+  );
+  const friends: FriendsState = useSelector(
+    (state: RootState) => state.friends
+  );
 
   const getAllUsers = () => {
     const unsubscribe = onSnapshot(collection(db, "users"), (querySnapshot) => {
       const users: User[] = [];
       querySnapshot.forEach((doc) => {
         const userData = doc.data() as User;
-        users.push(userData);
+        if (userData.uid !== currentUser.uid) users.push(userData);
       });
+
       dispatch(setAllUsers({ status: STATUSES.IDLE, data: users }));
     });
     return unsubscribe;
@@ -38,13 +49,22 @@ const useHome = () => {
         const users: Friend[] = [];
         querySnapshot.forEach((doc) => {
           const userData = doc.data() as Friend;
-          users.push(userData);
+          if (userData.uid !== currentUser.uid) users.push(userData);
         });
 
         dispatch(setMyFriends({ status: STATUSES.IDLE, data: users }));
       }
     );
     return unsubscribe;
+  };
+
+  const getStrangerUsers = () => {
+    const dispatch = useDispatch();
+    const strangers: Stranger[] = filterStrangerUsers({
+      allUsers: allUsers.data,
+      friends: friends.data,
+    });
+    dispatch(setStrangerUsers({ status: STATUSES.IDLE, data: strangers }));
   };
 
   const handleSignOut = async (): Promise<void> => {
@@ -73,6 +93,7 @@ const useHome = () => {
     handleAuthStateChange,
     getAllUsers,
     getMyFriends,
+    getStrangerUsers,
   };
 };
 

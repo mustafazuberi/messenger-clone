@@ -3,14 +3,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { RootState } from "@/store";
 import { STATUSES } from "@/store/intialState";
 import { UsersState } from "@/types/types.state";
-import User from "@/types/types.user";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { useSelector } from "react-redux";
 
 const ChatUsers = () => {
-  const users: UsersState = useSelector((state: RootState) => state.allUsers);
+  const users: UsersState = useSelector((state: RootState) => state.friends);
 
   return (
     <main className="flex flex-row justify-between p-2 items-center mt-2">

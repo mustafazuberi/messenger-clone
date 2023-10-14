@@ -1,5 +1,11 @@
 import { RootState } from "@/store";
-import { DocumentReference, addDoc, collection, doc } from "firebase/firestore";
+import {
+  DocumentData,
+  DocumentReference,
+  addDoc,
+  collection,
+  doc,
+} from "firebase/firestore";
 import { auth, db } from "@/db/firebase.config";
 import Stranger from "@/types/types.stranger";
 import User from "@/types/types.user";
@@ -12,44 +18,40 @@ const useReq = () => {
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const { toast } = useToast();
 
-  //   THis for adding my requested Chats
-  const addUserInSentReqs = async (
-    user: User
+  // For adding receiver in my sent requests
+  const addReceiverInSentReqs = async (
+    receiver: User
   ): Promise<DocumentReference | null> => {
     const requestTo: Stranger = {
-      displayName: user.displayName,
-      email: user.email,
-      uid: user.uid,
-      gender: user.gender,
-      photoUrl: user.photoUrl,
+      displayName: receiver.displayName,
+      email: receiver.email,
+      uid: receiver.uid,
+      gender: receiver.gender,
+      photoUrl: receiver.photoUrl,
     };
 
     try {
-      const res: DocumentReference = await addDoc(
-        collection(db, "users", currentUser.uid, "sent requests"),
-        {
-          ...requestTo,
-        }
+      const receiverRef = collection(
+        db,
+        "users",
+        currentUser.uid,
+        "sent requests"
       );
+      const res: DocumentReference = await addDoc(receiverRef, {
+        ...requestTo,
+      });
       return res;
     } catch (error) {
       console.log(error);
-      const message = handleFirebaseError(error as FirebaseError);
-      if (message) {
-        toast({
-          variant: "destructive",
-          description: message,
-        });
-      }
       return null;
     }
   };
 
-  //   This for adding my reqest in requested user received requests
-  const addMeInStrangerReceivedReqs = async (
+  //   This for adding my reqest in receiver received requests
+  const addSenderReceiverReceivedReqs = async (
     user: User
   ): Promise<DocumentReference | null> => {
-    const infoForMyReq: Stranger = {
+    const sender: Stranger = {
       displayName: user.displayName,
       email: user.email,
       uid: user.uid,
@@ -57,48 +59,38 @@ const useReq = () => {
       photoUrl: user.photoUrl,
     };
     try {
-      const res: DocumentReference = await addDoc(
-        collection(db, "users", user.uid, "received requests"),
-        {
-          ...infoForMyReq,
-        }
+      const receiverRef = collection(
+        db,
+        "users",
+        user.uid,
+        "received requests"
       );
+      const res: DocumentReference = await addDoc(receiverRef, {
+        ...sender,
+      });
       return res;
     } catch (error) {
       console.log(error);
-      const message = handleFirebaseError(error as FirebaseError);
-      if (message) {
-        toast({
-          variant: "destructive",
-          description: message,
-        });
-      }
       return null;
     }
   };
 
-  const sendChatRequest = async (user: User) => {
+  const sendChatRequest = async (receiver: User): Promise<void> => {
     try {
-      // here adding user in my requested chats
-      const addedInSentReqs = await addUserInSentReqs(user);
+      // Added In Sent Reqs
+      const addedInSentReqs: DocumentReference | null =
+        await addReceiverInSentReqs(receiver);
       if (!addedInSentReqs) return;
 
-      // here adding my request in friend requests of user i sent request
-      const addedInStrangerReceivedReqs = await addMeInStrangerReceivedReqs(
-        user
-      );
-      if (!addedInStrangerReceivedReqs) return;
+      // Added sender in receiver received Reqs
+      const addedInReceiverReceivedReqs: DocumentReference | null =
+        await addSenderReceiverReceivedReqs(currentUser);
+      if (!addedInReceiverReceivedReqs) return;
 
-      // Now Sending Notification to user
-      // Send the notification
-      const message = {
-        notification: {
-          title: "Sent a Request",
-          body: "test kar rah hun ke gai req?",
-        },
-        token: auth.currentUser?.getIdToken(),
-      };
-    } catch (error) {}
+      // add receive req notification in receiver notifications
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return { sendChatRequest };
