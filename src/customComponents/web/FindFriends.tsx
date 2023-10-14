@@ -7,11 +7,15 @@ import { STATUSES } from "@/store/intialState";
 import { StrangersState } from "@/types/types.state";
 import { RootState } from "@/store";
 import { BiArrowBack } from "react-icons/bi";
+import useReq from "@/hooks/useReq";
 
 const FindFriends = () => {
+  const { sendChatRequest } = useReq();
   const strangersState: StrangersState = useSelector(
     (state: RootState) => state.strangers
   );
+  const currentUser = useSelector((state: RootState) => state.currentUser);
+  const { emailVerified, ...currentUserAsStranger } = currentUser;
 
   return (
     <main className="p-2">
@@ -39,7 +43,15 @@ const FindFriends = () => {
                   </section>
                 </section>
                 <section>
-                  <button className="text-white py-1 px-2 bg-purple-600 rounded-2xl text-[12px]">
+                  <button
+                    className="text-white py-1 px-2 bg-purple-600 cursor-pointer rounded-2xl text-[12px]"
+                    onClick={() =>
+                      sendChatRequest({
+                        sender: currentUserAsStranger,
+                        receiver: u,
+                      })
+                    }
+                  >
                     Add
                   </button>
                 </section>

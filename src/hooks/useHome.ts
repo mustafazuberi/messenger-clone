@@ -8,7 +8,7 @@ import { setMyFriends } from "@/store/slice/friendsSlice";
 import { updateUserDetails } from "@/store/slice/userSlice";
 import Friend from "@/types/type.friend";
 import User from "@/types/types.user";
-import { signOut } from "firebase/auth";
+import { Unsubscribe, signOut } from "firebase/auth";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
@@ -42,7 +42,7 @@ const useHome = () => {
     return unsubscribe;
   };
 
-  const getMyFriends = () => {
+  const getMyFriends = (): Unsubscribe => {
     const unsubscribe = onSnapshot(
       collection(db, "users", currentUser.uid, "friends"),
       (querySnapshot) => {

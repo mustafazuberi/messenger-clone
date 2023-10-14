@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -52,9 +51,9 @@ const ChatsNavDropDown = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="rounded-full">
+        <span className="p-2 text-2xl border rounded-full hover:opacity-60 cursor-pointer">
           <BsThreeDots />
-        </Button>
+        </span>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-52">
         <DropdownMenuLabel>Chats</DropdownMenuLabel>

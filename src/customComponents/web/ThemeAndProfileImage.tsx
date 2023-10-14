@@ -23,7 +23,7 @@ const ThemeAndProfileImage = () => {
       </section>
       {authenticationStatus && (
         <section className="flex flex-row gap-x-3 items-center">
-          <NotificationDropdown />
+          {/* <NotificationDropdown /> */}
           <ProfileDropDown />
         </section>
       )}

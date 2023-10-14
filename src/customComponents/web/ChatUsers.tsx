@@ -93,7 +93,7 @@ export const ChatUsersSkeleton = () => {
 
 const NoFriendsToChat = () => {
   return (
-    <section className="flex flex-col justify-center items-center mt-4 px-4">
+    <section className="flex flex-col justify-center gap-y-2 items-center mt-4 px-4">
       <h1 className="text-[19px] font-light">
         You have no friends to chat with.
       </h1>
