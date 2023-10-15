@@ -14,8 +14,13 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { setStrangerUsers } from "@/store/slice/strangersSlice";
 import Stranger from "@/types/types.stranger";
-import { FriendsState, UsersState } from "@/types/types.state";
+import {
+  ChatRequestsState,
+  FriendsState,
+  UsersState,
+} from "@/types/types.state";
 import filterStrangerUsers from "@/services/getStrangerUsers";
+import ChatRequest from "@/types/types.request";
 
 const useHome = () => {
   const router = useRouter();
@@ -28,6 +33,9 @@ const useHome = () => {
   const friends: FriendsState = useSelector(
     (state: RootState) => state.friends
   );
+  const chatRequests: ChatRequestsState = useSelector(
+    (state: RootState) => state.chatRequests
+  );
 
   const getAllUsers = () => {
     const unsubscribe = onSnapshot(collection(db, "users"), (querySnapshot) => {
@@ -38,6 +46,8 @@ const useHome = () => {
       });
 
       dispatch(setAllUsers({ status: STATUSES.IDLE, data: users }));
+      // If Some one added new user than this will also add in strangers (redux) accordingly
+      getStrangerUsers();
     });
     return unsubscribe;
   };
@@ -53,13 +63,14 @@ const useHome = () => {
         });
 
         dispatch(setMyFriends({ status: STATUSES.IDLE, data: users }));
+        // If Some one added new user than this will also add in strangers (redux) accordingly
+        getStrangerUsers();
       }
     );
     return unsubscribe;
   };
 
   const getStrangerUsers = () => {
-    const dispatch = useDispatch();
     const strangers: Stranger[] = filterStrangerUsers({
       allUsers: allUsers.data,
       friends: friends.data,

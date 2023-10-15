@@ -13,6 +13,8 @@ const Requests = () => {
   const receivedReqs = chatRequests.data.filter(
     (req: ChatRequest) => req.receiverId === currentUser.uid
   );
+  console.log(currentUser.uid);
+  console.log(chatRequests);
   const sentReqs = chatRequests.data.filter(
     (req: ChatRequest) => req.senderId === currentUser.uid
   );
@@ -22,11 +24,8 @@ const Requests = () => {
       <RequestsNav />
       <section className="mt-3 flex flex-col gap-y-4">
         {receivedReqs.length && chatRequests.status === "idle" ? (
-          receivedReqs.map((req) => (
-            <section
-              className="flex flex-row justify-between px-1 "
-              key={req.senderId}
-            >
+          receivedReqs.map((req, i) => (
+            <section className="flex flex-row justify-between px-1 " key={i}>
               <section className="flex flex-row gap-x-3">
                 <section>
                   <Image

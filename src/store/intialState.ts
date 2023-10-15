@@ -37,7 +37,17 @@ export const STRANGERS_INITIAL_STATE: StrangersState = {
   data: [],
 };
 
-export const NOTIFICATIONS_INITIAL_STATE: ChatRequestsState = {
+export const CHATREQUESTS_INITIAL_STATE: ChatRequestsState = {
+  status: STATUSES.LOADING,
+  data: [],
+};
+
+
+export const SENT_REQUESTS_INITIAL_STATE: ChatRequestsState = {
+  status: STATUSES.LOADING,
+  data: [],
+};
+export const RECEIVED_REQUESTS_INITIAL_STATE: ChatRequestsState = {
   status: STATUSES.LOADING,
   data: [],
 };

@@ -11,14 +11,18 @@ import useReq from "@/hooks/useReq";
 
 const ChatsBox = () => {
   const params = useSearchParams();
-  const { getAllUsers, getMyFriends, handleAuthStateChange } = useHome();
-  const { getChatRequests } = useReq();
+  const { getAllUsers, getMyFriends, handleAuthStateChange, getStrangerUsers } =
+    useHome();
+  const { getChatRequests, getSentRequests, getReceivedRequests } = useReq();
 
   useEffect(() => {
     handleAuthStateChange();
     getAllUsers();
     getMyFriends();
-    getChatRequests();
+    getStrangerUsers();
+    getChatRequests(); // This will fetch whole collection including sent and received Reqs
+    getSentRequests(); // fetch sent reqs
+    getReceivedRequests(); // fetch received reqs
   }, []);
 
   const findFriendsTab = params.get("tab") === "findFriends" ? true : false;

@@ -7,6 +7,8 @@ import {
   doc,
   getDocs,
   onSnapshot,
+  query,
+  where,
 } from "firebase/firestore";
 import { auth, db } from "@/db/firebase.config";
 import Stranger from "@/types/types.stranger";
@@ -18,6 +20,8 @@ import { FirebaseError } from "firebase/app";
 import ChatRequest from "@/types/types.request";
 import { setChatRequests } from "@/store/slice/chatRequestsSlice";
 import { Unsubscribe } from "firebase/messaging";
+import { setSentRequests } from "@/store/slice/sentRequestsSlice";
+import { setReceivedRequests } from "@/store/slice/receivedRequestsSlice";
 
 type SendChatReqParam = {
   sender: Stranger;
@@ -84,7 +88,50 @@ const useReq = () => {
     return unsubscribe;
   };
 
-  return { sendChatRequest, getChatRequests };
+  const getSentRequests = (): Unsubscribe => {
+    const unsubscribe = onSnapshot(
+      query(
+        collection(db, "users", currentUser.uid, "requests"),
+        where("senderId", "==", currentUser.uid)
+      ),
+      (querySnapshot) => {
+        const sentRequests: ChatRequest[] = [];
+        querySnapshot.forEach((doc) => {
+          const sentRequest = doc.data() as ChatRequest;
+          sentRequests.push(sentRequest);
+        });
+        dispatch(setSentRequests({ data: sentRequests, status: "idle" }));
+      }
+    );
+    return unsubscribe;
+  };
+
+  const getReceivedRequests = (): Unsubscribe => {
+    const unsubscribe = onSnapshot(
+      query(
+        collection(db, "users", currentUser.uid, "requests"),
+        where("receiverId", "==", currentUser.uid)
+      ),
+      (querySnapshot) => {
+        const receivedRequests: ChatRequest[] = [];
+        querySnapshot.forEach((doc) => {
+          const receivedRequest = doc.data() as ChatRequest;
+          receivedRequests.push(receivedRequest);
+        });
+        dispatch(
+          setReceivedRequests({ data: receivedRequests, status: "idle" })
+        );
+      }
+    );
+    return unsubscribe;
+  };
+
+  return {
+    sendChatRequest,
+    getChatRequests,
+    getSentRequests,
+    getReceivedRequests,
+  };
 };
 
 export default useReq;

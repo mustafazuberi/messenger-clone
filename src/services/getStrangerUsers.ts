@@ -1,26 +1,29 @@
 import Friend from "@/types/type.friend";
-import Stranger from "@/types/types.stranger";
+import ChatRequest from "@/types/types.request";
+import Stranger, { StrangerStatus } from "@/types/types.stranger";
 import User from "@/types/types.user";
 
 type getStrangerUsersParamType = {
   allUsers: User[];
   friends: Friend[];
+  // sentReqs: ChatRequest[];
+  // receivedReqs: ChatRequest[];
 };
 
 const filterStrangerUsers = (users: getStrangerUsersParamType): Stranger[] => {
   const { allUsers, friends } = users;
 
   const strangers: Stranger[] = allUsers
-    .map((u: User) => {
-      if (!friends.find((f: Friend) => f.uid === u.uid)) {
-        const s: Stranger = {
-          displayName: u.displayName,
-          email: u.email,
-          uid: u.uid,
-          gender: u.gender,
-          photoUrl: u.photoUrl,
+    .map((user: User) => {
+      if (!friends.find((friend: Friend) => friend.uid === user.uid)) {
+        const stranger: Stranger = {
+          displayName: user.displayName,
+          email: user.email,
+          uid: user.uid,
+          gender: user.gender,
+          photoUrl: user.photoUrl,
         };
-        return s;
+        return stranger;
       }
       return undefined;
     })
