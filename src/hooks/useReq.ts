@@ -18,10 +18,12 @@ import { useToast } from "@/components/ui/use-toast";
 import handleFirebaseError from "@/services/firebaseErrorHandling";
 import { FirebaseError } from "firebase/app";
 import ChatRequest from "@/types/types.request";
-import { setChatRequests } from "@/store/slice/chatRequestsSlice";
+import {
+  setRequests,
+  setReceivedRequests,
+  setSentRequests,
+} from "@/store/slice/chatRequestsSlice";
 import { Unsubscribe } from "firebase/messaging";
-import { setSentRequests } from "@/store/slice/sentRequestsSlice";
-import { setReceivedRequests } from "@/store/slice/receivedRequestsSlice";
 
 type SendChatReqParam = {
   sender: Stranger;
@@ -82,7 +84,7 @@ const useReq = () => {
           const chatRequest = doc.data() as ChatRequest;
           chatRequests.push(chatRequest);
         });
-        dispatch(setChatRequests({ data: chatRequests, status: "idle" }));
+        dispatch(setRequests({ data: chatRequests, status: "idle" }));
       }
     );
     return unsubscribe;

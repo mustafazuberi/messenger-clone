@@ -4,71 +4,83 @@ import Link from "next/link";
 import { ChatUsersSkeleton } from "./ChatUsers";
 import { useSelector } from "react-redux";
 import { STATUSES } from "@/store/intialState";
-import { StrangersState } from "@/types/types.state";
+import { ChatRequestsState, StrangersState } from "@/types/types.state";
 import { RootState } from "@/store";
 import { BiArrowBack } from "react-icons/bi";
 import useReq from "@/hooks/useReq";
 import { Button } from "@/components/ui/button";
+import ChatRequest from "@/types/types.request";
 
 const FindFriends = () => {
   const { sendChatRequest } = useReq();
   const strangersState: StrangersState = useSelector(
     (state: RootState) => state.strangers
   );
+  const { receivedRequests, sentRequests }: ChatRequestsState = useSelector(
+    (state: RootState) => state.chatRequests
+  );
+  //
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const { emailVerified, ...currentUserAsStranger } = currentUser;
-
-  console.log(strangersState);
 
   return (
     <main className="p-2">
       <FindFriendsNav />
       <section className="mt-4">
-        {strangersState.data.length
-          ? strangersState.data?.map((u) => (
+        {strangersState.status === STATUSES.LOADING ? (
+          <ChatUsersSkeleton />
+        ) : strangersState.data.length ? (
+          strangersState.data.map((strngU) => {
+            const receivedRequest = receivedRequests.data.find(
+              (recR) => recR.receiverId === strngU.uid
+            );
+            const sentRequest = sentRequests.data.find(
+              (recR) => recR.receiverId === strngU.uid
+            );
+            return (
               <section
                 className="flex flex-row justify-between border-b min-w-full py-2 pr-2"
-                key={u.uid}
+                key={strngU.uid}
               >
                 <section className="flex flex-row gap-x-3">
                   <section>
                     <Image
-                      src={u.photoUrl || "https://github.com/shadcn.png"}
+                      src={strngU.photoUrl || "https://github.com/shadcn.png"}
                       width={40}
                       height={40}
                       alt="user profile"
                       className="rounded-full"
                     />
                   </section>
-                  <section className="flex flex-col ">
-                    <h3>{u.displayName}</h3>
-                    <h6 className="text-[12px]">{u.email}</h6>
+                  <section className="flex flex-col">
+                    <h3>{strngU.displayName}</h3>
+                    <h6 className="text-[12px]">{strngU.email}</h6>
                   </section>
                 </section>
                 <section>
                   <Button
-                    variant={"outline"}
+                    variant="outline"
                     className="w-[70px] h-8"
                     onClick={() =>
                       sendChatRequest({
                         sender: currentUserAsStranger,
-                        receiver: u,
+                        receiver: strngU,
                       })
                     }
                   >
-                    {u.StrangerStatus === "stranger"
-                      ? "Add"
-                      : u.StrangerStatus === "Req Received"
-                      ? "Accept"
-                      : "unsent"}
+                    {sentRequest
+                      ? "Unsent"
+                      : receivedRequest
+                      ? "Confirm"
+                      : "Add"}
                   </Button>
                 </section>
               </section>
-            ))
-          : (strangersState.status === STATUSES.LOADING && (
-              <ChatUsersSkeleton />
-            )) ||
-            "No users are available on the website"}
+            );
+          })
+        ) : (
+          "No users are available on the website"
+        )}
       </section>
     </main>
   );

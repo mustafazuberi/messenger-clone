@@ -9,22 +9,16 @@ import ChatRequest from "@/types/types.request";
 
 const Requests = () => {
   const currentUser = useSelector((state: RootState) => state.currentUser);
-  const chatRequests = useSelector((state: RootState) => state.chatRequests);
-  const receivedReqs = chatRequests.data.filter(
-    (req: ChatRequest) => req.receiverId === currentUser.uid
-  );
-  console.log(currentUser.uid);
-  console.log(chatRequests);
-  const sentReqs = chatRequests.data.filter(
-    (req: ChatRequest) => req.senderId === currentUser.uid
+  const { receivedRequests, requests } = useSelector(
+    (state: RootState) => state.chatRequests
   );
 
   return (
     <main className="flex flex-col justify-between p-2 w-full gap-y-3">
       <RequestsNav />
       <section className="mt-3 flex flex-col gap-y-4">
-        {receivedReqs.length && chatRequests.status === "idle" ? (
-          receivedReqs.map((req, i) => (
+        {false && receivedRequests.data?.length && receivedRequests.status === "idle" ? (
+          receivedRequests.data?.map((req, i) => (
             <section className="flex flex-row justify-between px-1 " key={i}>
               <section className="flex flex-row gap-x-3">
                 <section>
@@ -48,7 +42,7 @@ const Requests = () => {
               </section>
             </section>
           ))
-        ) : chatRequests.status === "loading" ? (
+        ) : false && receivedRequests.status === "loading" ? (
           <ChatUsersSkeleton />
         ) : (
           <section className="flex flex-col justify-center gap-y-2 items-center mt-4 px-4">
