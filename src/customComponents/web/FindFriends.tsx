@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import ChatRequest from "@/types/types.request";
 
 const FindFriends = () => {
-  const { sendChatRequest } = useReq();
+  const { sendChatRequest, unsentChatRequest, confirmChatRequest } = useReq();
   const strangersState: StrangersState = useSelector(
     (state: RootState) => state.strangers
   );
@@ -62,10 +62,20 @@ const FindFriends = () => {
                     variant="outline"
                     className="w-[70px] h-8"
                     onClick={() =>
-                      sendChatRequest({
-                        sender: currentUserAsStranger,
-                        receiver: strngU,
-                      })
+                      sentRequest
+                        ? unsentChatRequest({
+                            sender: currentUserAsStranger,
+                            receiver: strngU,
+                          })
+                        : receivedRequest
+                        ? confirmChatRequest({
+                            sender: strngU,
+                            receiver: currentUserAsStranger,
+                          })
+                        : sendChatRequest({
+                            sender: currentUserAsStranger,
+                            receiver: strngU,
+                          })
                     }
                   >
                     {sentRequest

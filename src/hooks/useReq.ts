@@ -30,6 +30,16 @@ type SendChatReqParam = {
   receiver: Stranger;
 };
 
+type ConfirmChatReqParam = {
+  sender: Stranger;
+  receiver: Stranger;
+};
+
+type UnsentChatReqParam = {
+  sender: Stranger;
+  receiver: Stranger;
+};
+
 const useReq = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.currentUser);
@@ -74,6 +84,16 @@ const useReq = () => {
       console.error("Error sending chat request:", error);
     }
   };
+
+  const unsentChatRequest = async ({
+    sender,
+    receiver,
+  }: UnsentChatReqParam): Promise<void> => {};
+
+  const confirmChatRequest = async ({
+    sender,
+    receiver,
+  }: ConfirmChatReqParam): Promise<void> => {};
 
   const getChatRequests = (): Unsubscribe => {
     const unsubscribe = onSnapshot(
@@ -130,6 +150,8 @@ const useReq = () => {
 
   return {
     sendChatRequest,
+    unsentChatRequest,
+    confirmChatRequest,
     getChatRequests,
     getSentRequests,
     getReceivedRequests,
