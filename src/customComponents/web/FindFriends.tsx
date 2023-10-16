@@ -33,11 +33,12 @@ const FindFriends = () => {
           strangersState.data.map((strngU) => {
             const receivedRequest: ChatRequest | undefined =
               receivedRequests.data.find(
-                (recR) => recR.receiverId === strngU.uid
+                (recR) => recR.senderId === strngU.uid
               );
             const sentRequest: ChatRequest | undefined = sentRequests.data.find(
-              (recR) => recR.receiverId === strngU.uid
+              (sentR) => sentR.receiverId === strngU.uid
             );
+            if (strngU.uid === currentUser.uid) return;
             return (
               <section
                 className="flex flex-row justify-between border-b min-w-full py-2 pr-2"

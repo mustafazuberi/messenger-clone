@@ -1,42 +1,31 @@
-import { RootState } from "@/store";
+import { db } from "@/db/firebase.config";
 import {
-  DocumentData,
-  DocumentReference,
   addDoc,
   collection,
   deleteDoc,
   doc,
-  getDocs,
   onSnapshot,
   query,
+  setDoc,
   where,
 } from "firebase/firestore";
-import { auth, db } from "@/db/firebase.config";
-import Stranger from "@/types/types.stranger";
-import User from "@/types/types.user";
+
+import { RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
-import { useToast } from "@/components/ui/use-toast";
-import handleFirebaseError from "@/services/firebaseErrorHandling";
-import { FirebaseError } from "firebase/app";
-import ChatRequest from "@/types/types.request";
 import {
   setRequests,
   setReceivedRequests,
   setSentRequests,
 } from "@/store/slice/chatRequestsSlice";
+
+import { useToast } from "@/components/ui/use-toast";
+
+import Stranger from "@/types/types.stranger";
+import ChatRequest from "@/types/types.request";
+
 import { Unsubscribe } from "firebase/messaging";
 
 type SendChatReqParam = {
-  sender: Stranger;
-  receiver: Stranger;
-};
-
-type ConfirmChatReqParam = {
-  sender: Stranger;
-  receiver: Stranger;
-};
-
-type UnsentChatReqParam = {
   sender: Stranger;
   receiver: Stranger;
 };
@@ -67,16 +56,20 @@ const useReq = () => {
         chatRequest.senderId,
         "requests"
       );
-      await addDoc(senderCollectionRef, chatRequest);
+      const senderCollectionDocRef = await addDoc(
+        senderCollectionRef,
+        chatRequest
+      );
 
       // Add the chat request to the receiver's collection
-      const receiverCollectionRef = collection(
+      const receiverCollectionDocRef = doc(
         db,
         "users",
         chatRequest.receiverId,
-        "requests"
+        "requests",
+        senderCollectionDocRef.id
       );
-      await addDoc(receiverCollectionRef, chatRequest);
+      await setDoc(receiverCollectionDocRef, chatRequest);
 
       toast({
         description: `Request Sent to ${receiver.displayName}!`,

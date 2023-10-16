@@ -47,7 +47,13 @@ const useHome = () => {
 
       dispatch(setAllUsers({ status: STATUSES.IDLE, data: users }));
       // If Some one added new user than this will also add in strangers (redux) accordingly
-      getStrangerUsers();
+      const strangers: Stranger[] = filterStrangerUsers({
+        allUsers: users,
+        friends: friends.data,
+      });
+      dispatch(setStrangerUsers({ status: STATUSES.IDLE, data: strangers }));
+
+      //ff
     });
     return unsubscribe;
   };

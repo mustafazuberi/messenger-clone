@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { CHATREQUESTS_INITIAL_STATE } from "../intialState";
-import { ChatRequestsState, Status } from "@/types/types.state";
+import { Status } from "@/types/types.state";
 import ChatRequest from "@/types/types.request";
 
 type ReqsPayloadType = { status: Status; data: ChatRequest[] };
