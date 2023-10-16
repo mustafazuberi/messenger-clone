@@ -6,6 +6,7 @@ type ChatRequest = {
   isRead: boolean;
   sender: Stranger;
   receiver: Stranger;
+  id?: string;
 };
 
 export default ChatRequest;

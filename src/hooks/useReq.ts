@@ -4,6 +4,7 @@ import {
   DocumentReference,
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   onSnapshot,
@@ -85,15 +86,26 @@ const useReq = () => {
     }
   };
 
-  const unsentChatRequest = async ({
-    sender,
-    receiver,
-  }: UnsentChatReqParam): Promise<void> => {};
+  const unsentChatRequest = async (request: ChatRequest): Promise<void> => {
+    if (!request.id) return;
+    try {
+      await deleteDoc(
+        doc(db, "users", request.senderId, "requests", request.id)
+      );
+      await deleteDoc(
+        doc(db, "users", request.receiverId, "requests", request.id)
+      );
+      toast({
+        description: "Request Unsent!",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const confirmChatRequest = async ({
-    sender,
-    receiver,
-  }: ConfirmChatReqParam): Promise<void> => {};
+  const confirmChatRequest = async (request: ChatRequest): Promise<void> => {
+    console.log(request);
+  };
 
   const getChatRequests = (): Unsubscribe => {
     const unsubscribe = onSnapshot(
@@ -101,7 +113,7 @@ const useReq = () => {
       (querySnapshot) => {
         const chatRequests: ChatRequest[] = [];
         querySnapshot.forEach((doc) => {
-          const chatRequest = doc.data() as ChatRequest;
+          const chatRequest = { ...doc.data(), id: doc.id } as ChatRequest;
           chatRequests.push(chatRequest);
         });
         dispatch(setRequests({ data: chatRequests, status: "idle" }));
@@ -119,7 +131,7 @@ const useReq = () => {
       (querySnapshot) => {
         const sentRequests: ChatRequest[] = [];
         querySnapshot.forEach((doc) => {
-          const sentRequest = doc.data() as ChatRequest;
+          const sentRequest = { ...doc.data(), id: doc.id } as ChatRequest;
           sentRequests.push(sentRequest);
         });
         dispatch(setSentRequests({ data: sentRequests, status: "idle" }));
@@ -137,7 +149,7 @@ const useReq = () => {
       (querySnapshot) => {
         const receivedRequests: ChatRequest[] = [];
         querySnapshot.forEach((doc) => {
-          const receivedRequest = doc.data() as ChatRequest;
+          const receivedRequest = { ...doc.data(), id: doc.id } as ChatRequest;
           receivedRequests.push(receivedRequest);
         });
         dispatch(

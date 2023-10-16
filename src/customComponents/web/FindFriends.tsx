@@ -31,10 +31,11 @@ const FindFriends = () => {
           <ChatUsersSkeleton />
         ) : strangersState.data.length ? (
           strangersState.data.map((strngU) => {
-            const receivedRequest = receivedRequests.data.find(
-              (recR) => recR.receiverId === strngU.uid
-            );
-            const sentRequest = sentRequests.data.find(
+            const receivedRequest: ChatRequest | undefined =
+              receivedRequests.data.find(
+                (recR) => recR.receiverId === strngU.uid
+              );
+            const sentRequest: ChatRequest | undefined = sentRequests.data.find(
               (recR) => recR.receiverId === strngU.uid
             );
             return (
@@ -63,15 +64,9 @@ const FindFriends = () => {
                     className="w-[70px] h-8"
                     onClick={() =>
                       sentRequest
-                        ? unsentChatRequest({
-                            sender: currentUserAsStranger,
-                            receiver: strngU,
-                          })
+                        ? unsentChatRequest(sentRequest)
                         : receivedRequest
-                        ? confirmChatRequest({
-                            sender: strngU,
-                            receiver: currentUserAsStranger,
-                          })
+                        ? confirmChatRequest(receivedRequest)
                         : sendChatRequest({
                             sender: currentUserAsStranger,
                             receiver: strngU,
