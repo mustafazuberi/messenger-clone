@@ -21,6 +21,11 @@ import {
 } from "@/types/types.state";
 import filterStrangerUsers from "@/services/getStrangerUsers";
 import ChatRequest from "@/types/types.request";
+import {
+  setReceivedRequests,
+  setRequests,
+  setSentRequests,
+} from "@/store/slice/chatRequestsSlice";
 
 const useHome = () => {
   const router = useRouter();
@@ -37,7 +42,7 @@ const useHome = () => {
     (state: RootState) => state.chatRequests
   );
 
-  const getAllUsers = () => {
+  const getAllUsers = (): Unsubscribe => {
     const unsubscribe = onSnapshot(collection(db, "users"), (querySnapshot) => {
       const users: User[] = [];
       querySnapshot.forEach((doc) => {
@@ -47,13 +52,7 @@ const useHome = () => {
 
       dispatch(setAllUsers({ status: STATUSES.IDLE, data: users }));
       // If Some one added new user than this will also add in strangers (redux) accordingly
-      const strangers: Stranger[] = filterStrangerUsers({
-        allUsers: users,
-        friends: friends.data,
-      });
-      dispatch(setStrangerUsers({ status: STATUSES.IDLE, data: strangers }));
-
-      //ff
+      // getStrangerUsers();
     });
     return unsubscribe;
   };
@@ -89,6 +88,13 @@ const useHome = () => {
       await signOut(auth);
       dispatch(updateUserDetails({ ...USER_INITIAL_STATE })); // setting empty object of current user
       dispatch(setAuthenticationStatus(false)); // setting authentication status false in redux
+
+      dispatch(setStrangerUsers({ data: [], status: "idle" })); // setting authentication status false in redux
+      dispatch(setRequests({ data: [], status: "idle" })); // setting authentication status false in redux
+      dispatch(setSentRequests({ data: [], status: "idle" })); // setting authentication status false in redux
+      dispatch(setReceivedRequests({ data: [], status: "idle" })); // setting authentication status false in redux
+      dispatch(setMyFriends({ data: [], status: "idle" })); // setting authentication status false in redux
+
       toast({
         description: `Signed out successfully!`,
       });

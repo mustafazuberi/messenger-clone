@@ -18,6 +18,7 @@ function ProfileDropDown() {
   const router = useRouter();
   const { handleSignOut } = useHome();
   const currentUser = useSelector((state: RootState) => state.currentUser);
+  console.log(currentUser);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

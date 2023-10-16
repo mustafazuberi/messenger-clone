@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import ChatRequest from "@/types/types.request";
 import { useState } from "react";
+import useReq from "@/hooks/useReq";
 
 type ActiveTab = "sentRequests" | "receivedRequests";
 type RequestsNavProps = {
@@ -89,7 +90,7 @@ const ReceivedRequests = () => {
             </section>
             <section>
               <Button variant={"outline"} className="w-[70px] h-8">
-                Accept
+                Confirm
               </Button>
             </section>
           </section>
@@ -111,6 +112,7 @@ const SentRequests = () => {
   const sentRequests = useSelector(
     (state: RootState) => state.chatRequests.sentRequests
   );
+  const { unsendChatRequest } = useReq();
   return (
     <section className="mt-3 flex flex-col gap-y-4">
       {sentRequests.data?.length && sentRequests.status === "idle" ? (
@@ -119,7 +121,7 @@ const SentRequests = () => {
             <section className="flex flex-row gap-x-3">
               <section>
                 <Image
-                  src={req.sender.photoUrl || "https://github.com/shadcn.png"}
+                  src={req.receiver.photoUrl || "https://github.com/shadcn.png"}
                   width={40}
                   height={40}
                   alt="user profile"
@@ -127,13 +129,17 @@ const SentRequests = () => {
                 />
               </section>
               <section className="flex flex-col ">
-                <h3>{req.sender.displayName}</h3>
+                <h3>{req.receiver.displayName}</h3>
                 <h6 className="text-[12px]">{req.sender.email}</h6>
               </section>
             </section>
             <section>
-              <Button variant={"outline"} className="w-[70px] h-8">
-                Accept
+              <Button
+                variant={"outline"}
+                className="w-[70px] h-8"
+                onClick={() => unsendChatRequest(req)}
+              >
+                Unsend
               </Button>
             </section>
           </section>

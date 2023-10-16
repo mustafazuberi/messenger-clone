@@ -79,7 +79,7 @@ const useReq = () => {
     }
   };
 
-  const unsentChatRequest = async (request: ChatRequest): Promise<void> => {
+  const unsendChatRequest = async (request: ChatRequest): Promise<void> => {
     if (!request.id) return;
     try {
       await deleteDoc(
@@ -127,6 +127,7 @@ const useReq = () => {
           const sentRequest = { ...doc.data(), id: doc.id } as ChatRequest;
           sentRequests.push(sentRequest);
         });
+        console.log("sentRequests", sentRequests);
         dispatch(setSentRequests({ data: sentRequests, status: "idle" }));
       }
     );
@@ -155,7 +156,7 @@ const useReq = () => {
 
   return {
     sendChatRequest,
-    unsentChatRequest,
+    unsendChatRequest,
     confirmChatRequest,
     getChatRequests,
     getSentRequests,
