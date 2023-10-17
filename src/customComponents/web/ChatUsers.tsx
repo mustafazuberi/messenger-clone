@@ -2,27 +2,29 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RootState } from "@/store";
 import { STATUSES } from "@/store/intialState";
-import { UsersState } from "@/types/types.state";
+import { FriendsState, UsersState } from "@/types/types.state";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { useSelector } from "react-redux";
 
 const ChatUsers = () => {
-  const users: UsersState = useSelector((state: RootState) => state.friends);
+  const friends: FriendsState = useSelector(
+    (state: RootState) => state.friends
+  );
   return (
     <main className="flex flex-row justify-between p-2 items-center mt-2">
       <section className="flex flex-col gap-y-2 min-w-full overflow-y-auto">
-        {users?.data?.length
-          ? users.data?.map((u) => (
+        {friends?.data?.length
+          ? friends.data?.map((friend) => (
               <section
                 className="flex flex-row justify-between border-b min-w-full cursor-pointer py-1 pr-2"
-                key={u.uid}
+                key={friend.uid}
               >
                 <section className="flex flex-row gap-x-3">
                   <section>
                     <Image
-                      src={u.photoUrl || "https://github.com/shadcn.png"}
+                      src={friend.photoUrl || "https://github.com/shadcn.png"}
                       width={40}
                       height={40}
                       alt="user profile"
@@ -30,15 +32,15 @@ const ChatUsers = () => {
                     />
                   </section>
                   <section className="flex flex-col ">
-                    <h3>{u.displayName}</h3>
-                    <h6 className="text-[12px]">{u.email}</h6>
+                    <h3>{friend.displayName}</h3>
+                    <h6 className="text-[12px]">{friend.email}</h6>
                   </section>
                 </section>
                 <section className="w-4 h-4 rounded-full bg-green-600"></section>
                 {/* <section className="w-4 h-4 rounded-full bg-gray-600"></section> */}
               </section>
             ))
-          : (users.status === STATUSES.LOADING && <ChatUsersSkeleton />) || (
+          : (friends.status === STATUSES.LOADING && <ChatUsersSkeleton />) || (
               <NoFriendsToChat />
             )}
       </section>

@@ -1,6 +1,6 @@
-import Stranger from "./types.stranger";
+import User from "./types.user";
 
 export type SendChatReqParam = {
-  sender: Stranger;
-  receiver: Stranger;
+  sender: User;
+  receiver: User;
 };

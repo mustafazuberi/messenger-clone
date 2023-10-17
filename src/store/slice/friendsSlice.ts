@@ -8,7 +8,7 @@ const friendsSlice = createSlice({
   reducers: {
     setMyFriends: (state, action: { payload: FriendsState }) => {
       state = action.payload;
-      return state;
+      return state; 
     },
   },
 });

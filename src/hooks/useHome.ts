@@ -12,14 +12,7 @@ import { Unsubscribe, signOut } from "firebase/auth";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { setStrangerUsers } from "@/store/slice/strangersSlice";
-import Stranger from "@/types/types.stranger";
-import {
-  ChatRequestsState,
-  FriendsState,
-  UsersState,
-} from "@/types/types.state";
-import filterStrangerUsers from "@/services/getStrangerUsers";
+import { FriendsState, UsersState } from "@/types/types.state";
 import ChatRequest from "@/types/types.request";
 import {
   setReceivedRequests,
@@ -32,12 +25,7 @@ const useHome = () => {
   const dispatch = useDispatch();
   const { toast } = useToast();
   const currentUser = useSelector((state: RootState) => state.currentUser);
-  const allUsers: UsersState = useSelector(
-    (state: RootState) => state.allUsers
-  );
-  const friends: FriendsState = useSelector(
-    (state: RootState) => state.friends
-  );
+
   const getAllUsers = (): Unsubscribe => {
     const unsubscribe = onSnapshot(collection(db, "users"), (querySnapshot) => {
       const users: User[] = [];
@@ -47,12 +35,6 @@ const useHome = () => {
       });
 
       dispatch(setAllUsers({ status: STATUSES.IDLE, data: users }));
-      // If Some one added new user than this will also add in strangers (redux) accordingly
-      const strangers: Stranger[] = filterStrangerUsers({
-        allUsers: users,
-        friends: friends.data,
-      });
-      dispatch(setStrangerUsers({ status: STATUSES.IDLE, data: strangers }));
     });
     return unsubscribe;
   };
@@ -68,24 +50,10 @@ const useHome = () => {
         });
 
         dispatch(setMyFriends({ status: STATUSES.IDLE, data: users }));
-        // If Some one added new user than this will also add in strangers (redux) accordingly
-        const strangers: Stranger[] = filterStrangerUsers({
-          allUsers: allUsers.data,
-          friends: users,
-        });
-        dispatch(setStrangerUsers({ status: STATUSES.IDLE, data: strangers }));
       }
       //
     );
     return unsubscribe;
-  };
-
-  const getStrangerUsers = () => {
-    const strangers: Stranger[] = filterStrangerUsers({
-      allUsers: allUsers.data,
-      friends: friends.data,
-    });
-    dispatch(setStrangerUsers({ status: STATUSES.IDLE, data: strangers }));
   };
 
   const handleSignOut = async (): Promise<void> => {
@@ -95,7 +63,6 @@ const useHome = () => {
       dispatch(setAuthenticationStatus(false)); // setting authentication status false in redux
 
       dispatch(setAllUsers({ data: [], status: "idle" })); // setting authentication status false in redux
-      dispatch(setStrangerUsers({ data: [], status: "idle" })); // setting authentication status false in redux
       dispatch(setRequests({ data: [], status: "idle" })); // setting authentication status false in redux
       dispatch(setSentRequests({ data: [], status: "idle" })); // setting authentication status false in redux
       dispatch(setReceivedRequests({ data: [], status: "idle" })); // setting authentication status false in redux
@@ -121,7 +88,6 @@ const useHome = () => {
     handleAuthStateChange,
     getAllUsers,
     getMyFriends,
-    getStrangerUsers,
   };
 };
 

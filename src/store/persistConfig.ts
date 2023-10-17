@@ -3,7 +3,6 @@ import allUsersReducer from "@/store/slice/allUsersSlice";
 import authenticationStatusSliceReducer from "@/store/slice/authenticationStatusSlice";
 import themeReducer from "@/store/slice/themeSlice";
 import friendsReducer from "@/store/slice/friendsSlice";
-import strangersReducer from "@/store/slice/strangersSlice";
 import chatRequestsReducer from "@/store/slice/chatRequestsSlice";
 
 import storage from "redux-persist/lib/storage";
@@ -16,7 +15,6 @@ const rootReducer = combineReducers({
   authenticationStatus: authenticationStatusSliceReducer,
   theme: themeReducer,
   friends: friendsReducer,
-  strangers: strangersReducer,
   chatRequests: chatRequestsReducer,
 });
 

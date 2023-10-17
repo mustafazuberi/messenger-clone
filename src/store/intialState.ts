@@ -2,7 +2,6 @@ import ChatRequest from "@/types/types.request";
 import {
   FriendsState,
   ChatRequestsState,
-  StrangersState,
   UsersState,
 } from "@/types/types.state";
 import User from "@/types/types.user";
@@ -28,11 +27,6 @@ export const USERS_INITIAL_STATE: UsersState = {
 };
 
 export const FRIENDS_INITIAL_STATE: FriendsState = {
-  status: STATUSES.LOADING,
-  data: [],
-};
-
-export const STRANGERS_INITIAL_STATE: StrangersState = {
   status: STATUSES.LOADING,
   data: [],
 };

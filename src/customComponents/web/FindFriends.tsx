@@ -4,52 +4,51 @@ import Link from "next/link";
 import { ChatUsersSkeleton } from "./ChatUsers";
 import { useSelector } from "react-redux";
 import { STATUSES } from "@/store/intialState";
-import { ChatRequestsState, StrangersState } from "@/types/types.state";
+import { ChatRequestsState } from "@/types/types.state";
 import { RootState } from "@/store";
 import { BiArrowBack } from "react-icons/bi";
 import useReq from "@/hooks/useReq";
 import { Button } from "@/components/ui/button";
-import ChatRequest from "@/types/types.request";
+import getUnknownUsers from "@/services/getUnknownUsers";
+import { reqStatusObj } from "@/types/types.UnknownUser";
 
 const FindFriends = () => {
   const { sendChatRequest, unsendChatRequest, confirmChatRequest } = useReq();
-  const strangersState: StrangersState = useSelector(
-    (state: RootState) => state.strangers
-  );
   const { receivedRequests, sentRequests }: ChatRequestsState = useSelector(
     (state: RootState) => state.chatRequests
   );
-
   const myFriends = useSelector((state: RootState) => state.friends.data);
-
+  const allUsers = useSelector((state: RootState) => state.allUsers);
   const currentUser = useSelector((state: RootState) => state.currentUser);
-  const { emailVerified, ...currentUserAsStranger } = currentUser;
+
+  const unknownUsers = getUnknownUsers({
+    allUsers: allUsers.data,
+    friends: myFriends,
+    receivedReqs: receivedRequests.data,
+    sentReqs: sentRequests.data,
+    currentUser: currentUser,
+  });
+
+  console.log(unknownUsers);
 
   return (
     <main className="p-2">
       <FindFriendsNav />
       <section className="mt-4">
-        {strangersState.status === STATUSES.LOADING ? (
+        {allUsers.status === STATUSES.LOADING ? (
           <ChatUsersSkeleton />
-        ) : strangersState.data.length ? (
-          strangersState.data.map((strngU) => {
-            const receivedRequest: ChatRequest | undefined =
-              receivedRequests.data.find(
-                (recR) => recR.senderId === strngU.uid
-              );
-            const sentRequest: ChatRequest | undefined = sentRequests.data.find(
-              (sentR) => sentR.receiverId === strngU.uid
-            );
-            if (myFriends.find((friend) => friend.uid === strngU.uid)) return;
+        ) : unknownUsers.length ? (
+          unknownUsers.map((user) => {
+            if (myFriends.find((friend) => friend.uid === user.uid)) return;
             return (
               <section
                 className="flex flex-row justify-between border-b min-w-full py-2 pr-2"
-                key={strngU.uid}
+                key={user.uid}
               >
                 <section className="flex flex-row gap-x-3">
                   <section>
                     <Image
-                      src={strngU.photoUrl || "https://github.com/shadcn.png"}
+                      src={user.photoUrl || "https://github.com/shadcn.png"}
                       width={40}
                       height={40}
                       alt="user profile"
@@ -57,8 +56,8 @@ const FindFriends = () => {
                     />
                   </section>
                   <section className="flex flex-col">
-                    <h3>{strngU.displayName}</h3>
-                    <h6 className="text-[12px]">{strngU.email}</h6>
+                    <h3>{user.displayName}</h3>
+                    <h6 className="text-[12px]">{user.email}</h6>
                   </section>
                 </section>
                 <section>
@@ -66,21 +65,31 @@ const FindFriends = () => {
                     variant="outline"
                     className="px-3 h-8"
                     onClick={() =>
-                      sentRequest
-                        ? unsendChatRequest(sentRequest)
-                        : receivedRequest
-                        ? confirmChatRequest(receivedRequest)
-                        : sendChatRequest({
-                            sender: currentUserAsStranger,
-                            receiver: strngU,
+                      user.reqStatus === reqStatusObj.UNKNOWN
+                        ? sendChatRequest({
+                            sender: currentUser,
+                            receiver: {
+                              displayName: user.displayName,
+                              email: user.email,
+                              emailVerified: user.emailVerified,
+                              uid: user.uid,
+                              gender: user.gender,
+                              photoUrl: user.photoUrl,
+                            },
                           })
+                        : user?.reqStatus?.status === reqStatusObj.ALREADY_SENT
+                        ? unsendChatRequest(user.reqStatus.request)
+                        : confirmChatRequest(user.reqStatus.request)
                     }
                   >
-                    {sentRequest
+                    {user.reqStatus === reqStatusObj.UNKNOWN
+                      ? "Add"
+                      : user?.reqStatus?.status === reqStatusObj.ALREADY_SENT
                       ? "Unsent"
-                      : receivedRequest
+                      : user?.reqStatus?.status ===
+                        reqStatusObj.ALREADY_RECIEVED
                       ? "Confirm"
-                      : "Add"}
+                      : ""}
                   </Button>
                 </section>
               </section>
