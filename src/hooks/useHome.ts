@@ -89,6 +89,8 @@ const useHome = () => {
       dispatch(updateUserDetails({ ...USER_INITIAL_STATE })); // setting empty object of current user
       dispatch(setAuthenticationStatus(false)); // setting authentication status false in redux
 
+      
+      dispatch(setAllUsers({ data: [], status: "idle" })); // setting authentication status false in redux
       dispatch(setStrangerUsers({ data: [], status: "idle" })); // setting authentication status false in redux
       dispatch(setRequests({ data: [], status: "idle" })); // setting authentication status false in redux
       dispatch(setSentRequests({ data: [], status: "idle" })); // setting authentication status false in redux

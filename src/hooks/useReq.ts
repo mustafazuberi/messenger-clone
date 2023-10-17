@@ -24,6 +24,7 @@ import Stranger from "@/types/types.stranger";
 import ChatRequest from "@/types/types.request";
 
 import { Unsubscribe } from "firebase/messaging";
+import { useState } from "react";
 
 type SendChatReqParam = {
   sender: Stranger;
@@ -32,6 +33,9 @@ type SendChatReqParam = {
 
 const useReq = () => {
   const dispatch = useDispatch();
+  const [confirmReqLoading, setConfirmReqLoading] = useState<boolean>(false);
+  const [getFriendsAndReqAgain, setGetFriendsAndReqAgain] =
+    useState<boolean>(false);
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const { toast } = useToast();
 
@@ -71,6 +75,7 @@ const useReq = () => {
       );
       await setDoc(receiverCollectionDocRef, chatRequest);
 
+      setGetFriendsAndReqAgain((prev) => !prev);
       toast({
         description: `Request Sent to ${receiver.displayName}!`,
       });
@@ -88,6 +93,8 @@ const useReq = () => {
       await deleteDoc(
         doc(db, "users", request.receiverId, "requests", request.id)
       );
+
+      setGetFriendsAndReqAgain((prev) => !prev);
       toast({
         description: "Request Unsent!",
       });
@@ -97,7 +104,37 @@ const useReq = () => {
   };
 
   const confirmChatRequest = async (request: ChatRequest): Promise<void> => {
-    console.log(request);
+    if (!request.id) return;
+    setConfirmReqLoading(true);
+    try {
+      // adding him in accepter friends
+      await setDoc(
+        doc(db, "users", request.receiverId, "friends", request.senderId),
+        { ...request.sender }
+      );
+
+      // adding receiver in sender friends
+      await setDoc(
+        doc(db, "users", request.senderId, "friends", request.receiverId),
+        { ...request.receiver }
+      );
+
+      await deleteDoc(
+        doc(db, "users", request.senderId, "requests", request.id)
+      );
+      await deleteDoc(
+        doc(db, "users", request.receiverId, "requests", request.id)
+      );
+
+      setConfirmReqLoading(false);
+      setGetFriendsAndReqAgain((prev) => !prev);
+      toast({
+        description: `You and ${request.sender.displayName} are now friends!`,
+      });
+    } catch (error) {
+      setConfirmReqLoading(false);
+      console.log(error);
+    }
   };
 
   const getChatRequests = (): Unsubscribe => {
@@ -161,6 +198,8 @@ const useReq = () => {
     getChatRequests,
     getSentRequests,
     getReceivedRequests,
+    confirmReqLoading,
+    getFriendsAndReqAgain,
   };
 };
 

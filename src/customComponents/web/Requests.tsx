@@ -68,6 +68,7 @@ const ReceivedRequests = () => {
   const receivedRequests = useSelector(
     (state: RootState) => state.chatRequests.receivedRequests
   );
+  const { confirmChatRequest, confirmReqLoading } = useReq();
   return (
     <section className="mt-3 flex flex-col gap-y-4">
       {receivedRequests.data?.length && receivedRequests.status === "idle" ? (
@@ -89,8 +90,12 @@ const ReceivedRequests = () => {
               </section>
             </section>
             <section>
-              <Button variant={"outline"} className="w-[70px] h-8">
-                Confirm
+              <Button
+                variant={"outline"}
+                className="px-3 h-8"
+                onClick={() => confirmChatRequest(req)}
+              >
+                {confirmReqLoading ? "Please wait..." : "Confirm"}
               </Button>
             </section>
           </section>

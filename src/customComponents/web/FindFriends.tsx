@@ -12,10 +12,16 @@ import { Button } from "@/components/ui/button";
 import ChatRequest from "@/types/types.request";
 
 const FindFriends = () => {
-  const { sendChatRequest, unsendChatRequest, confirmChatRequest } = useReq();
+  const {
+    sendChatRequest,
+    unsendChatRequest,
+    confirmChatRequest,
+    confirmReqLoading,
+  } = useReq();
   const strangersState: StrangersState = useSelector(
     (state: RootState) => state.strangers
   );
+  console.log("strangersState", strangersState);
   const { receivedRequests, sentRequests }: ChatRequestsState = useSelector(
     (state: RootState) => state.chatRequests
   );
@@ -38,7 +44,6 @@ const FindFriends = () => {
             const sentRequest: ChatRequest | undefined = sentRequests.data.find(
               (sentR) => sentR.receiverId === strngU.uid
             );
-            if (strngU.uid === currentUser.uid) return;
             return (
               <section
                 className="flex flex-row justify-between border-b min-w-full py-2 pr-2"
@@ -62,7 +67,7 @@ const FindFriends = () => {
                 <section>
                   <Button
                     variant="outline"
-                    className="w-[70px] h-8"
+                    className="px-3 h-8"
                     onClick={() =>
                       sentRequest
                         ? unsendChatRequest(sentRequest)
@@ -77,7 +82,9 @@ const FindFriends = () => {
                     {sentRequest
                       ? "Unsent"
                       : receivedRequest
-                      ? "Confirm"
+                      ? confirmReqLoading
+                        ? "Please wait..."
+                        : "Confirm"
                       : "Add"}
                   </Button>
                 </section>
@@ -85,7 +92,11 @@ const FindFriends = () => {
             );
           })
         ) : (
-          "No users are available on the website"
+          <section className="flex flex-col justify-center gap-y-2 items-center mt-4 px-4">
+            <h1 className="text-[19px] font-light">
+              No users are available on the website
+            </h1>
+          </section>
         )}
       </section>
     </main>

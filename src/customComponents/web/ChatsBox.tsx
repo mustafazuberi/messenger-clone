@@ -14,20 +14,34 @@ import { RootState } from "@/store";
 const ChatsBox = () => {
   const params = useSearchParams();
   const currentUser = useSelector((state: RootState) => state.currentUser);
+  const friends = useSelector((state: RootState) => state.friends.data);
+  const allUsers = useSelector((state: RootState) => state.allUsers.data);
   const { getAllUsers, getMyFriends, handleAuthStateChange, getStrangerUsers } =
     useHome();
-  const { getChatRequests, getSentRequests, getReceivedRequests } = useReq();
+  const {
+    getChatRequests,
+    getSentRequests,
+    getReceivedRequests,
+    getFriendsAndReqAgain,
+  } = useReq();
 
   useEffect(() => {
     if (!currentUser.uid) return;
     handleAuthStateChange();
     getAllUsers();
+  }, [currentUser.uid]);
+
+  useEffect(() => {
     getMyFriends();
-    getStrangerUsers();
     getChatRequests(); // This will fetch whole collection including sent and received Reqs
     getSentRequests(); // fetch sent reqs
     getReceivedRequests(); // fetch received reqs
-  }, [currentUser.uid]);
+  }, [currentUser.uid, getFriendsAndReqAgain]);
+
+  useEffect(() => {
+    if (!currentUser.uid) return;
+    getStrangerUsers();
+  }, [currentUser.uid, friends, allUsers]);
 
   const findFriendsTab = params.get("tab") === "findFriends" ? true : false;
   const requestsTab = params.get("tab") === "requests" ? true : false;
