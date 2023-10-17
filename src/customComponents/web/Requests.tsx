@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import { ChatUsersSkeleton } from "./ChatUsers";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import ChatRequest from "@/types/types.request";
 import { useState } from "react";
 import useReq from "@/hooks/useReq";
 
@@ -68,12 +67,12 @@ const ReceivedRequests = () => {
   const receivedRequests = useSelector(
     (state: RootState) => state.chatRequests.receivedRequests
   );
-  const { confirmChatRequest, confirmReqLoading } = useReq();
+  const { confirmChatRequest } = useReq();
   return (
     <section className="mt-3 flex flex-col gap-y-4">
       {receivedRequests.data?.length && receivedRequests.status === "idle" ? (
-        receivedRequests.data?.map((req, i) => (
-          <section className="flex flex-row justify-between px-1 " key={i}>
+        receivedRequests.data?.map((req) => (
+          <section className="flex flex-row justify-between px-1 " key={req.id}>
             <section className="flex flex-row gap-x-3">
               <section>
                 <Image
@@ -95,7 +94,7 @@ const ReceivedRequests = () => {
                 className="px-3 h-8"
                 onClick={() => confirmChatRequest(req)}
               >
-                {confirmReqLoading ? "Please wait..." : "Confirm"}
+                Confirm
               </Button>
             </section>
           </section>

@@ -10,7 +10,6 @@ const useFCM = () => {
         vapidKey:
           "BEqeZLQXRddjBldjjB7yYbpukTpJSkScJRgehWuStP_hpZxAAsSI3fsrdyOat9waVUoNO0vcbLGCfdJ9Z2hjfaw",
       });
-      console.log("token generated---- ", token);
     } else if (permission === "denied") {
       alert("You denied for the notification");
     }

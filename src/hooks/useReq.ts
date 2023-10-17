@@ -1,5 +1,7 @@
-import { db } from "@/db/firebase.config";
 import {
+  CollectionReference,
+  DocumentData,
+  Query,
   addDoc,
   collection,
   deleteDoc,
@@ -9,51 +11,38 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
+import { Unsubscribe } from "firebase/messaging";
+
+import { db } from "@/db/firebase.config";
+import { useToast } from "@/components/ui/use-toast";
 
 import { RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
+
 import {
   setRequests,
   setReceivedRequests,
   setSentRequests,
 } from "@/store/slice/chatRequestsSlice";
 
-import { useToast } from "@/components/ui/use-toast";
-
-import Stranger from "@/types/types.stranger";
 import ChatRequest from "@/types/types.request";
-
-import { Unsubscribe } from "firebase/messaging";
-import { useState } from "react";
-
-type SendChatReqParam = {
-  sender: Stranger;
-  receiver: Stranger;
-};
+import { SendChatReqParam } from "@/types/types.miscellaneous";
 
 const useReq = () => {
   const dispatch = useDispatch();
-  const [confirmReqLoading, setConfirmReqLoading] = useState<boolean>(false);
-  const [getFriendsAndReqAgain, setGetFriendsAndReqAgain] =
-    useState<boolean>(false);
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const { toast } = useToast();
 
-  // Function to send a chat request
-  const sendChatRequest = async ({
-    sender,
-    receiver,
-  }: SendChatReqParam): Promise<void> => {
-    // Create the chat request object
+  const sendChatRequest = async ({ sender, receiver }: SendChatReqParam) => {
     const chatRequest: ChatRequest = {
       senderId: sender.uid,
       receiverId: receiver.uid,
-      sender: sender,
-      receiver: receiver,
+      sender,
+      receiver,
       isRead: false,
     };
+
     try {
-      // Add the chat request to the sender's collection
       const senderCollectionRef = collection(
         db,
         "users",
@@ -65,7 +54,6 @@ const useReq = () => {
         chatRequest
       );
 
-      // Add the chat request to the receiver's collection
       const receiverCollectionDocRef = doc(
         db,
         "users",
@@ -73,9 +61,9 @@ const useReq = () => {
         "requests",
         senderCollectionDocRef.id
       );
+
       await setDoc(receiverCollectionDocRef, chatRequest);
 
-      setGetFriendsAndReqAgain((prev) => !prev);
       toast({
         description: `Request Sent to ${receiver.displayName}!`,
       });
@@ -84,17 +72,12 @@ const useReq = () => {
     }
   };
 
-  const unsendChatRequest = async (request: ChatRequest): Promise<void> => {
+  const unsendChatRequest = async (request: ChatRequest) => {
     if (!request.id) return;
-    try {
-      await deleteDoc(
-        doc(db, "users", request.senderId, "requests", request.id)
-      );
-      await deleteDoc(
-        doc(db, "users", request.receiverId, "requests", request.id)
-      );
 
-      setGetFriendsAndReqAgain((prev) => !prev);
+    try {
+      await deleteRequest(request);
+
       toast({
         description: "Request Unsent!",
       });
@@ -103,92 +86,115 @@ const useReq = () => {
     }
   };
 
-  const confirmChatRequest = async (request: ChatRequest): Promise<void> => {
+  const confirmChatRequest = async (request: ChatRequest) => {
     if (!request.id) return;
-    setConfirmReqLoading(true);
+
     try {
-      // adding him in accepter friends
-      await setDoc(
-        doc(db, "users", request.receiverId, "friends", request.senderId),
-        { ...request.sender }
+      const receiverFriendRef = doc(
+        db,
+        "users",
+        request.receiverId,
+        "friends",
+        request.senderId
+      );
+      const senderFriendRef = doc(
+        db,
+        "users",
+        request.senderId,
+        "friends",
+        request.receiverId
       );
 
-      // adding receiver in sender friends
-      await setDoc(
-        doc(db, "users", request.senderId, "friends", request.receiverId),
-        { ...request.receiver }
-      );
+      await Promise.all([
+        setDoc(receiverFriendRef, { ...request.sender }),
+        setDoc(senderFriendRef, { ...request.receiver }),
+        deleteRequest(request),
+      ]);
 
-      await deleteDoc(
-        doc(db, "users", request.senderId, "requests", request.id)
-      );
-      await deleteDoc(
-        doc(db, "users", request.receiverId, "requests", request.id)
-      );
-
-      setConfirmReqLoading(false);
-      setGetFriendsAndReqAgain((prev) => !prev);
       toast({
         description: `You and ${request.sender.displayName} are now friends!`,
       });
     } catch (error) {
-      setConfirmReqLoading(false);
       console.log(error);
     }
   };
 
-  const getChatRequests = (): Unsubscribe => {
-    const unsubscribe = onSnapshot(
-      collection(db, "users", currentUser.uid, "requests"),
-      (querySnapshot) => {
-        const chatRequests: ChatRequest[] = [];
-        querySnapshot.forEach((doc) => {
-          const chatRequest = { ...doc.data(), id: doc.id } as ChatRequest;
-          chatRequests.push(chatRequest);
-        });
-        dispatch(setRequests({ data: chatRequests, status: "idle" }));
-      }
-    );
+  const deleteRequest = async (request: ChatRequest) => {
+    if (!request.id) return;
+
+    try {
+      const senderRequestRef = doc(
+        db,
+        "users",
+        request.senderId,
+        "requests",
+        request.id
+      );
+      const receiverRequestRef = doc(
+        db,
+        "users",
+        request.receiverId,
+        "requests",
+        request.id
+      );
+
+      await Promise.all([
+        deleteDoc(senderRequestRef),
+        deleteDoc(receiverRequestRef),
+      ]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchRequests = (
+    whereClause: { field: string; value: any } | undefined,
+    action: (requests: ChatRequest[]) => void
+  ): Unsubscribe => {
+    let firestoreCollection: CollectionReference<DocumentData, DocumentData> =
+      collection(db, "users", currentUser.uid, "requests");
+
+    let firestoreQuery: Query<DocumentData> = firestoreCollection;
+
+    if (whereClause) {
+      firestoreQuery = query(
+        firestoreCollection,
+        where(whereClause.field, "==", whereClause.value)
+      );
+    }
+
+    const unsubscribe = onSnapshot(firestoreQuery, (querySnapshot) => {
+      const requests: ChatRequest[] = [];
+      querySnapshot.forEach((doc) => {
+        const request = { ...doc.data(), id: doc.id } as ChatRequest;
+        requests.push(request);
+      });
+      action(requests);
+    });
+
     return unsubscribe;
+  };
+
+  const getChatRequests = (): Unsubscribe => {
+    return fetchRequests(undefined, (requests) =>
+      dispatch(setRequests({ data: requests, status: "idle" }))
+    );
   };
 
   const getSentRequests = (): Unsubscribe => {
-    const unsubscribe = onSnapshot(
-      query(
-        collection(db, "users", currentUser.uid, "requests"),
-        where("senderId", "==", currentUser.uid)
-      ),
-      (querySnapshot) => {
-        const sentRequests: ChatRequest[] = [];
-        querySnapshot.forEach((doc) => {
-          const sentRequest = { ...doc.data(), id: doc.id } as ChatRequest;
-          sentRequests.push(sentRequest);
-        });
-        console.log("sentRequests", sentRequests);
-        dispatch(setSentRequests({ data: sentRequests, status: "idle" }));
-      }
+    return fetchRequests(
+      { field: "senderId", value: currentUser.uid },
+      (requests) =>
+        dispatch(setSentRequests({ data: requests, status: "idle" }))
     );
-    return unsubscribe;
   };
 
   const getReceivedRequests = (): Unsubscribe => {
-    const unsubscribe = onSnapshot(
-      query(
-        collection(db, "users", currentUser.uid, "requests"),
-        where("receiverId", "==", currentUser.uid)
-      ),
-      (querySnapshot) => {
-        const receivedRequests: ChatRequest[] = [];
-        querySnapshot.forEach((doc) => {
-          const receivedRequest = { ...doc.data(), id: doc.id } as ChatRequest;
-          receivedRequests.push(receivedRequest);
-        });
-        dispatch(
-          setReceivedRequests({ data: receivedRequests, status: "idle" })
-        );
-      }
+    return fetchRequests(
+      { field: "receiverId", value: currentUser.uid },
+      (requests) =>
+        dispatch(setReceivedRequests({ data: requests, status: "idle" }))
     );
-    return unsubscribe;
   };
 
   return {
@@ -198,8 +204,6 @@ const useReq = () => {
     getChatRequests,
     getSentRequests,
     getReceivedRequests,
-    confirmReqLoading,
-    getFriendsAndReqAgain,
   };
 };
 

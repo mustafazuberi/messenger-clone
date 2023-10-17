@@ -10,7 +10,6 @@ import { useSelector } from "react-redux";
 
 const ChatUsers = () => {
   const users: UsersState = useSelector((state: RootState) => state.friends);
-
   return (
     <main className="flex flex-row justify-between p-2 items-center mt-2">
       <section className="flex flex-col gap-y-2 min-w-full overflow-y-auto">

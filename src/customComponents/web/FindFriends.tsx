@@ -12,20 +12,16 @@ import { Button } from "@/components/ui/button";
 import ChatRequest from "@/types/types.request";
 
 const FindFriends = () => {
-  const {
-    sendChatRequest,
-    unsendChatRequest,
-    confirmChatRequest,
-    confirmReqLoading,
-  } = useReq();
+  const { sendChatRequest, unsendChatRequest, confirmChatRequest } = useReq();
   const strangersState: StrangersState = useSelector(
     (state: RootState) => state.strangers
   );
-  console.log("strangersState", strangersState);
   const { receivedRequests, sentRequests }: ChatRequestsState = useSelector(
     (state: RootState) => state.chatRequests
   );
-  //
+
+  const myFriends = useSelector((state: RootState) => state.friends.data);
+
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const { emailVerified, ...currentUserAsStranger } = currentUser;
 
@@ -44,6 +40,7 @@ const FindFriends = () => {
             const sentRequest: ChatRequest | undefined = sentRequests.data.find(
               (sentR) => sentR.receiverId === strngU.uid
             );
+            if (myFriends.find((friend) => friend.uid === strngU.uid)) return;
             return (
               <section
                 className="flex flex-row justify-between border-b min-w-full py-2 pr-2"
@@ -82,9 +79,7 @@ const FindFriends = () => {
                     {sentRequest
                       ? "Unsent"
                       : receivedRequest
-                      ? confirmReqLoading
-                        ? "Please wait..."
-                        : "Confirm"
+                      ? "Confirm"
                       : "Add"}
                   </Button>
                 </section>

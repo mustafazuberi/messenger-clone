@@ -69,8 +69,13 @@ const useHome = () => {
 
         dispatch(setMyFriends({ status: STATUSES.IDLE, data: users }));
         // If Some one added new user than this will also add in strangers (redux) accordingly
-        getStrangerUsers();
+        const strangers: Stranger[] = filterStrangerUsers({
+          allUsers: allUsers.data,
+          friends: users,
+        });
+        dispatch(setStrangerUsers({ status: STATUSES.IDLE, data: strangers }));
       }
+      //
     );
     return unsubscribe;
   };
@@ -89,7 +94,6 @@ const useHome = () => {
       dispatch(updateUserDetails({ ...USER_INITIAL_STATE })); // setting empty object of current user
       dispatch(setAuthenticationStatus(false)); // setting authentication status false in redux
 
-      
       dispatch(setAllUsers({ data: [], status: "idle" })); // setting authentication status false in redux
       dispatch(setStrangerUsers({ data: [], status: "idle" })); // setting authentication status false in redux
       dispatch(setRequests({ data: [], status: "idle" })); // setting authentication status false in redux
