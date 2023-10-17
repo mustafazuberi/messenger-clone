@@ -12,19 +12,15 @@ import {
   where,
 } from "firebase/firestore";
 import { Unsubscribe } from "firebase/messaging";
-
 import { db } from "@/db/firebase.config";
 import { useToast } from "@/components/ui/use-toast";
-
 import { RootState } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
-
 import {
   setRequests,
   setReceivedRequests,
   setSentRequests,
 } from "@/store/slice/chatRequestsSlice";
-
 import ChatRequest from "@/types/types.request";
 import { SendChatReqParam } from "@/types/types.miscellaneous";
 

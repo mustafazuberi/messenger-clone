@@ -38,10 +38,6 @@ const useHome = () => {
   const friends: FriendsState = useSelector(
     (state: RootState) => state.friends
   );
-  const chatRequests: ChatRequestsState = useSelector(
-    (state: RootState) => state.chatRequests
-  );
-
   const getAllUsers = (): Unsubscribe => {
     const unsubscribe = onSnapshot(collection(db, "users"), (querySnapshot) => {
       const users: User[] = [];
@@ -52,7 +48,11 @@ const useHome = () => {
 
       dispatch(setAllUsers({ status: STATUSES.IDLE, data: users }));
       // If Some one added new user than this will also add in strangers (redux) accordingly
-      // getStrangerUsers();
+      const strangers: Stranger[] = filterStrangerUsers({
+        allUsers: users,
+        friends: friends.data,
+      });
+      dispatch(setStrangerUsers({ status: STATUSES.IDLE, data: strangers }));
     });
     return unsubscribe;
   };
@@ -100,7 +100,6 @@ const useHome = () => {
       dispatch(setSentRequests({ data: [], status: "idle" })); // setting authentication status false in redux
       dispatch(setReceivedRequests({ data: [], status: "idle" })); // setting authentication status false in redux
       dispatch(setMyFriends({ data: [], status: "idle" })); // setting authentication status false in redux
-
       toast({
         description: `Signed out successfully!`,
       });

@@ -14,7 +14,7 @@ import useSignin from "@/hooks/useSignin";
 import { PasswordInput } from "../../components/ui/PasswordInput";
 
 const SigninForm = () => {
-  const { form, onSubmit, loading } = useSignin();
+  const { form, onSubmit, submitting } = useSignin();
 
   return (
     <Form {...form}>
@@ -56,7 +56,7 @@ const SigninForm = () => {
         />
 
         <Button type="submit" className="mt-6" variant={"default"}>
-          {loading ? "Please wait..." : "Sign In"}
+          {submitting ? "Please wait..." : "Sign In"}
         </Button>
       </form>
     </Form>

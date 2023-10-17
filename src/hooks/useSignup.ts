@@ -49,7 +49,7 @@ const useSignup = () => {
   }: {
     values: z.infer<typeof formSchema>;
     uid: string;
-  }): Promise<void> => {
+  }) => {
     const userObj: User = {
       email: values.email,
       displayName: values?.fullName,
@@ -66,13 +66,11 @@ const useSignup = () => {
   };
 
   // Firebase function to send email
-  const sendVerificationEmail = async (
-    userCred: UserCredential
-  ): Promise<void> => {
+  const sendVerificationEmail = async ({ user }: UserCredential) => {
     try {
-      await sendEmailVerification(userCred.user); // Firebase function for sending email verification to created user
+      await sendEmailVerification(user); // Firebase function for sending email verification to created user
       setOpenEmailSent(true); // it opens Email sent Modal
-      setEmailSentTo(userCred.user.email!); // This will set the user email we have sent email in above line which we will use in dialog modal
+      setEmailSentTo(user.email!); // This will set the user email we have sent email in above line which we will use in dialog modal
     } catch (error) {
       const message = handleFirebaseError(error as FirebaseError);
       toast({ variant: "destructive", description: message });

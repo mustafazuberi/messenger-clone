@@ -4,6 +4,7 @@ import { Dialog, DialogContentWithoutX } from "@/components/ui/dialog";
 import Image from "next/image";
 import messengerLogo from "@/../assets/images/messengerlogo.png";
 import { TypographyH1 } from "../web/TypographyH1";
+import Link from "next/link";
 
 type Props = {
   openEmailSent: boolean;
@@ -30,6 +31,7 @@ const EmailSentDialog = ({ openEmailSent, email }: Props) => {
               to confirm the validity of our email address. After receiving the
               email follow the link provided to complete your registration.
             </p>
+            <Link href={"/auth/signin"}>Sign In</Link>
           </section>
         </section>
       </DialogContentWithoutX>

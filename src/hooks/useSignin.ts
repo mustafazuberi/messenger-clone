@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 import { setAuthenticationStatus } from "@/store/slice/authenticationStatusSlice";
 import * as z from "zod";
 import formSchema from "@/schema/schema.signinform";
-import User from "@/types/types.user";
 import fetchUserByUid from "@/services/fetchUserByUid";
 import getErrorMessage from "@/services/getErrorMessage";
 
@@ -18,7 +17,7 @@ const useSignin = () => {
   const { toast } = useToast();
   const router = useRouter();
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
+  const [submitting, setIsSubmitting] = useState(false);
 
   const form: UseFormReturn<z.infer<typeof formSchema>> = useForm<
     z.infer<typeof formSchema>
@@ -30,28 +29,38 @@ const useSignin = () => {
     },
   });
 
+  const showErrorToast = (message: string) => {
+    toast({
+      variant: "destructive",
+      title: message,
+    });
+  };
+
+  const showSuccessToast = (message: string) => {
+    toast({
+      description: message,
+    });
+  };
+
+  const handleUserError = (errorMessage: string) => {
+    showErrorToast(errorMessage);
+    setIsSubmitting(false);
+  };
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const { email, password } = values;
     try {
-      setLoading(true);
+      setIsSubmitting(true);
       const userCred = await signInWithEmailAndPassword(auth, email, password);
 
       if (!userCred) {
-        toast({
-          variant: "destructive",
-          title: "Something went wrong!",
-        });
-        setLoading(false);
+        handleUserError("Something went wrong!");
         return;
       }
 
-      const dbUser: User | null = await fetchUserByUid(userCred.user.uid);
+      const dbUser = await fetchUserByUid(userCred.user.uid);
       if (!dbUser) {
-        toast({
-          variant: "destructive",
-          title: "Something went wrong!",
-        });
-        setLoading(false);
+        handleUserError("Something went wrong!");
         return;
       }
 
@@ -60,7 +69,7 @@ const useSignin = () => {
           variant: "destructive",
           title: `Your email is not verified. Please check your email at ${email} We have sent a verification email while creating the account."`,
         });
-        setLoading(false);
+        setIsSubmitting(false);
         return;
       }
 
@@ -69,21 +78,16 @@ const useSignin = () => {
       toast({
         description: `Welcome, ${dbUser.displayName}!`,
       });
-      setLoading(false);
       router.push("/");
     } catch (error) {
       console.log(error);
-      setLoading(false);
-      const message = getErrorMessage(error);
-      toast({
-        variant: "destructive",
-        title: message,
-        description: "Uh oh! Something went wrong.",
-      });
+      handleUserError(getErrorMessage(error));
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
-  return { form, onSubmit, loading };
+  return { form, onSubmit, submitting };
 };
 
 export default useSignin;

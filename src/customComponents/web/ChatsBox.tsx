@@ -13,6 +13,13 @@ import { RootState } from "@/store";
 
 const ChatsBox = () => {
   const params = useSearchParams();
+
+  const allUsers = useSelector((state: RootState) => state.allUsers);
+  const friends = useSelector((state: RootState) => state.friends);
+  const strangers = useSelector((state: RootState) => state.strangers);
+
+  console.log({ allUsers, friends, strangers });
+
   const currentUser = useSelector((state: RootState) => state.currentUser);
 
   const { getAllUsers, getMyFriends, handleAuthStateChange, getStrangerUsers } =
@@ -21,11 +28,14 @@ const ChatsBox = () => {
 
   useEffect(() => {
     if (!currentUser.uid) return;
+    console.log("first use effect");
     handleAuthStateChange();
     getAllUsers();
   }, [currentUser.uid]);
 
   useEffect(() => {
+    if (!currentUser.uid) return;
+    console.log("2nd  use effect");
     getMyFriends();
     getChatRequests(); // This will fetch whole collection including sent and received Reqs
     getSentRequests(); // fetch sent reqs
@@ -34,6 +44,8 @@ const ChatsBox = () => {
 
   useEffect(() => {
     if (!currentUser.uid) return;
+    console.log("3rd  use effect");
+
     getStrangerUsers();
   }, [currentUser.uid]);
 
