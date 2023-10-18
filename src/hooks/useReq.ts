@@ -23,10 +23,8 @@ import {
 } from "@/store/slice/chatRequestsSlice";
 import ChatRequest from "@/types/types.request";
 import { SendChatReqParam } from "@/types/types.miscellaneous";
-import React from "react";
 
 const useReq = () => {
-  const [reqsFetched, setReqsFethced] = React.useState(false);
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const { toast } = useToast();
@@ -202,8 +200,6 @@ const useReq = () => {
     getChatRequests,
     getSentRequests,
     getReceivedRequests,
-    reqsFetched,
-    setReqsFethced,
   };
 };
 

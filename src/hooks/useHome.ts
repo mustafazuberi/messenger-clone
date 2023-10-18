@@ -12,7 +12,6 @@ import { Unsubscribe, signOut } from "firebase/auth";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { FriendsState, UsersState } from "@/types/types.state";
 import ChatRequest from "@/types/types.request";
 import {
   setReceivedRequests,
