@@ -2,11 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RootState } from "@/store";
 import { STATUSES } from "@/store/intialState";
-import { FriendsState, UsersState } from "@/types/types.state";
+import { FriendsState } from "@/types/types.state";
+import { useSelector } from "react-redux";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { useSelector } from "react-redux";
 
 const ChatUsers = () => {
   const friends: FriendsState = useSelector(

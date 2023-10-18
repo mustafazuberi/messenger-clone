@@ -1,21 +1,17 @@
 import Friend from "@/types/type.friend";
 import ChatRequest from "@/types/types.request";
 import User from "@/types/types.user";
-import UnknownUser, { reqStatusObj } from "@/types/types.UnknownUser";
+import UnknownUser from "@/types/types.UnknownUser";
 
 type getUnknownUsersParamType = {
   allUsers: User[];
   friends: Friend[];
   sentReqs: ChatRequest[];
   receivedReqs: ChatRequest[];
-  currentUser: User;
 };
 
 const getUnknownUsers = (data: getUnknownUsersParamType): UnknownUser[] => {
-  const { allUsers, friends, currentUser, sentReqs, receivedReqs } = data;
-  console.log("getUnknownUsers-sentReqs---", sentReqs);
-  console.log("getUnknownUsers-receivedReqs---", receivedReqs);
-
+  const { allUsers, friends, sentReqs, receivedReqs } = data;
   const unknownUsers: UnknownUser[] = allUsers
     .map((user: User) => {
       if (!friends.find((friend: Friend) => friend.uid === user.uid)) {
@@ -26,7 +22,6 @@ const getUnknownUsers = (data: getUnknownUsersParamType): UnknownUser[] => {
         let alreadySentReq: ChatRequest | undefined = sentReqs.find(
           (sr) => user.uid === sr.receiverId
         );
-        console.log("alreadyReceivedReq", alreadyReceivedReq);
 
         const unknown: UnknownUser = {
           displayName: user.displayName,

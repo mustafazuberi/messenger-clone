@@ -7,6 +7,7 @@ import React from "react";
 import Link from "next/link";
 
 const ChatsBoxNav = () => {
+
   const { handleOnSearchMessenger } = useHome();
   return (
     <main className="flex flex-col justify-between p-2 w-full gap-y-3">
