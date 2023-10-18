@@ -11,24 +11,29 @@ import useReq from "@/hooks/useReq";
 import { Button } from "@/components/ui/button";
 import getUnknownUsers from "@/services/getUnknownUsers";
 import { reqStatusObj } from "@/types/types.UnknownUser";
-import { useMemo } from "react";
+import { useCallback } from "react";
 
 const FindFriends = () => {
-  console.log("rendering -----FindFriends----- compoennt");
   const { sendChatRequest, unsendChatRequest, confirmChatRequest } = useReq();
+
   const { receivedRequests, sentRequests }: ChatRequestsState = useSelector(
     (state: RootState) => state.chatRequests
   );
+
   const myFriends = useSelector((state: RootState) => state.friends.data);
   const allUsers = useSelector((state: RootState) => state.allUsers);
   const currentUser = useSelector((state: RootState) => state.currentUser);
 
-  const unknownUsers = getUnknownUsers({
-    allUsers: allUsers.data,
-    friends: myFriends,
-    receivedReqs: receivedRequests.data,
-    sentReqs: sentRequests.data,
-  });
+  const unknownUsersCallBack = useCallback(() => {
+    return getUnknownUsers({
+      allUsers: allUsers.data,
+      friends: myFriends,
+      receivedReqs: receivedRequests.data,
+      sentReqs: sentRequests.data,
+    });
+  }, [sentRequests.data, receivedRequests.data, myFriends]);
+
+  const unknownUsers = unknownUsersCallBack();
 
   return (
     <main className="p-2">
@@ -37,7 +42,7 @@ const FindFriends = () => {
         {allUsers.status === STATUSES.LOADING ? (
           <ChatUsersSkeleton />
         ) : unknownUsers.length ? (
-          unknownUsers.map((user) => {
+          unknownUsers?.map((user) => {
             if (myFriends.find((friend) => friend.uid === user.uid)) return;
             return (
               <section
