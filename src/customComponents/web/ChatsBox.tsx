@@ -1,44 +1,42 @@
 "use client";
 
-import { useEffect } from "react";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useSearchParams } from "next/navigation";
 import ChatsBoxNav from "./ChatsBoxNav";
 import FindFriends from "./FindFriends";
 import ChatUsers from "./ChatUsers";
-import useHome from "@/hooks/useHome";
-import { useSearchParams } from "next/navigation";
 import Requests from "./Requests";
+import useHome from "@/hooks/useHome";
 import useReq from "@/hooks/useReq";
-import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 
 const ChatsBox = () => {
   const params = useSearchParams();
   const currentUser = useSelector((state: RootState) => state.currentUser);
+
   const { getAllUsers, getMyFriends, handleAuthStateChange } = useHome();
   const { getChatRequests, getSentRequests, getReceivedRequests } = useReq();
 
   useEffect(() => {
-    if (!currentUser.uid) return;
-    handleAuthStateChange();
-    getAllUsers();
-  }, []);
+    if (currentUser.uid) {
+      handleAuthStateChange();
+      getAllUsers();
+      getMyFriends();
+      getChatRequests();
+      getSentRequests();
+      getReceivedRequests();
+    }
+  }, [currentUser.uid]);
 
-  useEffect(() => {
-    if (!currentUser.uid) return;
-    getMyFriends();
-    getChatRequests();
-    getSentRequests();
-    getReceivedRequests();
-  }, []);
-
-  const findFriendsTab = params.get("tab") === "findFriends" ? true : false;
-  const requestsTab = params.get("tab") === "requests" ? true : false;
+  const isFindFriendsTab = params.get("tab") === "findFriends";
+  const isRequestsTab = params.get("tab") === "requests";
 
   return (
     <main className="sm:w-[350px] w-full border-r min-h-[90vh]">
-      {findFriendsTab ? (
+      {isFindFriendsTab ? (
         <FindFriends />
-      ) : requestsTab ? (
+      ) : isRequestsTab ? (
         <Requests />
       ) : (
         <section>

@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { RootState } from "@/store";
 import { STATUSES } from "@/store/intialState";
 import { FriendsState } from "@/types/types.state";
@@ -7,6 +6,7 @@ import { useSelector } from "react-redux";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import UsersSkeleton from "./UsersSkeleton";
 
 const ChatUsers = () => {
   const friends: FriendsState = useSelector(
@@ -40,57 +40,15 @@ const ChatUsers = () => {
                 {/* <section className="w-4 h-4 rounded-full bg-gray-600"></section> */}
               </section>
             ))
-          : (friends.status === STATUSES.LOADING && <ChatUsersSkeleton />) || (
-              <NoFriendsToChat />
-            )}
+          : (friends.status === STATUSES.LOADING && (
+              <UsersSkeleton skeletonLength={7} />
+            )) || <NoFriendsToChat />}
       </section>
     </main>
   );
 };
 
 export default ChatUsers;
-
-export const ChatUsersSkeleton = () => {
-  return (
-    <main className="flex flex-col gap-y-8">
-      <div className="flex items-center space-x-4">
-        <Skeleton className="h-10 w-10 rounded-full" />
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-[240px]" />
-          <Skeleton className="h-4 w-[200px]" />
-        </div>
-      </div>
-      <div className="flex items-center space-x-4">
-        <Skeleton className="h-10 w-10 rounded-full" />
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-[240px]" />
-          <Skeleton className="h-4 w-[200px]" />
-        </div>
-      </div>
-      <div className="flex items-center space-x-4">
-        <Skeleton className="h-10 w-10 rounded-full" />
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-[240px]" />
-          <Skeleton className="h-4 w-[200px]" />
-        </div>
-      </div>
-      <div className="flex items-center space-x-4">
-        <Skeleton className="h-10 w-10 rounded-full" />
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-[240px]" />
-          <Skeleton className="h-4 w-[200px]" />
-        </div>
-      </div>
-      <div className="flex items-center space-x-4">
-        <Skeleton className="h-10 w-10 rounded-full" />
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-[240px]" />
-          <Skeleton className="h-4 w-[200px]" />
-        </div>
-      </div>
-    </main>
-  );
-};
 
 const NoFriendsToChat = () => {
   return (

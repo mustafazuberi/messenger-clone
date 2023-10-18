@@ -1,7 +1,6 @@
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
-import { ChatUsersSkeleton } from "./ChatUsers";
 import { useSelector } from "react-redux";
 import { STATUSES } from "@/store/intialState";
 import { ChatRequestsState } from "@/types/types.state";
@@ -10,40 +9,38 @@ import { BiArrowBack } from "react-icons/bi";
 import useReq from "@/hooks/useReq";
 import { Button } from "@/components/ui/button";
 import getUnknownUsers from "@/services/getUnknownUsers";
-import { reqStatusObj } from "@/types/types.UnknownUser";
-import { useCallback } from "react";
+import UnknownUser, { reqStatusObj } from "@/types/types.UnknownUser";
+import { useCallback, useEffect, useState } from "react";
+import UsersSkeleton from "./UsersSkeleton";
 
 const FindFriends = () => {
+  const [unknownUsers, setUnknownUsers] = useState<UnknownUser[]>([]);
   const { sendChatRequest, unsendChatRequest, confirmChatRequest } = useReq();
-
   const { receivedRequests, sentRequests }: ChatRequestsState = useSelector(
     (state: RootState) => state.chatRequests
   );
-
-  const myFriends = useSelector((state: RootState) => state.friends.data);
+  const myFriends = useSelector((state: RootState) => state.friends);
   const allUsers = useSelector((state: RootState) => state.allUsers);
   const currentUser = useSelector((state: RootState) => state.currentUser);
 
-  const unknownUsersCallBack = useCallback(() => {
-    return getUnknownUsers({
+  useEffect(() => {
+    const unknowns = getUnknownUsers({
       allUsers: allUsers.data,
-      friends: myFriends,
+      friends: myFriends.data,
       receivedReqs: receivedRequests.data,
       sentReqs: sentRequests.data,
     });
-  }, [sentRequests.data, receivedRequests.data, myFriends]);
-
-  const unknownUsers = unknownUsersCallBack();
+    setUnknownUsers(unknowns);
+  }, [myFriends.data, sentRequests.data, receivedRequests.data]);
 
   return (
     <main className="p-2">
       <FindFriendsNav />
       <section className="mt-4">
         {allUsers.status === STATUSES.LOADING ? (
-          <ChatUsersSkeleton />
+          <UsersSkeleton skeletonLength={7} />
         ) : unknownUsers.length ? (
           unknownUsers?.map((user) => {
-            if (myFriends.find((friend) => friend.uid === user.uid)) return;
             return (
               <section
                 className="flex flex-row justify-between border-b min-w-full py-2 pr-2"
