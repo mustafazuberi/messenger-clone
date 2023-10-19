@@ -4,6 +4,7 @@ import authenticationStatusSliceReducer from "@/store/slice/authenticationStatus
 import themeReducer from "@/store/slice/themeSlice";
 import friendsReducer from "@/store/slice/friendsSlice";
 import chatRequestsReducer from "@/store/slice/chatRequestsSlice";
+import notificationsReducer from "@/store/slice/notificationsSlice";
 
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   theme: themeReducer,
   friends: friendsReducer,
   chatRequests: chatRequestsReducer,
+  notifications: notificationsReducer,
 });
 
 const persistConfig = {

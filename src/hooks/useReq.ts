@@ -22,12 +22,16 @@ import {
   setSentRequests,
 } from "@/store/slice/chatRequestsSlice";
 import ChatRequest from "@/types/types.request";
-import { SendChatReqParam } from "@/types/types.miscellaneous";
+import {
+  SendChatReqParam,
+} from "@/types/types.miscellaneous";
+import useNotification from "./useNotification";
 
 const useReq = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const { toast } = useToast();
+  const { sendNotification } = useNotification();
 
   const sendChatRequest = async ({ sender, receiver }: SendChatReqParam) => {
     const chatRequest: ChatRequest = {
@@ -59,6 +63,12 @@ const useReq = () => {
       );
 
       await setDoc(receiverCollectionDocRef, chatRequest);
+
+      await sendNotification({
+        type: "Request Received",
+        to: receiver,
+        by: sender,
+      });
 
       toast({
         description: `Request Sent to ${receiver.displayName}!`,
@@ -105,6 +115,11 @@ const useReq = () => {
         setDoc(receiverFriendRef, { ...request.sender }),
         setDoc(senderFriendRef, { ...request.receiver }),
         deleteRequest(request),
+        sendNotification({
+          type: "Request Accepted",
+          to: request.sender,
+          by: request.receiver,
+        }),
       ]);
 
       toast({

@@ -36,3 +36,8 @@ export const CHATREQUESTS_INITIAL_STATE: ChatRequestsState = {
   sentRequests: { status: STATUSES.LOADING, data: [] },
   receivedRequests: { status: STATUSES.LOADING, data: [] },
 };
+
+export const NOTIFICATIONS_INITIAL_STATE = {
+  status: STATUSES.LOADING,
+  data: [],
+};

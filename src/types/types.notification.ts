@@ -1,13 +1,15 @@
-import Stranger from "./types.stranger";
+import User from "./types.user";
 
-export type RequestNotification = {
-  sender: Stranger;
-  receiver: Stranger;
-  notification_id: string;
+type ReqNotification = {
+  _id?: string;
   message: string;
-  timestamp: string;
-  read: boolean;
-  accepted: boolean;
+  timestamp: number;
+  type: "Request Accepted" | "Request Received";
+  notificationBy: User;
+  isNotificationRead: boolean;
+  isRequestRead: boolean;
 };
 
-export type notification = RequestNotification;
+type UserNotification = ReqNotification;
+
+export default UserNotification;
