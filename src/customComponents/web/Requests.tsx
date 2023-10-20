@@ -87,7 +87,7 @@ const SentRequests = () => {
               </section>
               <section className="flex flex-col ">
                 <h3>{req.receiver.displayName}</h3>
-                <h6 className="text-[12px]">{req.sender.email}</h6>
+                <h6 className="text-[12px]">{req.receiver.email}</h6>
               </section>
             </section>
             <section>

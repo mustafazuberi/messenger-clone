@@ -1,4 +1,4 @@
-import { auth, db } from "@/db/firebase.config";
+import { db } from "@/db/firebase.config";
 import { RootState } from "@/store";
 import { STATUSES } from "@/store/intialState";
 import { setNotifications } from "@/store/slice/notificationsSlice";
@@ -11,12 +11,17 @@ import {
   onSnapshot,
   updateDoc,
 } from "firebase/firestore";
-import { batch, useDispatch, useSelector } from "react-redux";
+import Friend from "@/types/type.friend";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 const useNotification = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const notifications = useSelector((state: RootState) => state.notifications);
+  const friends = useSelector((state: RootState) => state.friends);
+
   let unReadNotifications = notifications.data.filter(
     (notf: UserNotification) => !notf.isNotificationRead
   );
@@ -76,10 +81,19 @@ const useNotification = () => {
     unReadNotifications = [];
   };
 
+  const handleOnNotification = (notification: UserNotification) => {
+    const isFriend = friends.data.find(
+      (friend: Friend) => friend.uid === notification.notificationBy.uid
+    );
+    if (!isFriend && notification.type === "Request Received")
+      return router.push("?tab=requests");
+  };
+
   return {
     sendNotification,
     fetchNotifications,
     handleNotificationDropdown,
+    handleOnNotification,
     unReadNotifications,
     notifications,
   };

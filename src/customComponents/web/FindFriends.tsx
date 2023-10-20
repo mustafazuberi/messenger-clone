@@ -9,12 +9,12 @@ import { BiArrowBack } from "react-icons/bi";
 import useReq from "@/hooks/useReq";
 import { Button } from "@/components/ui/button";
 import getUnknownUsers from "@/services/getUnknownUsers";
-import UnknownUser, { ReqStatus } from "@/types/types.UnknownUser";
 import { useEffect, useState } from "react";
 import UsersSkeleton from "./UsersSkeleton";
+import User from "@/types/types.user";
 
 const FindFriends = () => {
-  const [unknownUsers, setUnknownUsers] = useState<UnknownUser[]>([]);
+  const [unknownUsers, setUnknownUsers] = useState<User[]>([]);
   const { receivedRequests, sentRequests }: ChatRequestsState = useSelector(
     (state: RootState) => state.chatRequests
   );
@@ -37,23 +37,23 @@ const FindFriends = () => {
     <main className="p-2">
       <FindFriendsNav />
       <section className="mt-4">
-        {allUsers.status === STATUSES.LOADING && (
+        {allUsers.status === STATUSES.LOADING ? (
           <UsersSkeleton skeletonLength={7} />
-        )}
+        ) : null}
 
-        {!(allUsers.status === STATUSES.LOADING) &&
-          unknownUsers.length &&
-          unknownUsers?.map((user) => {
-            return <UnknownUser unknownUser={user} key={user.uid} />;
-          })}
+        {!(allUsers.status === STATUSES.LOADING) && unknownUsers.length
+          ? unknownUsers?.map((user) => {
+              return <UnknownUser unknownUser={user} key={user.uid} />;
+            })
+          : null}
 
-        {!(allUsers.status === STATUSES.LOADING) && !unknownUsers.length && (
+        {!(allUsers.status === STATUSES.LOADING) && !unknownUsers.length ? (
           <section className="flex flex-col justify-center gap-y-2 items-center mt-4 px-4">
             <h1 className="text-[19px] font-light">
               No users are available on the website
             </h1>
           </section>
-        )}
+        ) : null}
       </section>
     </main>
   );
@@ -68,8 +68,15 @@ export const FindFriendsNav = () => {
         <Link href={"/"}>
           <BiArrowBack className="cursor-pointer text-2xl" />
         </Link>
-        <section>
+        <section className="flex flex-row justify-between w-full">
           <h3 className="text-2xl font-bold">Find Friends</h3>
+          <section className="flex flex-row gap-x-2 items-center">
+            <Link href={`?tab=requests`}>
+              <span className="text-[14px] cursor-pointer bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400">
+                Requests
+              </span>
+            </Link>
+          </section>
         </section>
       </section>
       <section>
@@ -79,7 +86,9 @@ export const FindFriendsNav = () => {
   );
 };
 
-const UnknownUser = ({ unknownUser }: { unknownUser: UnknownUser }) => {
+const UnknownUser = ({ unknownUser }: { unknownUser: User }) => {
+  const currentUser = useSelector((state: RootState) => state.currentUser);
+  const { sendChatRequest } = useReq();
   return (
     <section className="flex flex-row justify-between border-b min-w-full py-2 pr-2">
       <section className="flex flex-row gap-x-3">
@@ -98,63 +107,26 @@ const UnknownUser = ({ unknownUser }: { unknownUser: UnknownUser }) => {
         </section>
       </section>
       <section>
-        <UnknownUserButton unknownUser={unknownUser} />
+        <Button
+          variant="outline"
+          className="px-3 h-8"
+          onClick={() =>
+            sendChatRequest({
+              sender: currentUser,
+              receiver: {
+                displayName: unknownUser.displayName,
+                email: unknownUser.email,
+                emailVerified: unknownUser.emailVerified,
+                uid: unknownUser.uid,
+                gender: unknownUser.gender,
+                photoUrl: unknownUser.photoUrl,
+              },
+            })
+          }
+        >
+          Add
+        </Button>
       </section>
     </section>
   );
 };
-
-const UnknownUserButton = ({ unknownUser }: { unknownUser: UnknownUser }) => {
-  const currentUser = useSelector((state: RootState) => state.currentUser);
-  const { sendChatRequest, unsendChatRequest, confirmChatRequest } = useReq();
-
-  if (unknownUser.reqStatus === "Unknown") {
-    return (
-      <Button
-        variant="outline"
-        className="px-3 h-8"
-        onClick={() =>
-          sendChatRequest({
-            sender: currentUser,
-            receiver: {
-              displayName: unknownUser.displayName,
-              email: unknownUser.email,
-              emailVerified: unknownUser.emailVerified,
-              uid: unknownUser.uid,
-              gender: unknownUser.gender,
-              photoUrl: unknownUser.photoUrl,
-            },
-          })
-        }
-      >
-        Add
-      </Button>
-    );
-  }
-
-  const reqStatus = unknownUser.reqStatus as ReqStatus;
-  if (reqStatus.status === "AlreadyReceived") {
-    return (
-      <Button
-        variant="outline"
-        className="px-3 h-8"
-        onClick={() => confirmChatRequest(reqStatus.request)}
-      >
-        Confirm
-      </Button>
-    );
-  }
-
-  if (reqStatus.status === "AlreadySent") {
-    return (
-      <Button
-        variant="outline"
-        className="px-3 h-8"
-        onClick={() => unsendChatRequest(reqStatus.request)}
-      >
-        Unsent
-      </Button>
-    );
-  }
-};
-

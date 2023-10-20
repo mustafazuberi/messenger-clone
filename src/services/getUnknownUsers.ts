@@ -1,7 +1,6 @@
 import Friend from "@/types/type.friend";
 import ChatRequest from "@/types/types.request";
 import User from "@/types/types.user";
-import UnknownUser from "@/types/types.UnknownUser";
 
 type getUnknownUsersParamType = {
   allUsers: User[];
@@ -10,9 +9,9 @@ type getUnknownUsersParamType = {
   receivedReqs: ChatRequest[];
 };
 
-const getUnknownUsers = (data: getUnknownUsersParamType): UnknownUser[] => {
+const getUnknownUsers = (data: getUnknownUsersParamType): User[] => {
   const { allUsers, friends, sentReqs, receivedReqs } = data;
-  const unknownUsers: UnknownUser[] = allUsers
+  const unknownUsers: User[] = allUsers
     .map((user: User) => {
       if (!friends.find((friend: Friend) => friend.uid === user.uid)) {
         let alreadyReceivedReq: ChatRequest | undefined = receivedReqs.find(
@@ -23,27 +22,22 @@ const getUnknownUsers = (data: getUnknownUsersParamType): UnknownUser[] => {
           (sr) => user.uid === sr.receiverId
         );
 
-        const unknown: UnknownUser = {
-          displayName: user.displayName,
-          email: user.email,
-          uid: user.uid,
-          gender: user.gender,
-          photoUrl: user.photoUrl,
-          emailVerified: user.emailVerified,
-          reqStatus: alreadySentReq
-            ? { status: "AlreadySent", request: alreadySentReq }
-            : alreadyReceivedReq
-            ? { status: "AlreadyReceived", request: alreadyReceivedReq }
-            : "Unknown",
-        };
-
-        return unknown;
+        if (!alreadySentReq && !alreadyReceivedReq) {
+          const unknown: User = {
+            displayName: user.displayName,
+            email: user.email,
+            uid: user.uid,
+            gender: user.gender,
+            photoUrl: user.photoUrl,
+            emailVerified: user.emailVerified,
+          };
+          return unknown;
+        }
       }
       return undefined;
     })
     .filter(
-      (stranger: UnknownUser | undefined): stranger is UnknownUser =>
-        stranger !== undefined
+      (stranger: User | undefined): stranger is User => stranger !== undefined
     );
 
   return unknownUsers;

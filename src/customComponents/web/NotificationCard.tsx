@@ -5,8 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import useNotification from "@/hooks/useNotification";
 import { cn } from "@/lib/utils";
-
 import { STATUSES } from "@/store/intialState";
 import UserNotification from "@/types/types.notification";
 import { NotificationsState } from "@/types/types.state";
@@ -20,6 +20,8 @@ type NotificationCardProps = {
 
 const NotificationCard = (notificationCardProps: NotificationCardProps) => {
   const { unReadNotifications, notifications } = notificationCardProps;
+  const { handleOnNotification } = useNotification();
+
   return (
     <section>
       <Card className={cn("sm:w-[350px] w-[250px] mr-4 mt-1")}>
@@ -43,6 +45,7 @@ const NotificationCard = (notificationCardProps: NotificationCardProps) => {
                 <div
                   key={notification._id!}
                   className="grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0 cursor-pointer opacity-80 hover:opacity-100"
+                  onClick={() => handleOnNotification(notification)}
                 >
                   <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
                   <div className="space-y-1">

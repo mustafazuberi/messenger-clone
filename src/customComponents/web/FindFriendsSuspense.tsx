@@ -6,7 +6,7 @@ const FindFriendsSuspense = () => {
     <section className="px-2">
       <FindFriendsNav />
       <section className="mt-4">
-        <UsersSkeleton skeletonLength={5} />
+        <UsersSkeleton skeletonLength={40} />
       </section>
     </section>
   );
