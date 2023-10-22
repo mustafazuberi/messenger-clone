@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import useSettings from "@/hooks/useSettings";
 
 const UpdateFullname = () => {
-  const { formFullName, onSubmitFullname } = useSettings();
+  const { formFullName, onSubmitFullname, updating } = useSettings();
   return (
     <main>
       <Form {...formFullName}>
@@ -38,8 +38,12 @@ const UpdateFullname = () => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="mt-[33px]">
-            Update
+          <Button
+            type="submit"
+            className="mt-[33px] w-[160px]"
+            disabled={updating}
+          >
+            {updating ? "Please wait..." : "Update"}
           </Button>
         </form>
       </Form>

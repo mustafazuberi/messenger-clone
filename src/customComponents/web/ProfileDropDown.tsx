@@ -10,29 +10,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { CiLogout, CiSettings } from "react-icons/ci";
 import useHome from "@/hooks/useHome";
+import UserImageAvatar from "./UserImageAvatar";
 
 function ProfileDropDown() {
   const router = useRouter();
   const { handleSignOut } = useHome();
   const currentUser = useSelector((state: RootState) => state.currentUser);
-  console.log("photo url ------", currentUser.photoUrl);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div className="flex justify-center items-center border w-[45px] h-[45px] rounded-full cursor-pointer">
-          <Avatar>
-            <AvatarImage
-              src={currentUser.photoUrl}
-              className="rounded-full w-10 h-10 "
-              alt="@shadcn"
-            />
-            <AvatarFallback className="rounded-full">
-              {currentUser.displayName.charAt(0)[0]?.toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+          <UserImageAvatar user={currentUser} size={10} />
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">

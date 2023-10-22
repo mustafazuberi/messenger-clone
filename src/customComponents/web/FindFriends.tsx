@@ -12,6 +12,7 @@ import getUnknownUsers from "@/services/getUnknownUsers";
 import { useEffect, useState } from "react";
 import UsersSkeleton from "./UsersSkeleton";
 import User from "@/types/types.user";
+import UserImageAvatar from "./UserImageAvatar";
 
 const FindFriends = () => {
   const [unknownUsers, setUnknownUsers] = useState<User[]>([]);
@@ -93,13 +94,7 @@ const UnknownUser = ({ unknownUser }: { unknownUser: User }) => {
     <section className="flex flex-row justify-between border-b min-w-full py-2 pr-2">
       <section className="flex flex-row gap-x-3">
         <section>
-          <Image
-            src={unknownUser.photoUrl || "https://github.com/shadcn.png"}
-            width={40}
-            height={40}
-            alt="user profile"
-            className="rounded-full"
-          />
+          <UserImageAvatar user={unknownUser} />
         </section>
         <section className="flex flex-col">
           <h3>{unknownUser.displayName}</h3>

@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import useReq from "@/hooks/useReq";
 import { RootState } from "@/store";
-import Image from "next/image";
 import { useSelector } from "react-redux";
 import UsersSkeleton from "./ChatUsersSkeleton";
+import UserImageAvatar from "./UserImageAvatar";
 
 const ReceivedRequests = () => {
   const receivedRequests = useSelector(
@@ -18,13 +18,7 @@ const ReceivedRequests = () => {
           <section className="flex flex-row justify-between px-1 " key={req.id}>
             <section className="flex flex-row gap-x-3">
               <section>
-                <Image
-                  src={req.sender.photoUrl || "https://github.com/shadcn.png"}
-                  width={40}
-                  height={40}
-                  alt="user profile"
-                  className="rounded-full"
-                />
+                <UserImageAvatar user={req.sender} />
               </section>
               <section className="flex flex-col ">
                 <h3>{req.sender.displayName}</h3>
@@ -55,4 +49,4 @@ const ReceivedRequests = () => {
   );
 };
 
-export default ReceivedRequests
+export default ReceivedRequests;

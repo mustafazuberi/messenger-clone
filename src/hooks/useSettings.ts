@@ -12,7 +12,13 @@ import { updateProfile } from "firebase/auth";
 import { auth, db } from "@/db/firebase.config";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
-import { doc, updateDoc } from "firebase/firestore";
+import {
+  collectionGroup,
+  doc,
+  getDocs,
+  updateDoc,
+  writeBatch,
+} from "firebase/firestore";
 import { updateUserDetails } from "@/store/slice/userSlice";
 
 const useSettings = () => {
@@ -51,13 +57,52 @@ const useSettings = () => {
     },
   });
 
+  const updateFriendsBatch = async (key: string, value: string) => {
+    const subcollectionName = "friends";
+    const querySnapshot = await getDocs(collectionGroup(db, subcollectionName));
+    const batch = writeBatch(db);
+    querySnapshot.forEach((doc) => {
+      if (doc.data().uid === currentUser.uid) {
+        const docRef = doc.ref;
+        batch.update(docRef, { [key]: value });
+      }
+    });
+    await batch.commit();
+  };
+
+  const updateRequestsBatch = async (key: string, value: string) => {
+    const querySnapshotReqs = await getDocs(collectionGroup(db, "requests"));
+    const reqBatch = writeBatch(db);
+    querySnapshotReqs.forEach((doc) => {
+      if (doc.data().senderId === currentUser.uid) {
+        const docRef = doc.ref;
+        reqBatch.update(docRef, {
+          sender: { ...currentUser, [key]: value },
+        });
+      } else if (doc.data().receiverId === currentUser.uid) {
+        const docRef = doc.ref;
+        reqBatch.update(docRef, {
+          receiver: { ...currentUser, [key]: value },
+        });
+      }
+    });
+    await reqBatch.commit();
+  };
+
   const onSubmitFullname = async (values: z.infer<typeof FullNameSchema>) => {
     setUpdating(true);
     try {
       const userDocRef = doc(db, "users", currentUser.uid); //updating in DB
+      updateProfile(auth.currentUser!, {
+        displayName: values.fullName,
+      });
       await updateDoc(userDocRef, {
         displayName: values.fullName,
       });
+
+      await updateFriendsBatch("displayName", values.fullName);
+
+      await updateRequestsBatch("displayName", values.fullName);
       // dispatch in redux
       dispatch(
         updateUserDetails({ ...currentUser, displayName: values.fullName })
@@ -78,11 +123,38 @@ const useSettings = () => {
     }
   };
 
-  function onSubmitDOB(data: z.infer<typeof DOBSchema>) {
-    toast({
-      title: "You submitted the following values:",
-    });
-  }
+  const onSubmitDOB = async (values: z.infer<typeof DOBSchema>) => {
+    setUpdating(true);
+    try {
+      const userDocRef = doc(db, "users", currentUser.uid); //updating in DB
+
+      await updateDoc(userDocRef, {
+        DOB: values.dob.toDateString(),
+      });
+
+      await updateFriendsBatch("DOB", values.dob.toDateString());
+      // dispatch in redux
+      dispatch(
+        updateUserDetails({
+          ...currentUser,
+          DOB: values.dob.toDateString(),
+        })
+      );
+      setUpdating(false);
+      setUploadedFile(null);
+      toast({
+        description: "Date of Birth updated successfully!",
+      });
+    } catch (error) {
+      console.log(error);
+      setUpdating(false);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+      });
+    }
+  };
 
   const onSubmitGender = () => {};
 
@@ -95,10 +167,16 @@ const useSettings = () => {
       await updateProfile(auth.currentUser!, {
         photoURL: photoURL,
       });
+      // updating in users collection
       const photoUrlRef = doc(db, "users", currentUser.uid); //updating in DB
       await updateDoc(photoUrlRef, {
         photoUrl: photoURL,
       });
+
+      // updating in friends collection inside users collection every doc
+      await updateFriendsBatch("photoUrl", photoURL);
+      // updating in requests which are sent
+      await updateRequestsBatch("photoUrl", photoURL);
 
       // dispatch in redux
       dispatch(updateUserDetails({ ...currentUser, photoUrl: photoURL }));

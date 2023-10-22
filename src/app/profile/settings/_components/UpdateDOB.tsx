@@ -21,7 +21,7 @@ import {
 import useSettings from "@/hooks/useSettings";
 
 const UpdateDOB = () => {
-  const { formDOB, onSubmitDOB } = useSettings();
+  const { formDOB, onSubmitDOB, updating } = useSettings();
   return (
     <main>
       <Form {...formDOB}>
@@ -73,8 +73,12 @@ const UpdateDOB = () => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="mt-[33px]">
-            Update
+          <Button
+            type="submit"
+            className="mt-[33px] w-[160px]"
+            disabled={updating}
+          >
+            {updating ? "Please wait..." : "Update"}
           </Button>
         </form>
       </Form>

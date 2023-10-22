@@ -3,10 +3,10 @@ import { RootState } from "@/store";
 import { STATUSES } from "@/store/intialState";
 import { FriendsState } from "@/types/types.state";
 import { useSelector } from "react-redux";
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import UsersSkeleton from "./UsersSkeleton";
+import UserImageAvatar from "./UserImageAvatar";
 
 const ChatUsers = () => {
   const friends: FriendsState = useSelector(
@@ -21,15 +21,9 @@ const ChatUsers = () => {
                 className="flex flex-row justify-between border-b min-w-full cursor-pointer py-1 pr-2"
                 key={friend.uid}
               >
-                <section className="flex flex-row gap-x-3">
+                <section className="flex flex-row gap-x-3 items-center">
                   <section>
-                    <Image
-                      src={friend.photoUrl || "https://github.com/shadcn.png"}
-                      width={40}
-                      height={40}
-                      alt="user profile"
-                      className="rounded-full"
-                    />
+                    <UserImageAvatar user={friend} />
                   </section>
                   <section className="flex flex-col ">
                     <h3>{friend.displayName}</h3>

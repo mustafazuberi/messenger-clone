@@ -8,6 +8,7 @@ import { useState } from "react";
 import useReq from "@/hooks/useReq";
 import UsersSkeleton from "./UsersSkeleton";
 import ReceivedRequests from "./ReceivedRequests";
+import UserImageAvatar from "./UserImageAvatar";
 
 type ActiveTab = "sentRequests" | "receivedRequests";
 
@@ -77,13 +78,7 @@ const SentRequests = () => {
           <section className="flex flex-row justify-between px-1 " key={i}>
             <section className="flex flex-row gap-x-3">
               <section>
-                <Image
-                  src={req.receiver.photoUrl || "https://github.com/shadcn.png"}
-                  width={40}
-                  height={40}
-                  alt="user profile"
-                  className="rounded-full"
-                />
+                <UserImageAvatar user={req.receiver} />
               </section>
               <section className="flex flex-col ">
                 <h3>{req.receiver.displayName}</h3>

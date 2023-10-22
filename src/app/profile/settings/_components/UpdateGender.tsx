@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 
 const UpdateGender = () => {
-  const { formGender, onSubmitGender } = useSettings();
+  const { formGender, onSubmitGender, updating } = useSettings();
   return (
     <main>
       <Form {...formGender}>
@@ -52,8 +52,12 @@ const UpdateGender = () => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="mt-[33px]">
-            Update
+          <Button
+            type="submit"
+            className="mt-[33px] w-[160px]"
+            disabled={updating}
+          >
+            {updating ? "Please wait..." : "Update"}
           </Button>
         </form>
       </Form>
