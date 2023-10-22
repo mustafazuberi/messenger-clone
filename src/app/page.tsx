@@ -1,5 +1,4 @@
 import ChatsBox from "@/customComponents/web/ChatsBox";
-import useHome from "@/hooks/useHome";
 
 export default function Home() {
   return (
