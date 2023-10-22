@@ -27,13 +27,13 @@ const UpdateDOB = () => {
       <Form {...formDOB}>
         <form
           onSubmit={formDOB.handleSubmit(onSubmitDOB)}
-          className="flex flex-row gap-y-3 px-4 items-start gap-x-4"
+          className="flex flex-row gap-y-3 items-start gap-x-4"
         >
           <FormField
             control={formDOB.control}
             name="dob"
             render={({ field }) => (
-              <FormItem className="sm:min-w-[230px] sm:w-[300px] w-[65%]">
+              <FormItem className="w-full">
                 <FormLabel>Date of birth</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>

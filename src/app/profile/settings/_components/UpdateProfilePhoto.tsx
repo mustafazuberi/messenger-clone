@@ -1,44 +1,43 @@
 "use client";
-import React, { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import useSettings from "@/hooks/useSettings";
+import Image from "next/image";
+import React from "react";
 
 const UpdateProfilePhoto = () => {
-  const hiddenInputRef = useRef<HTMLInputElement | null>(null);
-  const [preview, setPreview] = useState<string | undefined>();
-
-  const handleUploadedFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-
-    if (file) {
-      const urlImage = URL.createObjectURL(file);
-      setPreview(urlImage);
-    }
-  };
-
-  const onUpload = () => {
-    if (hiddenInputRef.current) {
-      hiddenInputRef.current.click();
-    }
-  };
-
-  const uploadButtonLabel = preview ? "Change image" : "Upload image";
+  const {
+    uploadedFile,
+    getRootProps,
+    getInputProps,
+    updateProfilePhoto,
+    updating,
+  } = useSettings();
 
   return (
-    <div>
-      <label htmlFor="profileInp">Here Upload to test</label>
-      <input
-        type="file"
-        id="profileInp"
-        className="hidden"
-        onChange={handleUploadedFile}
-      />
-      <Avatar>
-        <AvatarImage src={preview} width={80} height={80} />
-      </Avatar>
-      <Button onClick={onUpload}>{uploadButtonLabel}</Button>
-    </div>
+    <main className="flex flex-col gap-x-4">
+      <div {...getRootProps()}>
+        <input {...getInputProps()} type="file" accept="image/*" />
+        <section className="border-dotted border-2 cursor-pointer min-h-[200px] flex justify-center items-center w-full">
+          {!uploadedFile ? (
+            <p className="max-w-[80%]">
+              Drag and drop files here or click to browse.
+            </p>
+          ) : (
+            <p className="max-w-[80%]">
+              Now that you have selected an image {uploadedFile.name}, you can
+              proceed with the update.
+            </p>
+          )}
+        </section>
+      </div>
+      <Button
+        className="mt-[33px]"
+        onClick={updateProfilePhoto}
+        disabled={updating}
+      >
+        {updating ? "Please wait..." : "Update"}
+      </Button>
+    </main>
   );
 };
-
 export default UpdateProfilePhoto;

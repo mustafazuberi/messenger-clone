@@ -25,13 +25,13 @@ const UpdateGender = () => {
       <Form {...formGender}>
         <form
           onSubmit={formGender.handleSubmit(onSubmitGender)}
-          className="flex flex-row gap-y-3 px-4 items-start gap-x-4"
+          className="flex flex-row gap-y-3 items-start gap-x-4"
         >
           <FormField
             control={formGender.control}
             name="gender"
             render={({ field }) => (
-              <FormItem className="sm:min-w-[230px] sm:w-[300px] w-[65%]">
+              <FormItem className="w-full">
                 <FormLabel>Gender</FormLabel>
                 <Select
                   onValueChange={field.onChange}

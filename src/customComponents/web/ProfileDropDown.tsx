@@ -18,6 +18,7 @@ function ProfileDropDown() {
   const router = useRouter();
   const { handleSignOut } = useHome();
   const currentUser = useSelector((state: RootState) => state.currentUser);
+  console.log("photo url ------", currentUser.photoUrl);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -25,7 +26,7 @@ function ProfileDropDown() {
           <Avatar>
             <AvatarImage
               src={currentUser.photoUrl}
-              className="rounded-full"
+              className="rounded-full w-10 h-10 "
               alt="@shadcn"
             />
             <AvatarFallback className="rounded-full">
@@ -39,7 +40,7 @@ function ProfileDropDown() {
         <DropdownMenuSeparator />
         <DropdownMenuCheckboxItem
           className="flex flex-row gap-x-3 py-3 cursor-pointer"
-          onClick={() => router.push("/settings")}
+          onClick={() => router.push("/profile/settings")}
         >
           <CiSettings className="text-[20px]" /> Settings
         </DropdownMenuCheckboxItem>

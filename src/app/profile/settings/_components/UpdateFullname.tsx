@@ -20,13 +20,13 @@ const UpdateFullname = () => {
       <Form {...formFullName}>
         <form
           onSubmit={formFullName.handleSubmit(onSubmitFullname)}
-          className="flex flex-row gap-y-3 px-4 items-start gap-x-4"
+          className="flex flex-row gap-y-3 items-start gap-x-4"
         >
           <FormField
             control={formFullName.control}
             name="fullName"
             render={({ field }) => (
-              <FormItem className="sm:min-w-[230px] sm:w-[300px] w-[65%]">
+              <FormItem className="w-full">
                 <FormLabel>Full Name</FormLabel>
                 <FormControl>
                   <Input placeholder="First Last" {...field} />
