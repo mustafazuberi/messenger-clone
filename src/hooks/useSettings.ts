@@ -57,7 +57,7 @@ const useSettings = () => {
     },
   });
 
-  const updateFriendsBatch = async (key: string, value: string) => {
+  const updateFriendsBatch = async (key: string, value: string | Date) => {
     const subcollectionName = "friends";
     const querySnapshot = await getDocs(collectionGroup(db, subcollectionName));
     const batch = writeBatch(db);
@@ -108,7 +108,6 @@ const useSettings = () => {
         updateUserDetails({ ...currentUser, displayName: values.fullName })
       );
       setUpdating(false);
-      setUploadedFile(null);
       toast({
         description: "Display name updated successfully!",
       });
@@ -127,21 +126,19 @@ const useSettings = () => {
     setUpdating(true);
     try {
       const userDocRef = doc(db, "users", currentUser.uid); //updating in DB
-
       await updateDoc(userDocRef, {
         DOB: values.dob.toDateString(),
       });
 
-      await updateFriendsBatch("DOB", values.dob.toDateString());
+      await updateFriendsBatch("DOB", values.dob);
       // dispatch in redux
       dispatch(
         updateUserDetails({
           ...currentUser,
-          DOB: values.dob.toDateString(),
+          DOB: values.dob,
         })
       );
       setUpdating(false);
-      setUploadedFile(null);
       toast({
         description: "Date of Birth updated successfully!",
       });
@@ -156,7 +153,36 @@ const useSettings = () => {
     }
   };
 
-  const onSubmitGender = () => {};
+  const onSubmitGender = async (values: z.infer<typeof GenderSchema>) => {
+    setUpdating(true);
+    try {
+      const userDocRef = doc(db, "users", currentUser.uid); //updating in DB
+      await updateDoc(userDocRef, {
+        gender: values.gender,
+      });
+
+      await updateFriendsBatch("gender", values.gender);
+      // dispatch in redux
+      dispatch(
+        updateUserDetails({
+          ...currentUser,
+          gender: values.gender,
+        })
+      );
+      setUpdating(false);
+      toast({
+        description: "Gender updated successfully!",
+      });
+    } catch (error) {
+      console.log(error);
+      setUpdating(false);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+      });
+    }
+  };
 
   const updateProfilePhoto = async () => {
     if (!uploadedFile) return;

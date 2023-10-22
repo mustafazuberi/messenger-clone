@@ -6,6 +6,7 @@ type Friend = {
   isActive: boolean;
   gender?: "male" | "female" | "other" | string;
   photoUrl?: string;
+  DOB?: Date;
 };
 
 export default Friend;

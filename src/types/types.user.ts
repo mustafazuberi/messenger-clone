@@ -5,6 +5,7 @@ type User = {
   displayName: string;
   gender?: "male" | "female" | "other" | string;
   photoUrl?: string;
+  DOB?: Date;
 };
 
 export default User;
