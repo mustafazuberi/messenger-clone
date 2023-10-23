@@ -135,7 +135,7 @@ const useSignup = () => {
       toast({
         description: `Welcome ,${userObj.displayName}!`,
       });
-      router.push("/");
+      router.push("/messages");
     } catch (error) {
       const message = handleFirebaseError(error as FirebaseError);
       if (message) {
@@ -189,7 +189,7 @@ const useSignup = () => {
       toast({
         description: `Welcome ,${userObj.displayName}!`,
       });
-      router.push("/");
+      router.push("/messages");
     } catch (error) {
       const message = handleFirebaseError(error as FirebaseError);
       if (message) toast({ variant: "destructive", description: message });

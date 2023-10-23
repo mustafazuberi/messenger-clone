@@ -42,7 +42,7 @@ const RequestsNav = ({ activeTab, setActiveTab }: RequestsNavProps) => {
     <section className="flex flex-row justify-between items-center w-full mt-2">
       <section className="flex flex-row gap-x-2 items-center">
         <section>
-          <Link href={"/"}>
+          <Link href={"/messages"}>
             <BiArrowBack className="cursor-pointer text-2xl" />
           </Link>
         </section>

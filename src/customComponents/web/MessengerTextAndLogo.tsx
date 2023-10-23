@@ -3,7 +3,7 @@ import messengerLogo from "@/../assets/images/messengerlogo.png";
 import Link from "next/link";
 const MessengerTextAndLogo = () => {
   return (
-    <Link href={"/"} className="cursor-pointer">
+    <Link href={"/messages"} className="cursor-pointer">
       <div className="flex flex-row items-center gap-x-2">
         <Image
           src={messengerLogo}

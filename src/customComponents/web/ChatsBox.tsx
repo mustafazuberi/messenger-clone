@@ -35,7 +35,7 @@ const ChatsBox = () => {
   const isRequestsTab = params.get("tab") === "requests";
 
   return (
-    <main className="sm:w-[350px] w-full border-r min-h-[90vh]">
+    <main className="sm:min-w-[30%] sm:max-w-[350px] w-full border-r min-h-[90vh]">
       {isFindFriendsTab ? (
         <Suspense fallback={<FindFriendsSuspense />}>
           <FindFriends />

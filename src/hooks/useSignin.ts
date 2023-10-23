@@ -78,7 +78,7 @@ const useSignin = () => {
       toast({
         description: `Welcome, ${dbUser.displayName}!`,
       });
-      router.push("/");
+      router.push("/messages");
     } catch (error) {
       console.log(error);
       handleUserError(getErrorMessage(error));

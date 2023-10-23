@@ -17,22 +17,21 @@ const ChatUsers = () => {
       <section className="flex flex-col gap-y-2 min-w-full overflow-y-auto">
         {friends?.data?.length
           ? friends.data?.map((friend) => (
-              <section
-                className="flex flex-row justify-between border-b min-w-full cursor-pointer py-1 pr-2"
-                key={friend.uid}
-              >
-                <section className="flex flex-row gap-x-3 items-center">
-                  <section>
-                    <UserImageAvatar user={friend} />
+              <Link href={`/messages/?chatroom=${friend.uid}`} key={friend.uid}>
+                <section className="flex flex-row justify-between border-b min-w-full cursor-pointer py-1 pr-2">
+                  <section className="flex flex-row gap-x-3 items-center">
+                    <section>
+                      <UserImageAvatar user={friend} />
+                    </section>
+                    <section className="flex flex-col ">
+                      <h3>{friend.displayName}</h3>
+                      <h6 className="text-[12px]">{friend.email}</h6>
+                    </section>
                   </section>
-                  <section className="flex flex-col ">
-                    <h3>{friend.displayName}</h3>
-                    <h6 className="text-[12px]">{friend.email}</h6>
-                  </section>
+                  <section className="w-4 h-4 rounded-full bg-green-600"></section>
+                  {/* <section className="w-4 h-4 rounded-full bg-gray-600"></section> */}
                 </section>
-                <section className="w-4 h-4 rounded-full bg-green-600"></section>
-                {/* <section className="w-4 h-4 rounded-full bg-gray-600"></section> */}
-              </section>
+              </Link>
             ))
           : (friends.status === STATUSES.LOADING && (
               <UsersSkeleton skeletonLength={7} />
