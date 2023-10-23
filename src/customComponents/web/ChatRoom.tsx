@@ -1,11 +1,13 @@
 import React from "react";
 import ChatRoomNav from "./ChatRoomNav";
+import ChatRoomFooter from "./ChatRoomFooter";
 
 const ChatRoom = ({ chatRoomId }: { chatRoomId: string }) => {
   return (
-    <div>
+    <main className="flex flex-col justify-between">
       <ChatRoomNav />
-    </div>
+      <ChatRoomFooter />
+    </main>
   );
 };
 

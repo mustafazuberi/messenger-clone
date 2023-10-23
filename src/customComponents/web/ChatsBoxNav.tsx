@@ -21,7 +21,7 @@ const ChatsBoxNav = () => {
             </span>
           </Link>
           <Link
-            href={`/?tab=requests`}
+            href={`/messages/?tab=requests`}
             className="p-2 text-2xl border rounded-full hover:opacity-60"
           >
             <FaUserFriends />
