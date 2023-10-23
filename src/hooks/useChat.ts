@@ -1,20 +1,16 @@
-import MessageSchema from "@/schema/schema.message";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { UseFormReturn, useForm } from "react-hook-form";
-import { z } from "zod";
+import { useState } from "react";
 
 const useChat = () => {
-  const formMessage: UseFormReturn<z.infer<typeof MessageSchema>> = useForm<
-    z.infer<typeof MessageSchema>
-  >({
-    resolver: zodResolver(MessageSchema),
-  });
+  const [message, setMessage] = useState<string>("");
 
   const createChatRoom = () => {};
 
-  const sendMessage = () => {};
+  const sendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("send message function run!");
+  };
 
-  return { formMessage, createChatRoom, sendMessage };
+  return { createChatRoom, sendMessage, message ,setMessage};
 };
 
 export default useChat;

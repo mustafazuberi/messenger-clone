@@ -27,6 +27,7 @@
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
     "date-fns": "^2.30.0",
+    "emoji-picker-react": "^4.5.3",
     "encoding": "^0.1.13",
     "firebase": "^10.4.0",
     "firebase-admin": "^11.11.0",

@@ -5,8 +5,10 @@ import ChatsNavDropDown from "./ChatsNavDropDown";
 import useHome from "@/hooks/useHome";
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const ChatsBoxNav = () => {
+  const router = useRouter();
   const { handleOnSearchMessenger } = useHome();
   return (
     <main className="flex flex-col justify-between p-2 py-4 w-full gap-y-3">
@@ -15,11 +17,12 @@ const ChatsBoxNav = () => {
           <h3 className="text-2xl font-bold">Chats</h3>
         </section>
         <section className="flex flex-row gap-x-2 items-center">
-          <Link href={`?tab=findFriends`}>
-            <span className="text-[12px] bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400">
-              Find Friends
-            </span>
-          </Link>
+          <span
+            className="text-[12px] bg-clip-text text-transparent cursor-pointer bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400"
+            onClick={() => router.push("/messages/?tab=findFriends")}
+          >
+            Find Friends
+          </span>
           <Link
             href={`/messages/?tab=requests`}
             className="p-2 text-2xl border rounded-full hover:opacity-60"

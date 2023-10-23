@@ -13,7 +13,7 @@ import {
 
 const ChatRoomNav = () => {
   return (
-    <main className="sm:px-5 px-2 flex flex-row py-4 justify-between border-b">
+    <main className="flex flex-row py-4 justify-between border-b">
       <section className="flex flex-row gap-x-2 items-center">
         <Image
           src={

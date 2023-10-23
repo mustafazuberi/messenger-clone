@@ -1,5 +1,4 @@
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
 import Link from "next/link";
 import { useSelector } from "react-redux";
 import { STATUSES } from "@/store/intialState";
@@ -13,6 +12,7 @@ import { useEffect, useState } from "react";
 import UsersSkeleton from "./UsersSkeleton";
 import User from "@/types/types.user";
 import UserImageAvatar from "./UserImageAvatar";
+import { useRouter } from "next/navigation";
 
 const FindFriends = () => {
   const [unknownUsers, setUnknownUsers] = useState<User[]>([]);
@@ -63,6 +63,7 @@ const FindFriends = () => {
 export default FindFriends;
 
 export const FindFriendsNav = () => {
+  const router = useRouter();
   return (
     <main className="flex flex-col gap-y-3 mt-2">
       <section className="flex flex-row gap-x-2 items-center w-full">
@@ -72,11 +73,12 @@ export const FindFriendsNav = () => {
         <section className="flex flex-row justify-between w-full">
           <h3 className="text-2xl font-bold">Find Friends</h3>
           <section className="flex flex-row gap-x-2 items-center">
-            <Link href={`?tab=requests`}>
-              <span className="text-[14px] cursor-pointer bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400">
-                Requests
-              </span>
-            </Link>
+            <span
+              className="text-[14px] cursor-pointer bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400"
+              onClick={() => router.push("/messages/?tab=requests")}
+            >
+              Requests
+            </span>
           </section>
         </section>
       </section>
