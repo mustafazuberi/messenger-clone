@@ -1,19 +1,11 @@
 import Image from "next/image";
 import { IoCallSharp } from "react-icons/io5";
-import { FaInfoCircle } from "react-icons/fa";
 import { BsFillCameraVideoFill } from "react-icons/bs";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import ChatRoomFriendInfo from "./ChatRoomInfo";
 
 const ChatRoomNav = () => {
   return (
-    <main className="flex flex-row py-4 justify-between border-b">
+    <main className="flex flex-row py-4 justify-between border-b sm:px-5 px-2 ">
       <section className="flex flex-row gap-x-2 items-center">
         <Image
           src={
@@ -29,29 +21,10 @@ const ChatRoomNav = () => {
       <section className="flex flex-row gap-x-4 items-center justify-center">
         <IoCallSharp className="text-2xl cursor-pointer" />
         <BsFillCameraVideoFill className="text-2xl cursor-pointer" />
-        <ChatRoomInfo />
+        <ChatRoomFriendInfo />
       </section>
     </main>
   );
 };
 
 export default ChatRoomNav;
-
-const ChatRoomInfo = () => {
-  return (
-    <Sheet>
-      <SheetTrigger>
-        <FaInfoCircle className="text-2xl cursor-pointer" />
-      </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Are you sure absolutely sure?</SheetTitle>
-          <SheetDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </SheetDescription>
-        </SheetHeader>
-      </SheetContent>
-    </Sheet>
-  );
-};
