@@ -8,5 +8,5 @@ export type SendChatReqParam = {
 export type SendNotificationParam = {
   type: "Request Accepted" | "Request Received";
   to: User;
-  by : User
+  by: User;
 };

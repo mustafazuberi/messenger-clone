@@ -2,9 +2,8 @@ import {
   FriendsState,
   ChatRequestsState,
   UsersState,
-  Room,
-  Rooms,
-  RoomState,
+  RoomsState,
+  RoomsMessages,
 } from "@/types/types.state";
 import User from "@/types/types.user";
 
@@ -44,13 +43,6 @@ export const NOTIFICATIONS_INITIAL_STATE = {
   data: [],
 };
 
-export const ROOM_INITIAL_STATE: RoomState = {
-  activeRoom: {
-    id: "",
-    status: STATUSES.LOADING,
-    messages: [],
-    lastMessage: { id: "", date: Date.now(), img: "", senderId: "", text: "" },
-  },
-  allRooms: {},
-  chatWih: null,
-};
+export const ROOMS_INITIAL_STATE: RoomsState = [];
+
+export const ROOMS_MESSAGES_INITIAL_STATE: RoomsMessages = {};

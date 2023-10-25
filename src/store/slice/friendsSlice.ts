@@ -8,10 +8,11 @@ const friendsSlice = createSlice({
   reducers: {
     setMyFriends: (state, action: { payload: FriendsState }) => {
       state = action.payload;
-      return state; 
+      return state;
     },
+    clearFriends: (state) => FRIENDS_INITIAL_STATE,
   },
 });
 
-export const { setMyFriends } = friendsSlice.actions;
+export const { setMyFriends ,clearFriends} = friendsSlice.actions;
 export default friendsSlice.reducer;

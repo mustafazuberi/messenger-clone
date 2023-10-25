@@ -1,8 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { RiNotification2Fill } from "react-icons/ri";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
-import UserNotification from "@/types/types.notification";
 import { useEffect } from "react";
 import useNotification from "@/hooks/useNotification";
 import {

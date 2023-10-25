@@ -5,7 +5,8 @@ import themeReducer from "@/store/slice/themeSlice";
 import friendsReducer from "@/store/slice/friendsSlice";
 import chatRequestsReducer from "@/store/slice/chatRequestsSlice";
 import notificationsReducer from "@/store/slice/notificationsSlice";
-import roomReducer from "@/store/slice/roomSlice";
+import roomsReducer from "@/store/slice/roomSlice";
+import roomsMessagesReducer from "@/store/slice/roomMessages";
 
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
@@ -19,7 +20,8 @@ const rootReducer = combineReducers({
   friends: friendsReducer,
   chatRequests: chatRequestsReducer,
   notifications: notificationsReducer,
-  room: roomReducer,
+  rooms: roomsReducer,
+  roomsMessages: roomsMessagesReducer,
 });
 
 const persistConfig = {

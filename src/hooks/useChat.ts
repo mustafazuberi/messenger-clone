@@ -1,56 +1,80 @@
 import { db } from "@/db/firebase.config";
 import { RootState } from "@/store";
+import { setRoomsMessages } from "@/store/slice/roomMessages";
+import { setRooms } from "@/store/slice/roomSlice";
 import Friend from "@/types/type.friend";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import Message from "@/types/types.message";
+import Room from "@/types/types.room";
+import { RoomsMessages } from "@/types/types.state";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const useChat = () => {
   const router = useRouter();
+  const rooms = useSelector((state: RootState) => state.rooms);
+  const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const [message, setMessage] = useState<string>("");
 
   const createChatRoom = async (users: {
     [x: string]: boolean;
-  }): Promise<string> => {
-    const room = await addDoc(collection(db, "chatrooms"), {
-      users,
+  }): Promise<void> => {
+    const room: Room = {
+      lastConversation: null,
+      lastMessage: null,
+      users: users,
       createdAt: Date.now(),
+    };
+    await addDoc(collection(db, "chatrooms"), { ...room });
+  };
+
+  const getMyRooms = async () => {
+    const q = query(
+      collection(db, "chatrooms"),
+      where(`users.${currentUser.uid}`, "==", true)
+    );
+    const querySnapshot = await getDocs(q);
+    const rooms: Room[] = [];
+    querySnapshot.forEach((doc) => {
+      rooms.push({ id: doc.id, ...doc.data() } as Room);
     });
-    return room.id;
+    dispatch(setRooms([...rooms]));
   };
 
-  const checkChatRoomAndGetRoomId = async (
-    friendId: string
-  ): Promise<string | null> => {
-    try {
-      const users = { [friendId]: true, [currentUser.uid]: true };
-      const q = query(
-        collection(db, "chatrooms"),
-        where(`users.${friendId}`, "==", true),
-        where(`users.${currentUser.uid}`, "==", true)
-      );
-      let roomId;
+  const handleOnChatUser = (friend: Friend) => {
+    const room: Room | undefined = rooms.find(
+      (room: Room) => room.users[friend.uid] && room.users[currentUser.uid]
+    );
+    if (!room) return;
+    router.push(`messages/?roomId=${room.id}`);
+  };
 
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        roomId = doc.id;
+  const getRoomsMessages = () => {
+    const roomIds: string[] = rooms.map((room: Room) => room.id!);
+    if (!roomIds.length) return;
+
+    roomIds.forEach((roomId) => {
+      const roomsMessages: RoomsMessages = {};
+      const messagesRef = collection(db, "chatrooms", roomId, "messages");
+      const unsubscribe = onSnapshot(messagesRef, (querySnapshot) => {
+        const messages: Message[] = [];
+        querySnapshot.forEach((msg) => {
+          messages.push({ id: msg.id, ...(msg.data() as Message) });
+        });
+        roomsMessages[roomId] = messages;
       });
-
-      if (!roomId) return createChatRoom(users); // createChatRoom will create room of users param and return id of that room
-      return roomId;
-    } catch (err) {
-      console.log(err);
-      return null;
-    }
-  };
-
-  const handleOnChat = async (friend: Friend) => {
-    const roomId = await checkChatRoomAndGetRoomId(friend.uid);
-    if (!roomId) return;
-
-    router.push(`messages/?chatroom=${roomId}`);
+      dispatch(setRoomsMessages(roomsMessages));
+      return unsubscribe;
+    });
   };
 
   const sendMessage = (e: React.FormEvent) => {
@@ -59,11 +83,13 @@ const useChat = () => {
   };
 
   return {
-    createChatRoom,
-    sendMessage,
     message,
     setMessage,
-    handleOnChat,
+    createChatRoom,
+    getMyRooms,
+    handleOnChatUser,
+    getRoomsMessages,
+    sendMessage,
   };
 };
 

@@ -10,7 +10,7 @@ import UserImageAvatar from "./UserImageAvatar";
 import useChat from "@/hooks/useChat";
 
 const ChatUsers = () => {
-  const { handleOnChat } = useChat();
+  const { handleOnChatUser } = useChat();
   const friends: FriendsState = useSelector(
     (state: RootState) => state.friends
   );
@@ -22,7 +22,7 @@ const ChatUsers = () => {
               <section
                 className="flex flex-row justify-between border-b min-w-full cursor-pointer py-1 pr-2"
                 key={friend.uid}
-                onClick={() => handleOnChat(friend)}
+                onClick={() => handleOnChatUser(friend)}
               >
                 <section className="flex flex-row gap-x-3 items-center">
                   <section>

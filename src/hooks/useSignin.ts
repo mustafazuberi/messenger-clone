@@ -36,11 +36,6 @@ const useSignin = () => {
     });
   };
 
-  const showSuccessToast = (message: string) => {
-    toast({
-      description: message,
-    });
-  };
 
   const handleUserError = (errorMessage: string) => {
     showErrorToast(errorMessage);

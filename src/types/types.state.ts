@@ -2,6 +2,7 @@ import Friend from "./type.friend";
 import Message from "./types.message";
 import UserNotification from "./types.notification";
 import ChatRequest from "./types.request";
+import Room from "./types.room";
 import User from "./types.user";
 
 type Status = "idle" | "error" | "loading";
@@ -16,20 +17,9 @@ type ChatRequestsState = {
   receivedRequests: { status: Status; data: ChatRequest[] };
 };
 
-type Room = {
-  id: string;
-  status: Status;
-  messages: Message[];
-  lastMessage: Message;
-};
+type RoomsState = Room[];
 
-type RoomState = {
-  activeRoom: Room;
-  allRooms: Rooms;
-  chatWih: Friend | null;
-};
-
-type Rooms = { [key: string]: Room };
+type RoomsMessages = { [key: string]: Message[] };
 
 export type {
   FriendsState,
@@ -37,7 +27,6 @@ export type {
   ChatRequestsState,
   Status,
   NotificationsState,
-  Room,
-  Rooms,
-  RoomState,
+  RoomsState,
+  RoomsMessages
 };

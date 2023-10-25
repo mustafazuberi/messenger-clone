@@ -1,9 +1,10 @@
 type Message = {
-  id: string;
-  text: string;
-  img: string;
+  id?: string;
+  text?: string;
+  img?: string;
   senderId: string;
-  date: number;
+  date: Date;
+  seen: boolean;
 };
 
 export default Message;

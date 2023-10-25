@@ -9,9 +9,10 @@ const userSlice = createSlice({
     updateUserDetails: (state: User, action) => {
       state = action.payload;
       return state;
-    }
+    },
+    clearCurrentUser: (state) => USER_INITIAL_STATE,
   },
 });
 
-export const { updateUserDetails } = userSlice.actions;
+export const { updateUserDetails,clearCurrentUser } = userSlice.actions;
 export default userSlice.reducer;

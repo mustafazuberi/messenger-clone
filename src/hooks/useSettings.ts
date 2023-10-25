@@ -25,7 +25,6 @@ const useSettings = () => {
   const dispatch = useDispatch();
   const { toast } = useToast();
   const currentUser = useSelector((state: RootState) => state.currentUser);
-
   const [updating, setUpdating] = useState<boolean>(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>();
 

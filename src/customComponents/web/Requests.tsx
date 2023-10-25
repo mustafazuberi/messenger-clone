@@ -2,7 +2,6 @@ import { RootState } from "@/store";
 import Link from "next/link";
 import { BiArrowBack } from "react-icons/bi";
 import { useSelector } from "react-redux";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import useReq from "@/hooks/useReq";

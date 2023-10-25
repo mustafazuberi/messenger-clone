@@ -10,8 +10,9 @@ const allUsersSlice = createSlice({
       state = action.payload;
       return state;
     },
+    clearAllUsers: (state) => USERS_INITIAL_STATE,
   },
 });
 
-export const { setAllUsers } = allUsersSlice.actions;
+export const { setAllUsers, clearAllUsers } = allUsersSlice.actions;
 export default allUsersSlice.reducer;

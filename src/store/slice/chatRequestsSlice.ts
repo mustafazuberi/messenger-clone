@@ -21,9 +21,10 @@ const chatRequestsSlice = createSlice({
       state.receivedRequests = action.payload;
       return state;
     },
+    clearRequests: (state) => CHATREQUESTS_INITIAL_STATE,
   },
 });
 
-export const { setRequests, setSentRequests, setReceivedRequests } =
+export const { setRequests, setSentRequests, setReceivedRequests,clearRequests } =
   chatRequestsSlice.actions;
 export default chatRequestsSlice.reducer;
