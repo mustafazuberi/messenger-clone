@@ -7,8 +7,10 @@ import Link from "next/link";
 import React from "react";
 import UsersSkeleton from "./UsersSkeleton";
 import UserImageAvatar from "./UserImageAvatar";
+import useChat from "@/hooks/useChat";
 
 const ChatUsers = () => {
+  const { handleOnChat } = useChat();
   const friends: FriendsState = useSelector(
     (state: RootState) => state.friends
   );
@@ -17,21 +19,23 @@ const ChatUsers = () => {
       <section className="flex flex-col gap-y-2 min-w-full overflow-y-auto">
         {friends?.data?.length
           ? friends.data?.map((friend) => (
-              <Link href={`/messages/?chatroom=${friend.uid}`} key={friend.uid}>
-                <section className="flex flex-row justify-between border-b min-w-full cursor-pointer py-1 pr-2">
-                  <section className="flex flex-row gap-x-3 items-center">
-                    <section>
-                      <UserImageAvatar user={friend} />
-                    </section>
-                    <section className="flex flex-col ">
-                      <h3>{friend.displayName}</h3>
-                      <h6 className="text-[12px]">{friend.email}</h6>
-                    </section>
+              <section
+                className="flex flex-row justify-between border-b min-w-full cursor-pointer py-1 pr-2"
+                key={friend.uid}
+                onClick={() => handleOnChat(friend)}
+              >
+                <section className="flex flex-row gap-x-3 items-center">
+                  <section>
+                    <UserImageAvatar user={friend} />
                   </section>
-                  <section className="w-4 h-4 rounded-full bg-green-600"></section>
-                  {/* <section className="w-4 h-4 rounded-full bg-gray-600"></section> */}
+                  <section className="flex flex-col ">
+                    <h3>{friend.displayName}</h3>
+                    <h6 className="text-[12px]">{friend.email}</h6>
+                  </section>
                 </section>
-              </Link>
+                <section className="w-4 h-4 rounded-full bg-green-600"></section>
+                {/* <section className="w-4 h-4 rounded-full bg-gray-600"></section> */}
+              </section>
             ))
           : (friends.status === STATUSES.LOADING && (
               <UsersSkeleton skeletonLength={7} />

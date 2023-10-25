@@ -18,7 +18,6 @@ const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
-const messaging = getMessaging(app);
 const batch = writeBatch(db);
 
-export { app, db, storage, auth, messaging, batch };
+export { app, db, storage, auth, batch };

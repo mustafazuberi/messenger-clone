@@ -1,8 +1,10 @@
-import ChatRequest from "@/types/types.request";
 import {
   FriendsState,
   ChatRequestsState,
   UsersState,
+  Room,
+  Rooms,
+  RoomState,
 } from "@/types/types.state";
 import User from "@/types/types.user";
 
@@ -40,4 +42,15 @@ export const CHATREQUESTS_INITIAL_STATE: ChatRequestsState = {
 export const NOTIFICATIONS_INITIAL_STATE = {
   status: STATUSES.LOADING,
   data: [],
+};
+
+export const ROOM_INITIAL_STATE: RoomState = {
+  activeRoom: {
+    id: "",
+    status: STATUSES.LOADING,
+    messages: [],
+    lastMessage: { id: "", date: Date.now(), img: "", senderId: "", text: "" },
+  },
+  allRooms: {},
+  chatWih: null,
 };
