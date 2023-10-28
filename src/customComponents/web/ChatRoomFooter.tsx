@@ -24,7 +24,7 @@ import {
 import { useState } from "react";
 
 const ChatRoomFooter = () => {
-  const { sendMessage, message, setMessage } = useChat();
+  const { sendMessage, messageInp, setMessageInp } = useChat();
   return (
     <main className="py-6 sm:px-5 px-2 ">
       <form
@@ -40,18 +40,18 @@ const ChatRoomFooter = () => {
           <PopoverContent className="w-auto">
             <EmojiPicker
               theme={Theme.DARK}
-              onEmojiClick={({ emoji }) => setMessage((e) => e + emoji)}
+              onEmojiClick={({ emoji }) => setMessageInp((e) => e + emoji)}
             />
           </PopoverContent>
         </Popover>
         <PlusDropdown />
         <Input
           placeholder="Type your message..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          value={messageInp}
+          onChange={(e) => setMessageInp(e.target.value)}
           className="text-[17px]"
         />
-        {message ? (
+        {messageInp ? (
           <BsFillSendFill className="text-3xl text-gray-400" />
         ) : (
           <AiFillAudio className="text-4xl cursor-pointer text-gray-400" />

@@ -3,7 +3,7 @@ type Message = {
   text?: string;
   img?: string;
   senderId: string;
-  date: Date;
+  date: number;
   seen: boolean;
 };
 

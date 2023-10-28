@@ -26,8 +26,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import Friend from "@/types/type.friend";
+import UserImageAvatar from "./UserImageAvatar";
 
-const ChatRoomFriendInfo = () => {
+const ChatRoomFriendInfo = ({ chatWith }: { chatWith: Friend }) => {
   return (
     <Sheet>
       <SheetTrigger>
@@ -35,7 +37,7 @@ const ChatRoomFriendInfo = () => {
       </SheetTrigger>
       <SheetContent className="max-w-80 w-full border py-6">
         <section className="flex flex-col gap-y-2">
-          <ChatRoomFriendBasicInfo />
+          <ChatRoomFriendBasicInfo chatWith={chatWith} />
           <ChatRoomInfoShareButton />
         </section>
         <ChatRoomInfoOptions />
@@ -46,26 +48,18 @@ const ChatRoomFriendInfo = () => {
 
 export default ChatRoomFriendInfo;
 
-const ChatRoomFriendBasicInfo = () => {
+const ChatRoomFriendBasicInfo = ({ chatWith }: { chatWith: Friend }) => {
   return (
     <main className="w-full flex flex-col gap-y-3 justify-between items-center">
       <section className="px-6">
-        <Image
-          src={
-            "https://lh3.googleusercontent.com/a/ACg8ocIuszNvzmY5l1JypLVpg3iQEGSBsW3BpqJoesOP7FbqMA0=s260-c-no"
-          }
-          alt="chat frrnd profile picture"
-          className="w-48 h-48 rounded-full"
-          width={140}
-          height={140}
-        />
+        {chatWith.photoUrl && <UserImageAvatar user={chatWith} size={48} />}
       </section>
       <section className="max-w-40">
         <h3 className="text-gray-300 text-4xl font-extrabold">
-          Mustafa Zuberi
+          {chatWith.displayName}
         </h3>
         <span className="text-gray-400 text-xl font-extralight italic">
-          mustafazuberi986@gmail.com
+          {chatWith.email}
         </span>
       </section>
     </main>

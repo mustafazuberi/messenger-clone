@@ -3,7 +3,6 @@ import {
   ChatRequestsState,
   UsersState,
   RoomsState,
-  RoomsMessages,
 } from "@/types/types.state";
 import User from "@/types/types.user";
 
@@ -45,4 +44,3 @@ export const NOTIFICATIONS_INITIAL_STATE = {
 
 export const ROOMS_INITIAL_STATE: RoomsState = [];
 
-export const ROOMS_MESSAGES_INITIAL_STATE: RoomsMessages = {};

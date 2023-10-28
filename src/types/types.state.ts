@@ -19,8 +19,6 @@ type ChatRequestsState = {
 
 type RoomsState = Room[];
 
-type RoomsMessages = { [key: string]: Message[] };
-
 export type {
   FriendsState,
   UsersState,
@@ -28,5 +26,4 @@ export type {
   Status,
   NotificationsState,
   RoomsState,
-  RoomsMessages
 };
