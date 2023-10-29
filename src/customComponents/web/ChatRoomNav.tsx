@@ -3,11 +3,11 @@ import { IoCallSharp } from "react-icons/io5";
 import { BsFillCameraVideoFill } from "react-icons/bs";
 import ChatRoomFriendInfo from "./ChatRoomInfo";
 import UserImageAvatar from "./UserImageAvatar";
-import useChat from "@/hooks/useChat";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 const ChatRoomNav = () => {
-  const { activeRoom } = useChat();
-  if (!activeRoom) return;
+  const activeRoom = useSelector((state: RootState) => state.activeRoom);
   return (
     <main className="flex flex-row py-4 justify-between border-b sm:px-5 px-2 ">
       <section className="flex flex-row gap-x-2 items-center">

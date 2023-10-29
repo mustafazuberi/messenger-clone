@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { FaInfoCircle } from "react-icons/fa";
 import { PiShareFatFill } from "react-icons/pi";
 import { TbBellFilled } from "react-icons/tb";

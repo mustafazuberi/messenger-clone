@@ -1,3 +1,4 @@
+import { ActiveRoom } from "@/types/chatRoom";
 import {
   FriendsState,
   ChatRequestsState,
@@ -44,3 +45,7 @@ export const NOTIFICATIONS_INITIAL_STATE = {
 
 export const ROOMS_INITIAL_STATE: RoomsState = [];
 
+export const ACTIVE_ROOM_INITIAL_STATE: ActiveRoom = {
+  chatWith: null,
+  roomDetails: null,
+};

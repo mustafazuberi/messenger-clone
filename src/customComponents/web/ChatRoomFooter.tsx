@@ -40,7 +40,9 @@ const ChatRoomFooter = () => {
           <PopoverContent className="w-auto">
             <EmojiPicker
               theme={Theme.DARK}
-              onEmojiClick={({ emoji }) => setMessageInp((e) => e + emoji)}
+              onEmojiClick={({ emoji }) =>
+                setMessageInp((e: string) => e + emoji)
+              }
             />
           </PopoverContent>
         </Popover>

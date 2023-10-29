@@ -4,8 +4,8 @@ import Room from "@/types/types.room";
 import { Status } from "@/types/types.state";
 
 export type ActiveRoom = {
-  chatWith: Friend;
-  roomDetails: Room;
+  chatWith: Friend | null;
+  roomDetails: Room | null;
 };
 
 export type ActiveRoomMessages = {

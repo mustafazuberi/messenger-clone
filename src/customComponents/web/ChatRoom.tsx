@@ -5,24 +5,34 @@ import Message from "./Message";
 import useChat from "@/hooks/useChat";
 import TailwindSpinner from "./TailwindSpinner";
 
-const ChatRoom = ({ chatRoomId }: { chatRoomId: string }) => {
-  const { activeRoomMessages, getActiveRoomMessages, getActiveRoom } =
-    useChat();
+const ChatRoom = () => {
+  const {
+    activeRoomMessages,
+    getActiveRoomMessages,
+    scrollSectionToBottom,
+    sectionRefMessagesDiv,
+  } = useChat();
 
   useEffect(() => {
-    getActiveRoomMessages(chatRoomId);
-    getActiveRoom(chatRoomId);
+    getActiveRoomMessages();
   }, []);
+
+  useEffect(() => {
+    scrollSectionToBottom();
+  }, [activeRoomMessages.data.length]);
 
   return (
     <main className="flex flex-col justify-between min-h-full">
       <ChatRoomNav />
-      <section className="px-6 flex flex-col gap-y-2 max-h-[64vh] overflow-y-scroll py-4">
+      <section
+        className="px-6 flex flex-col gap-y-2 min-h-[64vh] max-h-[64vh] overflow-y-scroll py-4 h-32 scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-track-inherit"
+        ref={sectionRefMessagesDiv}
+      >
         {activeRoomMessages.status === "idle" ? (
           activeRoomMessages.data?.length &&
           activeRoomMessages.data.map((msg, i) => <Message msg={msg} key={i} />)
         ) : (
-          <section className="flex justify-center items-center">
+          <section className="flex flex-col justify-center items-center min-h-full">
             <TailwindSpinner />
           </section>
         )}

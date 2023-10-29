@@ -1,12 +1,11 @@
 import { db } from "@/db/firebase.config";
 import { RootState } from "@/store";
 import { STATUSES } from "@/store/intialState";
-import { ActiveRoom, ActiveRoomMessages } from "@/store/slice/chatRoom";
+import { ActiveRoom, ActiveRoomMessages } from "@/types/chatRoom";
 import { setRooms } from "@/store/slice/roomSlice";
 import Friend from "@/types/type.friend";
 import Message from "@/types/types.message";
 import Room from "@/types/types.room";
-import { Status } from "@/types/types.state";
 import { Unsubscribe } from "firebase/auth";
 import {
   addDoc,
@@ -19,18 +18,17 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { setActiveRoom } from "@/store/slice/activeRoomSlice";
 
 const useChat = () => {
-  const router = useRouter();
-  const rooms = useSelector((state: RootState) => state.rooms);
   const dispatch = useDispatch();
+  const sectionRefMessagesDiv = useRef<HTMLDivElement | null>(null);
+  const rooms = useSelector((state: RootState) => state.rooms);
+  const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const [messageInp, setMessageInp] = useState<string>("");
-  const [activeRoom, setActiveRoom] = useState<ActiveRoom | null>(null);
-
   const [activeRoomMessages, setActiveRoomMessages] =
     useState<ActiveRoomMessages>({ data: [], status: STATUSES.LOADING });
 
@@ -59,9 +57,13 @@ const useChat = () => {
     dispatch(setRooms([...rooms]));
   };
 
-  const getActiveRoomMessages = (chatRoomId: string): Unsubscribe => {
+  const getActiveRoomMessages = (): Unsubscribe => {
+    const roomId = activeRoom.roomDetails?.id!;
     const unsubscribe = onSnapshot(
-      query(collection(db, "chatrooms", chatRoomId, "messages")),
+      query(
+        collection(db, "chatrooms", roomId, "messages"),
+        orderBy("date", "asc")
+      ),
       (querySnapshot) => {
         const messages: Message[] = [];
         querySnapshot.forEach((doc) => {
@@ -73,63 +75,72 @@ const useChat = () => {
     return unsubscribe;
   };
 
-  const getActiveRoom = async (chatRoomId: string) => {
-    let room: Room | null = null;
-    const docRoom = await getDoc(doc(db, "chatrooms", chatRoomId));
-    if (docRoom.exists()) {
-      room = { id: docRoom.id, ...(docRoom.data() as Room) };
-    }
-
-    if (!room) return;
-
-    // getting user to chat with
-    let friendId: string | null = null;
-    for (const key in room.users) {
-      if (key !== currentUser.uid) {
-        friendId = key;
-        break;
-      }
-    }
-
-    if (!friendId) return;
-    let chatWith: Friend | null = null;
-    const docFriend = await getDoc(
-      doc(db, "users", currentUser.uid, "friends", friendId)
-    );
-    if (!docFriend.exists()) {
-      chatWith = { ...(docFriend.data() as Friend) };
-    }
-
-    if (!chatWith) return;
-
-    console.log({ roomDetails: room, chatWith: chatWith });
-    setActiveRoom({ roomDetails: room, chatWith: chatWith });
-  };
-
   const handleOnChatUser = (friend: Friend) => {
     const room: Room | undefined = rooms.find(
       (room: Room) => room.users[friend.uid] && room.users[currentUser.uid]
     );
     if (!room) return;
-    router.push(`messages/?roomId=${room.id}`);
+    console.log({ roomDetails: { ...room }, chatWith: { ...friend } });
+    dispatch(
+      setActiveRoom({ roomDetails: { ...room }, chatWith: { ...friend } })
+    );
   };
 
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    const msgRef = collection(
-      db,
-      "chatrooms",
-      activeRoom?.roomDetails?.id!,
-      "messages"
-    );
     const message: Message = {
       date: Date.now(),
       seen: false,
       senderId: currentUser.uid,
       text: messageInp,
     };
-    await addDoc(msgRef, message);
+    await addDoc(
+      collection(db, "chatrooms", activeRoom?.roomDetails?.id!, "messages"),
+      message
+    );
     setMessageInp("");
+  };
+
+  // const scrollSectionToBottom = () => {
+  //   if (sectionRefMessagesDiv.current) {
+  //     sectionRefMessagesDiv.current.scrollTop =
+  //       sectionRefMessagesDiv.current.scrollHeight;
+  //   }
+  // };
+
+  const scrollSectionToBottom = () => {
+    if (sectionRefMessagesDiv.current) {
+      const element = sectionRefMessagesDiv.current as HTMLDivElement;
+      const start = element.scrollTop;
+      const end = element.scrollHeight;
+      const duration = 500; // 0.5 seconds
+
+      let startTime: number | null = null;
+
+      const scroll = (timestamp: number) => {
+        if (!startTime) startTime = timestamp;
+        const elapsed = timestamp - startTime;
+
+        // Calculate the new scrollTop position
+        element.scrollTop = easeInOut(elapsed, start, end - start, duration);
+
+        // Continue scrolling if the duration hasn't passed
+        if (elapsed < duration) {
+          requestAnimationFrame(scroll);
+        } else {
+          startTime = null;
+        }
+      };
+
+      const easeInOut = (t: number, b: number, c: number, d: number) => {
+        t /= d / 2;
+        if (t < 1) return (c / 2) * t * t + b;
+        t--;
+        return (-c / 2) * (t * (t - 2) - 1) + b;
+      };
+
+      requestAnimationFrame(scroll);
+    }
   };
 
   return {
@@ -139,11 +150,10 @@ const useChat = () => {
     getMyRooms,
     handleOnChatUser,
     sendMessage,
-    activeRoom,
     activeRoomMessages,
-    setActiveRoomMessages,
     getActiveRoomMessages,
-    getActiveRoom,
+    scrollSectionToBottom,
+    sectionRefMessagesDiv,
   };
 };
 
