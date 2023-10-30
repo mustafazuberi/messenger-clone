@@ -101,7 +101,6 @@ const useChat = () => {
       (room: Room) => room.users[friend.uid] && room.users[currentUser.uid]
     );
     if (!room) return;
-    console.log({ roomDetails: { ...room }, chatWith: { ...friend } });
     dispatch(
       setActiveRoom({ roomDetails: { ...room }, chatWith: { ...friend } })
     );
@@ -127,19 +126,12 @@ const useChat = () => {
     });
   };
 
-  // const scrollSectionToBottom = () => {
-  //   if (sectionRefMessagesDiv.current) {
-  //     sectionRefMessagesDiv.current.scrollTop =
-  //       sectionRefMessagesDiv.current.scrollHeight;
-  //   }
-  // };
-
   const scrollSectionToBottom = () => {
     if (sectionRefMessagesDiv.current) {
       const element = sectionRefMessagesDiv.current as HTMLDivElement;
       const start = element.scrollTop;
       const end = element.scrollHeight;
-      const duration = 500; // 0.5 seconds
+      const duration = 300; // 0.5 seconds
 
       let startTime: number | null = null;
 

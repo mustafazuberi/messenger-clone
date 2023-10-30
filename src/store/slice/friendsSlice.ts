@@ -1,6 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { FRIENDS_INITIAL_STATE } from "../intialState";
 import { FriendsState } from "@/types/types.state";
+import Friend from "@/types/type.friend";
+import { OnlineInfo } from "@/types/types.miscellaneous";
 
 const friendsSlice = createSlice({
   name: "myFriends",
@@ -10,9 +12,11 @@ const friendsSlice = createSlice({
       state = action.payload;
       return state;
     },
-    clearFriends: (state) => FRIENDS_INITIAL_STATE,
+  
+    clearFriends: () => FRIENDS_INITIAL_STATE,
   },
 });
 
-export const { setMyFriends ,clearFriends} = friendsSlice.actions;
+export const { setMyFriends, clearFriends } =
+  friendsSlice.actions;
 export default friendsSlice.reducer;

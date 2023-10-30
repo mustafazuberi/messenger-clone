@@ -10,3 +10,8 @@ export type SendNotificationParam = {
   to: User;
   by: User;
 };
+
+export type OnlineInfo = {
+  isActive: boolean;
+  lastActive: number;
+};

@@ -4,6 +4,7 @@ type Friend = {
   emailVerified: boolean;
   displayName: string;
   isActive: boolean;
+  lastActive?: number;
   gender?: "male" | "female" | "other" | string;
   photoUrl?: string;
   DOB?: Date;

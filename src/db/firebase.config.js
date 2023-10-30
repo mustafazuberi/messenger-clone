@@ -3,6 +3,7 @@ import { getAuth } from "firebase/auth";
 import { getFirestore, writeBatch } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getMessaging } from "firebase/messaging";
+import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDaAUVXiU_EGWmk6UXBniSp1q7mgrtGXmk",
@@ -19,5 +20,6 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 const batch = writeBatch(db);
+const database = getDatabase(app);
 
-export { app, db, storage, auth, batch };
+export { app, db, storage, auth, batch,database };

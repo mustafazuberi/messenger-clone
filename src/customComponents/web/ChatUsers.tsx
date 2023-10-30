@@ -10,9 +10,13 @@ import UserImageAvatar from "./UserImageAvatar";
 import useChat from "@/hooks/useChat";
 import Room from "@/types/types.room";
 import Friend from "@/types/type.friend";
-import User from "@/types/types.user";
+import { OnlineInfo } from "@/types/types.miscellaneous";
 
-const ChatUsers = () => {
+const ChatUsers = ({
+  activeUsers,
+}: {
+  activeUsers: { [x: string]: OnlineInfo };
+}) => {
   const { handleOnChatUser } = useChat();
   const friends: FriendsState = useSelector(
     (state: RootState) => state.friends
@@ -23,8 +27,8 @@ const ChatUsers = () => {
     let chatUser: Friend | null = null;
     for (const friend of friends.data) {
       for (const uid in room.userDetails) {
-        if (room.userDetails.hasOwnProperty(uid) && uid === friend.uid) {
-          chatUser = friends.data.find((f: Friend) => f.uid === uid) || null;
+        if (room.userDetails.hasOwnProperty(uid) && friend.uid === uid) {
+          chatUser = friend;
           break;
         }
       }
@@ -32,9 +36,10 @@ const ChatUsers = () => {
         break;
       }
     }
-    if (!chatUser) return null;
     return chatUser;
   };
+
+
   return (
     <main className="flex flex-row justify-between p-2 items-center mt-2">
       <section className="flex flex-col gap-y-2 min-w-full overflow-y-auto">
@@ -50,7 +55,7 @@ const ChatUsers = () => {
                 >
                   <section className="flex flex-row gap-x-3 items-center">
                     <section>
-                      <UserImageAvatar user={friend} />
+                      <UserImageAvatar user={friend} size={10} />
                     </section>
                     <section className="flex flex-col ">
                       <h3>{friend.displayName}</h3>
@@ -63,8 +68,11 @@ const ChatUsers = () => {
                       </p>
                     </section>
                   </section>
-                  <section className="w-4 h-4 rounded-full bg-green-600"></section>
-                  {/* <section className="w-4 h-4 rounded-full bg-gray-600"></section> */}
+                  {activeUsers[friend.uid]?.isActive ? (
+                    <section className="w-4 h-4 rounded-full bg-green-600"></section>
+                  ) : (
+                    <section className="w-4 h-4 rounded-full bg-gray-600"></section>
+                  )}
                 </section>
               );
             })

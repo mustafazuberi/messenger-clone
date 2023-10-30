@@ -54,7 +54,9 @@ const ChatRoomFooter = () => {
           className="text-[17px]"
         />
         {messageInp ? (
-          <BsFillSendFill className="text-3xl text-gray-400" />
+          <button type="submit">
+            <BsFillSendFill className="text-3xl text-gray-400" />
+          </button>
         ) : (
           <AiFillAudio className="text-4xl cursor-pointer text-gray-400" />
         )}

@@ -10,6 +10,7 @@ import useReq from "@/hooks/useReq";
 import { RootState } from "@/store";
 import FindFriendsSuspense from "./FindFriendsSuspense";
 import useChat from "@/hooks/useChat";
+import useActive from "@/hooks/useActive";
 
 const FindFriends = React.lazy(() => import("./FindFriends"));
 
@@ -19,6 +20,11 @@ const ChatsBox = () => {
   const { getAllUsers, getMyFriends, handleAuthStateChange } = useHome();
   const { getChatRequests, getSentRequests, getReceivedRequests } = useReq();
   const { getMyRooms } = useChat();
+  const {
+    detectingConnectionState,
+    handleOnDisconnectAndConnect,
+    activeUsers,
+  } = useActive();
 
   useEffect(() => {
     if (currentUser.uid) {
@@ -31,6 +37,12 @@ const ChatsBox = () => {
       getMyRooms();
     }
   }, [currentUser.uid]);
+
+  useEffect(() => {
+    // Online offline functions
+    detectingConnectionState();
+    handleOnDisconnectAndConnect();
+  }, []);
 
   const isFindFriendsTab = params.get("tab") === "findFriends";
   const isRequestsTab = params.get("tab") === "requests";
@@ -46,7 +58,7 @@ const ChatsBox = () => {
       ) : (
         <section>
           <ChatsBoxNav />
-          <ChatUsers />
+          <ChatUsers activeUsers={activeUsers} />
         </section>
       )}
     </main>
