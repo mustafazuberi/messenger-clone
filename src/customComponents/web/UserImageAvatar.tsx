@@ -14,13 +14,15 @@ const UserImageAvatar = ({ user, size }: props) => {
         className={`rounded-full ${sizeW} ${sizeH}`}
         alt="@shadcn"
       />
-      <AvatarFallback>
-        <div
-          className={`${sizeW} ${sizeH} rounded-full flex justify-center items-center border text-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400`}
-        >
-          {user.displayName.charAt(0)[0]?.toUpperCase()}
-        </div>
-      </AvatarFallback>
+      {user.photoUrl && (
+        <AvatarFallback>
+          <div
+            className={`${sizeW} ${sizeH} rounded-full flex justify-center items-center border text-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400`}
+          >
+            {user.displayName.charAt(0)[0]?.toUpperCase()}
+          </div>
+        </AvatarFallback>
+      )}
     </Avatar>
   );
 };

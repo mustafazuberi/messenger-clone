@@ -11,7 +11,7 @@ const ChatsBoxNav = () => {
   const router = useRouter();
   const { handleOnSearchMessenger } = useHome();
   return (
-    <main className="flex flex-col justify-between p-2 py-4 w-full gap-y-3">
+    <main className="flex flex-col justify-between p-2 w-full gap-y-3">
       <section className="flex flex-row justify-between items-center w-full">
         <section>
           <h3 className="text-2xl font-bold">Chats</h3>

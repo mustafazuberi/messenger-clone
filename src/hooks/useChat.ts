@@ -26,10 +26,14 @@ import User from "@/types/types.user";
 
 const useChat = () => {
   const dispatch = useDispatch();
-  const sectionRefMessagesDiv = useRef<HTMLDivElement | null>(null);
+  
+  const friends = useSelector((state: RootState) => state.friends);
   const rooms = useSelector((state: RootState) => state.rooms);
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const currentUser = useSelector((state: RootState) => state.currentUser);
+
+  const sectionRefMessagesDiv = useRef<HTMLDivElement | null>(null);
+  
   const [messageInp, setMessageInp] = useState<string>("");
   const [activeRoomMessages, setActiveRoomMessages] =
     useState<ActiveRoomMessages>({ data: [], status: STATUSES.LOADING });
@@ -94,6 +98,22 @@ const useChat = () => {
       }
     );
     return unsubscribe;
+  };
+
+  const getFriendFromRoomUsers = (room: Room): Friend | null => {
+    let chatUser: Friend | null = null;
+    for (const friend of friends.data) {
+      for (const uid in room.userDetails) {
+        if (room.userDetails.hasOwnProperty(uid) && friend.uid === uid) {
+          chatUser = friend;
+          break;
+        }
+      }
+      if (chatUser) {
+        break;
+      }
+    }
+    return chatUser;
   };
 
   const handleOnChatUser = (friend: Friend) => {
@@ -161,6 +181,27 @@ const useChat = () => {
     }
   };
 
+  const getTimeDifference = (milliSeconds: number): string => {
+    const timeDifferenceMs = Date.now() - milliSeconds;
+    const seconds = Math.floor(timeDifferenceMs / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const years = Math.floor(days / 365);
+
+    if (years > 0) {
+      return `${years} year${years === 1 ? "" : "s"}`;
+    } else if (days > 0) {
+      return `${days} day${days === 1 ? "" : "s"}`;
+    } else if (hours > 0) {
+      return `${hours} hour${hours === 1 ? "" : "s"}`;
+    } else if (minutes > 0) {
+      return `${minutes} minute${minutes === 1 ? "" : "s"}`;
+    } else {
+      return `${seconds} second${seconds === 1 ? "" : "s"}`;
+    }
+  };
+
   return {
     messageInp,
     setMessageInp,
@@ -170,8 +211,10 @@ const useChat = () => {
     sendMessage,
     activeRoomMessages,
     getActiveRoomMessages,
+    getFriendFromRoomUsers,
     scrollSectionToBottom,
     sectionRefMessagesDiv,
+    getTimeDifference,
   };
 };
 
