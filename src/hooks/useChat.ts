@@ -1,7 +1,7 @@
 import { db } from "@/db/firebase.config";
 import { RootState } from "@/store";
 import { STATUSES } from "@/store/intialState";
-import { ActiveRoom, ActiveRoomMessages } from "@/types/chatRoom";
+import { ActiveRoomMessages } from "@/types/chatRoom";
 import { setRooms } from "@/store/slice/roomSlice";
 import Friend from "@/types/type.friend";
 import Message from "@/types/types.message";
@@ -11,8 +11,6 @@ import {
   addDoc,
   collection,
   doc,
-  getDoc,
-  getDocs,
   onSnapshot,
   orderBy,
   query,
@@ -26,14 +24,11 @@ import User from "@/types/types.user";
 
 const useChat = () => {
   const dispatch = useDispatch();
-
   const friends = useSelector((state: RootState) => state.friends);
   const rooms = useSelector((state: RootState) => state.rooms);
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const currentUser = useSelector((state: RootState) => state.currentUser);
-
   const sectionRefMessagesDiv = useRef<HTMLDivElement | null>(null);
-
   const [messageInp, setMessageInp] = useState<string>("");
   const [activeRoomMessages, setActiveRoomMessages] =
     useState<ActiveRoomMessages>({ data: [], status: STATUSES.LOADING });
