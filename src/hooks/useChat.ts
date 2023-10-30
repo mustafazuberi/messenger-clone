@@ -26,14 +26,14 @@ import User from "@/types/types.user";
 
 const useChat = () => {
   const dispatch = useDispatch();
-  
+
   const friends = useSelector((state: RootState) => state.friends);
   const rooms = useSelector((state: RootState) => state.rooms);
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const currentUser = useSelector((state: RootState) => state.currentUser);
 
   const sectionRefMessagesDiv = useRef<HTMLDivElement | null>(null);
-  
+
   const [messageInp, setMessageInp] = useState<string>("");
   const [activeRoomMessages, setActiveRoomMessages] =
     useState<ActiveRoomMessages>({ data: [], status: STATUSES.LOADING });
@@ -197,8 +197,10 @@ const useChat = () => {
       return `${hours} hour${hours === 1 ? "" : "s"}`;
     } else if (minutes > 0) {
       return `${minutes} minute${minutes === 1 ? "" : "s"}`;
-    } else {
+    } else if (seconds > 1) {
       return `${seconds} second${seconds === 1 ? "" : "s"}`;
+    } else {
+      return "";
     }
   };
 

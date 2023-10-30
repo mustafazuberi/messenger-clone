@@ -12,11 +12,11 @@ import Friend from "@/types/type.friend";
 import { OnlineInfo } from "@/types/types.miscellaneous";
 import Message from "@/types/types.message";
 
-type props = {
+interface ChatUsersProps {
   activeUsers: { [x: string]: OnlineInfo };
-};
+}
 
-const ChatUsers = ({ activeUsers }: props) => {
+const ChatUsers: React.FC<ChatUsersProps> = ({ activeUsers }) => {
   const friends = useSelector((state: RootState) => state.friends);
   const rooms = useSelector((state: RootState) => state.rooms);
   const { handleOnChatUser, getFriendFromRoomUsers } = useChat();
@@ -27,7 +27,7 @@ const ChatUsers = ({ activeUsers }: props) => {
         {rooms?.length ? (
           rooms?.map((room: Room) => {
             const friend: Friend | null = getFriendFromRoomUsers(room);
-            if (!friend) return;
+            if (!friend) return null; // Return null when no friend found
             return (
               <section
                 className="flex flex-row justify-between border-b min-w-full cursor-pointer py-2 pr-2"
@@ -48,9 +48,9 @@ const ChatUsers = ({ activeUsers }: props) => {
                       </section>
                     </section>
                     <section>
-                      {room.lastMessage ? (
+                      {room.lastMessage && (
                         <LastMessage message={room.lastMessage} />
-                      ) : null}
+                      )}
                     </section>
                   </section>
                 </section>
@@ -84,30 +84,26 @@ const NoFriendsToChat = () => {
   );
 };
 
-const LastMessage = ({ message }: { message: Message }) => {
+const LastMessage: React.FC<{ message: Message }> = ({ message }) => {
   const currentUser = useSelector((state: RootState) => state.currentUser);
+  const messageText =
+    message.text && message.senderId === currentUser.uid
+      ? `You: ${message.text}`
+      : message.text;
   return (
     <section>
       <p className="text-gray-500 text-[13px]">
-        {message.text
-          ? `${
-              message.senderId === currentUser.uid ? "You: " : ""
-            } ${message?.text.slice(0, 40)} ${
-              message?.text.length > 40 ? "..." : ""
-            }`
-          : ""}
+        {messageText &&
+          `${messageText.slice(0, 40)}${messageText.length > 40 ? "..." : ""}`}
       </p>
     </section>
   );
 };
 
-const LastActive = ({
-  friend,
-  activeUsers,
-}: {
+const LastActive: React.FC<{
   friend: Friend;
   activeUsers: { [x: string]: OnlineInfo };
-}) => {
+}> = ({ friend, activeUsers }) => {
   const { getTimeDifference } = useChat();
   return (
     <section className="w-full">
@@ -119,12 +115,10 @@ const LastActive = ({
       ) : (
         <section className="flex flex-row gap-x-1">
           <span className="text-gray-600 text-[12px]">
-            Active {getTimeDifference(activeUsers[friend.uid]?.lastActive)}
+            Active {getTimeDifference(activeUsers[friend.uid]?.lastActive)} ago
           </span>
         </section>
       )}
     </section>
   );
 };
-
-const Friend = () => {};
