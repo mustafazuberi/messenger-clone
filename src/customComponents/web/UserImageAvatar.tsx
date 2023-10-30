@@ -1,5 +1,5 @@
 import User from "@/types/types.user";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import React from "react";
 
 type props = { user: User; size?: Number };

@@ -16,11 +16,13 @@ import {
   onSnapshot,
   orderBy,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveRoom } from "@/store/slice/activeRoomSlice";
+import User from "@/types/types.user";
 
 const useChat = () => {
   const dispatch = useDispatch();
@@ -32,29 +34,48 @@ const useChat = () => {
   const [activeRoomMessages, setActiveRoomMessages] =
     useState<ActiveRoomMessages>({ data: [], status: STATUSES.LOADING });
 
-  const createChatRoom = async (users: {
-    [x: string]: boolean;
+  const createChatRoom = async ({
+    sender,
+    reciever,
+  }: {
+    sender: User;
+    reciever: User;
   }): Promise<void> => {
+    const users = {
+      [sender.uid]: true,
+      [reciever.uid]: true,
+    };
+    const userDetails: { [x: string]: User } = {
+      [sender.uid]: sender,
+      [reciever.uid]: reciever,
+    };
     const room: Room = {
       lastConversation: null,
       lastMessage: null,
       users: users,
       createdAt: Date.now(),
+      userDetails: userDetails,
     };
     await addDoc(collection(db, "chatrooms"), { ...room });
   };
 
-  const getMyRooms = async () => {
-    const q = query(
-      collection(db, "chatrooms"),
-      where(`users.${currentUser.uid}`, "==", true)
+  const getMyRooms = (): Unsubscribe => {
+    const unsubscribe = onSnapshot(
+      query(
+        query(
+          collection(db, "chatrooms"),
+          where(`users.${currentUser.uid}`, "==", true)
+        )
+      ),
+      (querySnapshot) => {
+        const rooms: Room[] = [];
+        querySnapshot.forEach((doc) => {
+          rooms.push({ id: doc.id, ...doc.data() } as Room);
+        });
+        dispatch(setRooms([...rooms]));
+      }
     );
-    const querySnapshot = await getDocs(q);
-    const rooms: Room[] = [];
-    querySnapshot.forEach((doc) => {
-      rooms.push({ id: doc.id, ...doc.data() } as Room);
-    });
-    dispatch(setRooms([...rooms]));
+    return unsubscribe;
   };
 
   const getActiveRoomMessages = (): Unsubscribe => {
@@ -94,11 +115,16 @@ const useChat = () => {
       senderId: currentUser.uid,
       text: messageInp,
     };
+    setMessageInp("");
     await addDoc(
       collection(db, "chatrooms", activeRoom?.roomDetails?.id!, "messages"),
       message
     );
-    setMessageInp("");
+    // updating last message
+    await updateDoc(doc(db, "chatrooms", activeRoom?.roomDetails?.id!), {
+      lastMessage: message,
+      lastConversation: Date.now(),
+    });
   };
 
   // const scrollSectionToBottom = () => {

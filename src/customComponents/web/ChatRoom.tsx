@@ -29,8 +29,11 @@ const ChatRoom = () => {
         ref={sectionRefMessagesDiv}
       >
         {activeRoomMessages.status === "idle" ? (
-          activeRoomMessages.data?.length &&
-          activeRoomMessages.data.map((msg, i) => <Message msg={msg} key={i} />)
+          activeRoomMessages.data?.length ? (
+            activeRoomMessages.data.map((msg, i) => (
+              <Message msg={msg} key={i} />
+            ))
+          ) : null
         ) : (
           <section className="flex flex-col justify-center items-center min-h-full">
             <TailwindSpinner />

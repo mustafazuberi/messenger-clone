@@ -14,5 +14,5 @@ const roomsSlice = createSlice({
   },
 });
 
-export const { setRooms,clearRooms } = roomsSlice.actions;
+export const { setRooms, clearRooms } = roomsSlice.actions;
 export default roomsSlice.reducer;

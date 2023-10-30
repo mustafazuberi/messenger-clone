@@ -25,11 +25,11 @@ const Message = ({ msg }: { msg: Message }) => {
             <section className="text-[15px] font-extralight">
               {msg.text}
             </section>
-            <section className="flex flex-row justify-between gap-x-1">
+            <section className="flex flex-row justify-between items-end gap-x-1">
               <section className="text-[9px] font-extralight flex items-end">
                 {getFormattedTime(msg.date)}
               </section>
-              {byMe && <section>{false ? <OneCheck /> : <TwoCheck />}</section>}
+              {byMe && <section className="relative mb-1">{false ? <OneCheck /> : <TwoCheck />}</section>}
             </section>
           </section>
         )}

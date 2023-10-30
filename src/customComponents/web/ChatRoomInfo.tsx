@@ -57,7 +57,7 @@ const ChatRoomFriendBasicInfo = ({ chatWith }: { chatWith: Friend }) => {
         <h3 className="text-gray-300 text-4xl font-extrabold">
           {chatWith.displayName}
         </h3>
-        <span className="text-gray-400 text-xl font-extralight italic">
+        <span className="text-gray-400 text-[11 px] font-extralight italic">
           {chatWith.email}
         </span>
       </section>

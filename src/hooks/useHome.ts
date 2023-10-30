@@ -13,6 +13,7 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { clearRequests } from "@/store/slice/chatRequestsSlice";
+import { clearActiveRoom } from "@/store/slice/activeRoomSlice";
 
 const useHome = () => {
   const router = useRouter();
@@ -71,6 +72,7 @@ const useHome = () => {
     dispatch(clearAllUsers());
     dispatch(clearRequests());
     dispatch(clearFriends());
+    dispatch(clearActiveRoom());
   };
 
   const handleOnSearchMessenger = (e: React.ChangeEvent<HTMLInputElement>) => {

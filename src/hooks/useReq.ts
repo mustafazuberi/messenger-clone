@@ -122,8 +122,8 @@ const useReq = () => {
           by: request.receiver,
         }),
         createChatRoom({
-          [request.sender.uid]: true,
-          [currentUser.uid]: true,
+          sender: request.sender,
+          reciever: request.receiver,
         }),
       ]);
 
