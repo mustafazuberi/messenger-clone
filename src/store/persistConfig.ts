@@ -5,7 +5,7 @@ import themeReducer from "@/store/slice/themeSlice";
 import friendsReducer from "@/store/slice/friendsSlice";
 import chatRequestsReducer from "@/store/slice/chatRequestsSlice";
 import notificationsReducer from "@/store/slice/notificationsSlice";
-import roomsReducer from "@/store/slice/roomSlice";
+import roomsReducer from "@/store/slice/roomsSlice";
 import activeRoomReducer from "@/store/slice/activeRoomSlice";
 
 import storage from "redux-persist/lib/storage";

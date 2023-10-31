@@ -1,4 +1,3 @@
-import Friend from "./type.friend";
 import Message from "./types.message";
 import User from "./types.user";
 

@@ -14,6 +14,7 @@ const ChatRoom = () => {
     getActiveRoomMessages,
     scrollSectionToBottom,
     sectionRefMessagesDiv,
+    updateActiveRoomUnseenMessagesToSeen,
   } = useChat();
 
   useEffect(() => {
@@ -22,6 +23,10 @@ const ChatRoom = () => {
 
   useEffect(() => {
     scrollSectionToBottom();
+  }, [activeRoomMessages.data.length]);
+
+  useEffect(() => {
+    if (activeRoomMessages.data.length) updateActiveRoomUnseenMessagesToSeen();
   }, [activeRoomMessages.data.length]);
 
   return (

@@ -2,7 +2,7 @@ import { db } from "@/db/firebase.config";
 import { RootState } from "@/store";
 import { STATUSES } from "@/store/intialState";
 import { ActiveRoomMessages } from "@/types/chatRoom";
-import { setRooms } from "@/store/slice/roomSlice";
+import { setRooms } from "@/store/slice/roomsSlice";
 import Friend from "@/types/type.friend";
 import Message from "@/types/types.message";
 import Room from "@/types/types.room";
@@ -10,12 +10,15 @@ import { Unsubscribe } from "firebase/auth";
 import {
   addDoc,
   collection,
+  collectionGroup,
   doc,
+  getDocs,
   onSnapshot,
   orderBy,
   query,
   updateDoc,
   where,
+  writeBatch,
 } from "firebase/firestore";
 import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,9 +32,13 @@ const useChat = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const sectionRefMessagesDiv = useRef<HTMLDivElement | null>(null);
+
   const [messageInp, setMessageInp] = useState<string>("");
   const [activeRoomMessages, setActiveRoomMessages] =
     useState<ActiveRoomMessages>({ data: [], status: STATUSES.LOADING });
+  const [roomsUnseenMessages, setRoomsUnseenMessages] = useState<{
+    [x: string]: Message[];
+  }>({});
 
   const createChatRoom = async ({
     sender,
@@ -119,6 +126,64 @@ const useChat = () => {
     dispatch(
       setActiveRoom({ roomDetails: { ...room }, chatWith: { ...friend } })
     );
+  };
+
+  const getRoomsUnseenMessages = async () => {
+    // const unDeliveredMessagesBatch = writeBatch(db);
+    rooms.forEach((room: Room) => {
+      const unsubscribe = onSnapshot(
+        query(
+          collection(db, "chatrooms", room?.id!, "messages"),
+          where("seen", "==", false)
+        ),
+        (querySnapshot) => {
+          const messages: Message[] = [];
+          querySnapshot.forEach((doc) => {
+            if (doc.data().senderId !== currentUser.uid) {
+              messages.push({ ...(doc.data() as Message) });
+              // Here after adding in array we are updating delivered to true
+              // const docRef = doc.ref;
+              // unDeliveredMessagesBatch.update(docRef, {
+              //   delivered: true,
+              // });
+            }
+          });
+          setRoomsUnseenMessages((prev) => ({
+            ...prev,
+            [room.id!]: messages,
+          }));
+        }
+      );
+      return unsubscribe;
+    });
+    // await unDeliveredMessagesBatch.commit();
+  };
+
+  // This will update message to seen when we opens any chatroom
+  const updateActiveRoomUnseenMessagesToSeen = async () => {
+    if (!activeRoom.roomDetails?.id) return;
+    const roomId = activeRoom.roomDetails?.id;
+    const messagesCollectionRef = collection(
+      db,
+      "chatrooms",
+      roomId,
+      "messages"
+    );
+    try {
+      const querySnapshotMessages = await getDocs(messagesCollectionRef);
+      const unseenMessagesBatch = writeBatch(db);
+      querySnapshotMessages.forEach((doc) => {
+        if (doc.data().senderId !== currentUser.uid) {
+          const docRef = doc.ref;
+          unseenMessagesBatch.update(docRef, {
+            seen: true,
+          });
+        }
+      });
+      await unseenMessagesBatch.commit();
+    } catch (err) {
+      console.log(err, "Error while updating unseen messages to seen");
+    }
   };
 
   const sendMessage = async (e: React.FormEvent) => {
@@ -212,6 +277,9 @@ const useChat = () => {
     scrollSectionToBottom,
     sectionRefMessagesDiv,
     getTimeDifference,
+    getRoomsUnseenMessages,
+    roomsUnseenMessages,
+    updateActiveRoomUnseenMessagesToSeen,
   };
 };
 

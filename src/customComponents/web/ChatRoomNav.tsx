@@ -5,6 +5,8 @@ import ChatRoomFriendInfo from "./ChatRoomInfo";
 import UserImageAvatar from "./UserImageAvatar";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import useChat from "@/hooks/useChat";
+import useActive from "@/hooks/useActive";
 
 const ChatRoomNav = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
@@ -14,7 +16,14 @@ const ChatRoomNav = () => {
         {activeRoom.chatWith && (
           <UserImageAvatar user={activeRoom.chatWith} size={10} />
         )}
-        {activeRoom.chatWith?.displayName}
+        <section className="flex flex-col">
+          <section>{activeRoom.chatWith?.displayName}</section>
+          <section className="text-[12px]">
+            {/* {`Active ${getTimeDifference(
+              activeUsers[activeRoom.chatWith!.uid]?.lastActive
+            )} ago`} */}
+          </section>
+        </section>
       </section>
       <section className="flex flex-row gap-x-4 items-center justify-center">
         <IoCallSharp className="text-2xl cursor-pointer" />

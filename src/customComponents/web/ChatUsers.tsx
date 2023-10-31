@@ -3,7 +3,7 @@ import { RootState } from "@/store";
 import { STATUSES } from "@/store/intialState";
 import { useSelector } from "react-redux";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import UsersSkeleton from "./UsersSkeleton";
 import UserImageAvatar from "./UserImageAvatar";
 import useChat from "@/hooks/useChat";
@@ -19,7 +19,16 @@ interface ChatUsersProps {
 const ChatUsers: React.FC<ChatUsersProps> = ({ activeUsers }) => {
   const friends = useSelector((state: RootState) => state.friends);
   const rooms = useSelector((state: RootState) => state.rooms);
-  const { handleOnChatUser, getFriendFromRoomUsers } = useChat();
+  const {
+    handleOnChatUser,
+    getFriendFromRoomUsers,
+    getRoomsUnseenMessages,
+    roomsUnseenMessages,
+  } = useChat();
+
+  useEffect(() => {
+    if (rooms.length) getRoomsUnseenMessages();
+  }, [rooms.length]);
 
   return (
     <main className="flex flex-row justify-between p-2 items-center">
@@ -48,8 +57,19 @@ const ChatUsers: React.FC<ChatUsersProps> = ({ activeUsers }) => {
                       </section>
                     </section>
                     <section>
-                      {room.lastMessage && (
+                      {room.lastMessage &&
+                      !roomsUnseenMessages[room.id!]?.length ? (
                         <LastMessage message={room.lastMessage} />
+                      ) : (
+                        <p className="text-gray-500 text-[13px]">
+                          {`${
+                            roomsUnseenMessages[room.id!]?.length
+                          } new message${
+                            roomsUnseenMessages[room.id!]?.length > 1
+                              ? "s."
+                              : "."
+                          }`}
+                        </p>
                       )}
                     </section>
                   </section>

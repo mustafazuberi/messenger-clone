@@ -1,5 +1,6 @@
 import { database } from "@/db/firebase.config";
 import { RootState } from "@/store";
+import Message from "@/types/types.message";
 import { OnlineInfo } from "@/types/types.miscellaneous";
 import {
   ref,
