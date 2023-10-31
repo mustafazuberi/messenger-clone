@@ -16,7 +16,7 @@ const page = () => {
     );
   }
   return (
-    <section className="w-full">
+    <section className="w-full min-h-[90vh] max-h-[90vh]">
       <ChatRoom />
     </section>
   );

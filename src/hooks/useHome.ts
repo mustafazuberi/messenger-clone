@@ -1,5 +1,5 @@
 import { useToast } from "@/components/ui/use-toast";
-import { auth, db } from "@/db/firebase.config";
+import { auth, database, db } from "@/db/firebase.config";
 import { RootState } from "@/store";
 import { STATUSES } from "@/store/intialState";
 import { clearAllUsers, setAllUsers } from "@/store/slice/allUsersSlice";
@@ -14,6 +14,8 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { clearRequests } from "@/store/slice/chatRequestsSlice";
 import { clearActiveRoom } from "@/store/slice/activeRoomSlice";
+import { serverTimestamp, set } from "firebase/database";
+import { ref } from "firebase/database";
 
 const useHome = () => {
   const router = useRouter();
@@ -55,6 +57,13 @@ const useHome = () => {
     try {
       await signOut(auth);
       clearReduxData();
+      // Setting user offline
+      const userIsActiveRef = ref(database, `users/${currentUser.uid}`);
+      set(userIsActiveRef, {
+        isActive: false,
+        lastActive: serverTimestamp(),
+      });
+      //
       toast({
         description: `Signed out successfully!`,
       });

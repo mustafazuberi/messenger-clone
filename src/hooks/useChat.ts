@@ -195,7 +195,7 @@ const useChat = () => {
     } else if (seconds > 1) {
       return `${seconds} second${seconds === 1 ? "" : "s"}`;
     } else {
-      return "";
+      return "1 second";
     }
   };
 

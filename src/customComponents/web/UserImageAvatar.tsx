@@ -14,7 +14,7 @@ const UserImageAvatar = ({ user, size }: props) => {
         className={`rounded-full ${sizeW} ${sizeH}`}
         alt="@shadcn"
       />
-      {user.photoUrl && (
+      {!user.photoUrl && (
         <AvatarFallback>
           <div
             className={`${sizeW} ${sizeH} rounded-full flex justify-center items-center border text-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400`}

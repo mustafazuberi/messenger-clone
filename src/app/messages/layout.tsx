@@ -7,8 +7,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main>
-      <section className="flex flex-row max-h-[90vh] min-h-[90vh]">
+    <main className="max-h-[90vh] min-h-[90vh]">
+      <section className="flex flex-row">
         <ChatsBox />
         {children}
       </section>

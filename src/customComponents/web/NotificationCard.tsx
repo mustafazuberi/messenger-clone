@@ -47,7 +47,11 @@ const NotificationCard = (notificationCardProps: NotificationCardProps) => {
                   className="grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0 cursor-pointer opacity-80 hover:opacity-100"
                   onClick={() => handleOnNotification(notification)}
                 >
-                  <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
+                  {notification.isRequestRead ? (
+                    <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
+                  ) : (
+                    <span />
+                  )}
                   <div className="space-y-1">
                     <p className="text-sm font-medium leading-1">
                       {notification.message}

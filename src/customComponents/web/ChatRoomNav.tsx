@@ -9,7 +9,7 @@ import { RootState } from "@/store";
 const ChatRoomNav = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
   return (
-    <main className="flex flex-row py-4 justify-between border-b sm:px-5 px-2 ">
+    <main className="flex flex-row py-3 justify-between border-b sm:px-5 px-2 ">
       <section className="flex flex-row gap-x-2 items-center">
         {activeRoom.chatWith && (
           <UserImageAvatar user={activeRoom.chatWith} size={10} />

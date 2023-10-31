@@ -4,8 +4,11 @@ import ChatRoomFooter from "./ChatRoomFooter";
 import Message from "./Message";
 import useChat from "@/hooks/useChat";
 import TailwindSpinner from "./TailwindSpinner";
+import { RootState } from "@/store";
+import { useSelector } from "react-redux";
 
 const ChatRoom = () => {
+  const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const {
     activeRoomMessages,
     getActiveRoomMessages,
@@ -15,17 +18,17 @@ const ChatRoom = () => {
 
   useEffect(() => {
     getActiveRoomMessages();
-  }, []);
+  }, [activeRoom.chatWith?.uid]);
 
   useEffect(() => {
     scrollSectionToBottom();
   }, [activeRoomMessages.data.length]);
 
   return (
-    <main className="flex flex-col justify-between min-h-full">
+    <main className="flex flex-col justify-between min-h-[90vh] max-h-[90vh]">
       <ChatRoomNav />
       <section
-        className="px-6 flex flex-col gap-y-2 min-h-[64vh] max-h-[64vh] overflow-y-scroll py-4 h-32 scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-track-inherit"
+        className="px-6 flex flex-col gap-y-2 min-h-full max-h-full flex-1 overflow-y-scroll py-4 h-32 scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-track-inherit"
         ref={sectionRefMessagesDiv}
       >
         {activeRoomMessages.status === "idle" ? (
