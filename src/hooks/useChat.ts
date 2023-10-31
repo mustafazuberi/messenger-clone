@@ -146,7 +146,7 @@ const useChat = () => {
       const element = sectionRefMessagesDiv.current as HTMLDivElement;
       const start = element.scrollTop;
       const end = element.scrollHeight;
-      const duration = 300; // 0.5 seconds
+      const duration = 100; // 0.5 seconds
 
       let startTime: number | null = null;
 

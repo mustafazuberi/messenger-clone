@@ -27,6 +27,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Friend from "@/types/type.friend";
 import UserImageAvatar from "./UserImageAvatar";
+import Image from "next/image";
 
 const ChatRoomFriendInfo = ({ chatWith }: { chatWith: Friend }) => {
   return (
@@ -50,10 +51,24 @@ export default ChatRoomFriendInfo;
 const ChatRoomFriendBasicInfo = ({ chatWith }: { chatWith: Friend }) => {
   return (
     <main className="w-full flex flex-col gap-y-3 justify-between items-center">
-      <section className="px-6">
-        {chatWith.photoUrl && <UserImageAvatar user={chatWith} size={48} />}
+      <section className="px-6 flex justify-center">
+        {chatWith.photoUrl ? (
+          <Image
+            src={chatWith.photoUrl}
+            alt="Profile Info Profile Picture"
+            width={100}
+            height={100}
+            className="w-40 h-40 rounded-full"
+          />
+        ) : (
+          <div
+            className={`w-40 h-40 rounded-full flex justify-center items-center border text-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400`}
+          >
+            {chatWith.displayName.charAt(0)[0]?.toUpperCase()}
+          </div>
+        )}
       </section>
-      <section className="max-w-40">
+      <section className="max-w-40 text-center">
         <h3 className="text-gray-300 text-4xl font-extrabold">
           {chatWith.displayName}
         </h3>
