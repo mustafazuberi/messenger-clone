@@ -29,9 +29,10 @@ const ChatRoom = () => {
   }, [activeRoomMessages.data.length]);
 
   useEffect(() => {
+    console.log("senn message", activeRoomMessages.data.length && isVisible);
     if (activeRoomMessages.data.length && isVisible)
       updateActiveRoomUnseenMessagesToSeen();
-  }, [activeRoomMessages.data.length, activeRoom.chatWith?.uid]);
+  }, [activeRoomMessages.data.length, activeRoom.chatWith?.uid, isVisible]);
 
   return (
     <main className="flex flex-col justify-between min-h-[90vh] max-h-[90vh]">
