@@ -9,6 +9,8 @@ import { useSelector } from "react-redux";
 
 const ChatRoom = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
+  const currentUser = useSelector((state: RootState) => state.currentUser);
+  const lastMsg = activeRoom.roomDetails?.lastMessage || null;
   const {
     activeRoomMessages,
     getActiveRoomMessages,
@@ -32,22 +34,29 @@ const ChatRoom = () => {
   return (
     <main className="flex flex-col justify-between min-h-[90vh] max-h-[90vh]">
       <ChatRoomNav />
-      <section
-        className="px-6 flex flex-col justify-end gap-y-2 min-h-full max-h-full flex-1 overflow-y-scroll py-4 h-32 scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-track-inherit"
-        ref={sectionRefMessagesDiv}
-      >
-        {activeRoomMessages.status === "idle" ? (
-          activeRoomMessages.data?.length ? (
-            activeRoomMessages.data.map((msg, i) => (
-              <Message msg={msg} key={i} />
-            ))
-          ) : null
-        ) : (
-          <section className="flex flex-col justify-center items-center min-h-full">
-            <TailwindSpinner />
-          </section>
-        )}
-      </section>
+      {activeRoomMessages.status === "idle" ? (
+        <section
+          // className="  justify-end  h-[64vh] "
+          className="flex flex-col flex-1 gap-y-2 px-6 pt-4 pb-0 overflow-y-scroll scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-track-inherit"
+          ref={sectionRefMessagesDiv}
+        >
+          {activeRoomMessages.data?.length
+            ? activeRoomMessages.data.map((msg, i) => (
+                <Message msg={msg} key={i} />
+              ))
+            : null}
+          {/* Seen or Sen */}
+          {lastMsg && lastMsg.senderId === currentUser.uid ? (
+            <section className="flex flex-row justify-end font-extralight text-[12px]">
+              {lastMsg.seen ? "Seen" : "Sent"}
+            </section>
+          ) : null}
+        </section>
+      ) : (
+        <section className="flex flex-col justify-center items-center min-h-full">
+          <TailwindSpinner />
+        </section>
+      )}
       <ChatRoomFooter />
     </main>
   );

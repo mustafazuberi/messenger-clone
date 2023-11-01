@@ -29,7 +29,11 @@ const Message = ({ msg }: { msg: Message }) => {
               <section className="text-[9px] font-extralight flex items-end">
                 {getFormattedTime(msg.date)}
               </section>
-              {byMe && <section className="relative mb-1">{false ? <OneCheck /> : <TwoCheck />}</section>}
+              {byMe && (
+                <section className="relative mb-1">
+                  {false ? <OneCheck /> : <TwoCheck />}
+                </section>
+              )}
             </section>
           </section>
         )}
