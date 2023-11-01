@@ -29,7 +29,6 @@ const ChatRoom = () => {
   }, [activeRoomMessages.data.length]);
 
   useEffect(() => {
-    console.log("senn message", activeRoomMessages.data.length && isVisible);
     if (activeRoomMessages.data.length && isVisible)
       updateActiveRoomUnseenMessagesToSeen();
   }, [activeRoomMessages.data.length, activeRoom.chatWith?.uid, isVisible]);
