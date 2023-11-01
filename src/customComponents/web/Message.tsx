@@ -17,8 +17,8 @@ const Message = ({ msg }: { msg: Message }) => {
     >
       <section
         className={`${
-          byMe ? "bg-[#3b82f6]" : "bg-[#1e293b]"
-        } text-white max-w-[70%] px-2 py-2 rounded-[6px] rounded-tr-none`}
+          byMe ? "bg-[#005c4b]" : "bg-[#1e293b]"
+        } max-w-[70%] px-2 py-2 rounded-[6px] rounded-tr-none`}
       >
         {msg.text && (
           <section className="flex flex-row justify-between gap-x-3">
@@ -31,7 +31,7 @@ const Message = ({ msg }: { msg: Message }) => {
               </section>
               {byMe && (
                 <section className="relative mb-1">
-                  {false ? <OneCheck /> : <TwoCheck />}
+                  <TwoCheck seen={msg.seen} /> 
                 </section>
               )}
             </section>
@@ -44,18 +44,15 @@ const Message = ({ msg }: { msg: Message }) => {
 
 export default Message;
 
-const OneCheck = () => {
-  return (
-    <section className="flex flex-col justify-end items-end">
-      <IoMdCheckmark className="text-gray-300 relative top-1" />
-    </section>
-  );
-};
 
-const TwoCheck = () => {
+const TwoCheck = ({ seen }: { seen: boolean }) => {
   return (
     <section className="flex flex-col justify-end items-end">
-      <IoCheckmarkDoneSharp className="text-gray-300 relative top-1" />
+      <IoCheckmarkDoneSharp
+        className={`${
+          seen ? "text-[#2c90a0]" : "text-gray-300"
+        } relative top-1`}
+      />
     </section>
   );
 };

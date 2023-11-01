@@ -45,12 +45,6 @@ const ChatRoom = () => {
                 <Message msg={msg} key={i} />
               ))
             : null}
-          {/* Seen or Sen */}
-          {lastMsg && lastMsg.senderId === currentUser.uid ? (
-            <section className="flex flex-row justify-end font-extralight text-[12px]">
-              {lastMsg.seen ? "Seen" : "Sent"}
-            </section>
-          ) : null}
         </section>
       ) : (
         <section className="flex flex-col justify-center items-center min-h-full">

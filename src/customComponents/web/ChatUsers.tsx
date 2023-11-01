@@ -57,15 +57,18 @@ const ChatUsers = () => {
                       !roomsUnseenMessages[room.id!]?.length ? (
                         <LastMessage message={room.lastMessage} />
                       ) : (
-                        <p className="text-gray-500 text-[13px]">
-                          {`${
-                            roomsUnseenMessages[room.id!]?.length
-                          } new message${
-                            roomsUnseenMessages[room.id!]?.length > 1
-                              ? "s."
-                              : "."
-                          }`}
-                        </p>
+                        <section className="flex flex-row gap-x-1 items-center">
+                          <span className="w-2 h-2 rounded-full bg-blue-700" />
+                          <p className="text-gray-700 font-extrabold text-[13px]">
+                            {`${
+                              roomsUnseenMessages[room.id!]?.length
+                            } new message${
+                              roomsUnseenMessages[room.id!]?.length > 1
+                                ? "s."
+                                : "."
+                            }`}
+                          </p>
+                        </section>
                       )}
                     </section>
                   </section>

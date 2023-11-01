@@ -8,6 +8,7 @@ import Message from "@/types/types.message";
 import Room from "@/types/types.room";
 import { Unsubscribe } from "firebase/auth";
 import {
+  WriteBatch,
   addDoc,
   collection,
   collectionGroup,
@@ -129,7 +130,6 @@ const useChat = () => {
   };
 
   const getRoomsUnseenMessages = async () => {
-    // const unDeliveredMessagesBatch = writeBatch(db);
     rooms.forEach((room: Room) => {
       const unsubscribe = onSnapshot(
         query(
@@ -141,11 +141,6 @@ const useChat = () => {
           querySnapshot.forEach((doc) => {
             if (doc.data().senderId !== currentUser.uid) {
               messages.push({ ...(doc.data() as Message) });
-              // Here after adding in array we are updating delivered to true
-              // const docRef = doc.ref;
-              // unDeliveredMessagesBatch.update(docRef, {
-              //   delivered: true,
-              // });
             }
           });
           setRoomsUnseenMessages((prev) => ({
@@ -156,7 +151,6 @@ const useChat = () => {
       );
       return unsubscribe;
     });
-    // await unDeliveredMessagesBatch.commit();
   };
 
   // This will update message to seen when we opens any chatroom
@@ -186,6 +180,7 @@ const useChat = () => {
     }
   };
 
+
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     const message: Message = {
@@ -193,6 +188,7 @@ const useChat = () => {
       seen: false,
       senderId: currentUser.uid,
       text: messageInp,
+      delivered: false,
     };
     setMessageInp("");
     await addDoc(

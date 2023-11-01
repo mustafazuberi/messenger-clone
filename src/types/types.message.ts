@@ -5,6 +5,7 @@ type Message = {
   senderId: string;
   date: number;
   seen: boolean;
+  delivered: boolean;
 };
 
 export default Message;
