@@ -7,7 +7,7 @@ import chatRequestsReducer from "@/store/slice/chatRequestsSlice";
 import notificationsReducer from "@/store/slice/notificationsSlice";
 import roomsReducer from "@/store/slice/roomsSlice";
 import activeRoomReducer from "@/store/slice/activeRoomSlice";
-
+import activeUsersReducer from "@/store/slice/activeUsersSlice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
 import { combineReducers } from "redux";
@@ -22,13 +22,12 @@ const rootReducer = combineReducers({
   notifications: notificationsReducer,
   rooms: roomsReducer,
   activeRoom: activeRoomReducer,
+  activeUsers: activeUsersReducer,
 });
 
 const persistConfig = {
   key: "root",
   storage,
 };
-
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-
 export default persistedReducer;

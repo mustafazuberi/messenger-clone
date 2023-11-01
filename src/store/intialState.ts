@@ -1,4 +1,5 @@
 import { ActiveRoom } from "@/types/chatRoom";
+import { OnlineInfo } from "@/types/types.miscellaneous";
 import {
   FriendsState,
   ChatRequestsState,
@@ -49,3 +50,5 @@ export const ACTIVE_ROOM_INITIAL_STATE: ActiveRoom = {
   chatWith: null,
   roomDetails: null,
 };
+
+export const ACTIVE_USERS_INITIAL_STATE: { [x: string]: OnlineInfo } = {};

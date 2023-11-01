@@ -16,6 +16,7 @@ import { clearRequests } from "@/store/slice/chatRequestsSlice";
 import { clearActiveRoom } from "@/store/slice/activeRoomSlice";
 import { serverTimestamp, set } from "firebase/database";
 import { ref } from "firebase/database";
+import { clearActiveUsers } from "@/store/slice/activeUsersSlice";
 
 const useHome = () => {
   const router = useRouter();
@@ -82,6 +83,7 @@ const useHome = () => {
     dispatch(clearRequests());
     dispatch(clearFriends());
     dispatch(clearActiveRoom());
+    dispatch(clearActiveUsers());
   };
 
   const handleOnSearchMessenger = (e: React.ChangeEvent<HTMLInputElement>) => {

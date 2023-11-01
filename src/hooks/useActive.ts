@@ -1,6 +1,6 @@
 import { database } from "@/db/firebase.config";
 import { RootState } from "@/store";
-import Message from "@/types/types.message";
+import { setActiveUsers } from "@/store/slice/activeUsersSlice";
 import { OnlineInfo } from "@/types/types.miscellaneous";
 import {
   ref,
@@ -9,13 +9,13 @@ import {
   serverTimestamp,
   update,
 } from "firebase/database";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const useActive = () => {
+  const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.currentUser);
-  const [activeUsers, setActiveUsers] = useState<{ [x: string]: OnlineInfo }>(
-    {}
+  const activeUsers: { [x: string]: OnlineInfo } = useSelector(
+    (state: RootState) => state.activeUsers
   );
 
   const handleOnDisconnectAndConnect = () => {
@@ -34,15 +34,22 @@ const useActive = () => {
     onValue(connectedRef, (snap) => {
       if (snap.val()) {
         const allUsers = snap.val();
+        let activeData = {};
         for (const userId in allUsers) {
-          setActiveUsers((prev) => ({
-            ...prev,
+          activeData = {
+            ...activeData,
             [userId]: {
               isActive: allUsers[userId].isActive,
               lastActive: allUsers[userId].lastActive,
             },
-          }));
+          };
         }
+        dispatch(
+          setActiveUsers({
+            ...activeUsers,
+            ...activeData,
+          })
+        );
       }
     });
   };
@@ -50,7 +57,6 @@ const useActive = () => {
   return {
     handleOnDisconnectAndConnect,
     detectingConnectionState,
-    activeUsers,
   };
 };
 

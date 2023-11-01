@@ -12,11 +12,7 @@ import Friend from "@/types/type.friend";
 import { OnlineInfo } from "@/types/types.miscellaneous";
 import Message from "@/types/types.message";
 
-interface ChatUsersProps {
-  activeUsers: { [x: string]: OnlineInfo };
-}
-
-const ChatUsers: React.FC<ChatUsersProps> = ({ activeUsers }) => {
+const ChatUsers = () => {
   const friends = useSelector((state: RootState) => state.friends);
   const rooms = useSelector((state: RootState) => state.rooms);
   const {
@@ -53,7 +49,7 @@ const ChatUsers: React.FC<ChatUsersProps> = ({ activeUsers }) => {
                         <h3>{friend.displayName}</h3>
                       </section>
                       <section>
-                        <LastActive friend={friend} activeUsers={activeUsers} />
+                        <LastActive friend={friend} />
                       </section>
                     </section>
                     <section>
@@ -120,10 +116,10 @@ const LastMessage: React.FC<{ message: Message }> = ({ message }) => {
   );
 };
 
-const LastActive: React.FC<{
+export const LastActive: React.FC<{
   friend: Friend;
-  activeUsers: { [x: string]: OnlineInfo };
-}> = ({ friend, activeUsers }) => {
+}> = ({ friend }) => {
+  const activeUsers = useSelector((state: RootState) => state.activeUsers);
   const { getTimeDifference } = useChat();
   return (
     <section className="w-full">

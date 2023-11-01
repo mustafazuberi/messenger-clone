@@ -1,12 +1,10 @@
-import Image from "next/image";
 import { IoCallSharp } from "react-icons/io5";
 import { BsFillCameraVideoFill } from "react-icons/bs";
 import ChatRoomFriendInfo from "./ChatRoomInfo";
 import UserImageAvatar from "./UserImageAvatar";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
-import useChat from "@/hooks/useChat";
-import useActive from "@/hooks/useActive";
+import { LastActive } from "./ChatUsers";
 
 const ChatRoomNav = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
@@ -18,11 +16,7 @@ const ChatRoomNav = () => {
         )}
         <section className="flex flex-col">
           <section>{activeRoom.chatWith?.displayName}</section>
-          <section className="text-[12px]">
-            {/* {`Active ${getTimeDifference(
-              activeUsers[activeRoom.chatWith!.uid]?.lastActive
-            )} ago`} */}
-          </section>
+          <LastActive friend={activeRoom.chatWith!} />
         </section>
       </section>
       <section className="flex flex-row gap-x-4 items-center justify-center">

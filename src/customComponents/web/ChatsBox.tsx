@@ -20,11 +20,8 @@ const ChatsBox = () => {
   const { getAllUsers, getMyFriends, handleAuthStateChange } = useHome();
   const { getChatRequests, getSentRequests, getReceivedRequests } = useReq();
   const { getMyRooms } = useChat();
-  const {
-    detectingConnectionState,
-    handleOnDisconnectAndConnect,
-    activeUsers,
-  } = useActive();
+  const { detectingConnectionState, handleOnDisconnectAndConnect } =
+    useActive();
 
   useEffect(() => {
     if (currentUser.uid) {
@@ -58,7 +55,7 @@ const ChatsBox = () => {
       ) : (
         <section>
           <ChatsBoxNav />
-          <ChatUsers activeUsers={activeUsers} />
+          <ChatUsers />
         </section>
       )}
     </main>
