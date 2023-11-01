@@ -51,7 +51,7 @@ const TwoCheck = ({ seen }: { seen: boolean }) => {
       <IoCheckmarkDoneSharp
         className={`${
           seen ? "text-[#2c90a0]" : "text-gray-300"
-        } relative top-1`}
+        } relative font-extrabold top-1`}
       />
     </section>
   );

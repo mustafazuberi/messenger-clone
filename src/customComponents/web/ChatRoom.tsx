@@ -9,8 +9,6 @@ import { useSelector } from "react-redux";
 
 const ChatRoom = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
-  const currentUser = useSelector((state: RootState) => state.currentUser);
-  const lastMsg = activeRoom.roomDetails?.lastMessage || null;
   const {
     activeRoomMessages,
     getActiveRoomMessages,
@@ -29,7 +27,7 @@ const ChatRoom = () => {
 
   useEffect(() => {
     if (activeRoomMessages.data.length) updateActiveRoomUnseenMessagesToSeen();
-  }, [activeRoomMessages.data.length]);
+  }, [activeRoomMessages.data.length, activeRoom.chatWith?.uid]);
 
   return (
     <main className="flex flex-col justify-between min-h-[90vh] max-h-[90vh]">
