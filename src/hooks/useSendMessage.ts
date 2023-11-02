@@ -18,6 +18,13 @@ const useSendMessage = () => {
   const [sendImageLoading, setSendImageLoading] = useState<boolean>(false);
   const [sendImageUrl, setSendImageUrl] = useState<string>("");
   const [sendingImage, setSendingImage] = useState<boolean>(false);
+  const [openImageModal, setOpenImageModal] = useState<{
+    img: string;
+    open: boolean;
+  }>({
+    img: "",
+    open: false,
+  });
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: async (e) => {
@@ -80,6 +87,7 @@ const useSendMessage = () => {
     }
   };
 
+
   return {
     sendMessage,
     messageInp,
@@ -93,6 +101,8 @@ const useSendMessage = () => {
     sendingImage,
     openSendImageModal,
     setOpenSendImageModal,
+    openImageModal,
+    setOpenImageModal,
   };
 };
 

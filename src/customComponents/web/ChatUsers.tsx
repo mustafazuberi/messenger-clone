@@ -9,7 +9,7 @@ import UserImageAvatar from "./UserImageAvatar";
 import useChat from "@/hooks/useChat";
 import Room from "@/types/types.room";
 import Friend from "@/types/type.friend";
-import { OnlineInfo } from "@/types/types.miscellaneous";
+import { MdInsertPhoto } from "react-icons/md";
 import Message from "@/types/types.message";
 
 const ChatUsers = () => {
@@ -114,6 +114,11 @@ const LastMessage: React.FC<{ message: Message }> = ({ message }) => {
       <p className="text-gray-500 text-[13px]">
         {messageText &&
           `${messageText.slice(0, 40)}${messageText.length > 40 ? "..." : ""}`}
+        {message.img && (
+          <div className="flex flex-row gap-x-1 items-center">
+            Photo <MdInsertPhoto className="text-[17px]" />
+          </div>
+        )}
       </p>
     </section>
   );

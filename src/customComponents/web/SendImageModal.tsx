@@ -1,10 +1,4 @@
-import {
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import useSendMessage from "@/hooks/useSendMessage";
 import TailwindSpinner from "./TailwindSpinner";

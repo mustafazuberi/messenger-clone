@@ -98,9 +98,6 @@ const PlusDropdown: React.FC<{
           )}
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-48">
-          {/* On click of photos and vides modal opens so making DropdownMenuItem child of dialog trigger  */}
-          {/* <Dialog> */}
-          {/* <DialogTrigger> */}
           <DropdownMenuItem
             className="flex flex-row gap-x-3 text-[15px] py-3 cursor-pointer min-w-full"
             onClick={() => setOpenSendImageModal(true)}
@@ -108,10 +105,7 @@ const PlusDropdown: React.FC<{
             <IoMdPhotos className="text-2xl text-blue-700" />
             Photos & Videos
           </DropdownMenuItem>
-          {/* </DialogTrigger> */}
 
-          {/* </Dialog> */}
-          {/* ends */}
           <DropdownMenuItem className="flex flex-row gap-x-3 text-[15px] py-3 cursor-pointer">
             <BsCameraFill className="text-2xl text-pink-800" />
             Camera
@@ -122,7 +116,6 @@ const PlusDropdown: React.FC<{
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      {/* Send Image Dialog */}
     </section>
   );
 };

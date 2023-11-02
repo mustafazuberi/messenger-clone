@@ -6,8 +6,17 @@ import { IoMdCheckmark } from "react-icons/io";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import useSendMessage from "@/hooks/useSendMessage";
+import SendImageModal from "./SendImageModal";
+import {
+  Dialog,
+  DialogContent,
+  DialogContentWithoutX,
+} from "@/components/ui/dialog";
+import TailwindSpinner from "./TailwindSpinner";
 
 const Message = ({ msg }: { msg: Message }) => {
+  const { openImageModal, setOpenImageModal } = useSendMessage();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const byMe = msg.senderId === currentUser.uid ? true : false;
 
@@ -49,12 +58,37 @@ const Message = ({ msg }: { msg: Message }) => {
               alt="Chat room image"
               className="w-96 h-96 blur-[2px]"
             />
-            <Button className="absolute top-40 text-black left-32 bg-gray-300">
+            {byMe && (
+              <section className="relative mb-1">
+                <TwoCheck seen={msg.seen} />
+              </section>
+            )}
+            <Button
+              className="absolute top-40 text-black left-32 bg-gray-300"
+              onClick={() =>
+                setOpenImageModal({
+                  img: msg.img ? msg.img : "null",
+                  open: true,
+                })
+              }
+            >
               Open Image
             </Button>
           </section>
         )}
       </section>
+      {openImageModal.open && (
+        <Dialog
+          open={openImageModal.open}
+          onOpenChange={() => setOpenImageModal({ img: "", open: false })}
+        >
+          <DialogContent className="min-h-[200px] ">
+            <section className="w-full mt-4 max-h-[400px] overflow-auto overflow-y-scroll scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-track-inherit">
+              <img src={openImageModal.img} className="h-auto" />
+            </section>
+          </DialogContent>
+        </Dialog>
+      )}
     </section>
   );
 };
