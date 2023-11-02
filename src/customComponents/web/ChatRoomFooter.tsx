@@ -13,8 +13,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Dialog } from "@/components/ui/dialog";
 import EmojiPicker, { Theme } from "emoji-picker-react";
-import useChat from "@/hooks/useChat";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,9 +22,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
+import useSendMessage from "@/hooks/useSendMessage";
+import SendImageModal from "./SendImageModal";
 
 const ChatRoomFooter = () => {
-  const { sendMessage, messageInp, setMessageInp } = useChat();
+  const {
+    sendMessage,
+    messageInp,
+    setMessageInp,
+    openSendImageModal,
+    setOpenSendImageModal,
+  } = useSendMessage();
   return (
     <main className="py-6 sm:px-5 px-2 ">
       <form
@@ -46,7 +54,7 @@ const ChatRoomFooter = () => {
             />
           </PopoverContent>
         </Popover>
-        <PlusDropdown />
+        <PlusDropdown setOpenSendImageModal={setOpenSendImageModal} />
         <Input
           placeholder="Type your message..."
           value={messageInp}
@@ -61,37 +69,60 @@ const ChatRoomFooter = () => {
           <AiFillAudio className="text-4xl cursor-pointer text-gray-400" />
         )}
       </form>
+      {openSendImageModal && (
+        <Dialog
+          open={openSendImageModal}
+          onOpenChange={() => setOpenSendImageModal(false)}
+        >
+          <SendImageModal />
+        </Dialog>
+      )}
     </main>
   );
 };
 
 export default ChatRoomFooter;
 
-const PlusDropdown = () => {
+const PlusDropdown: React.FC<{
+  setOpenSendImageModal: (value: boolean) => void;
+}> = ({ setOpenSendImageModal }) => {
   const [plusDropdownOpened, setPlusDropdownOpened] = useState(false);
   return (
-    <DropdownMenu onOpenChange={() => setPlusDropdownOpened((prev) => !prev)}>
-      <DropdownMenuTrigger>
-        {plusDropdownOpened ? (
-          <AiOutlineCloseCircle className="text-4xl cursor-pointer text-gray-400" />
-        ) : (
-          <AiOutlinePlusCircle className="text-4xl cursor-pointer text-gray-400" />
-        )}
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-48">
-        <DropdownMenuItem className="flex flex-row gap-x-3 text-[15px] py-3 cursor-pointer">
-          <IoMdPhotos className="text-2xl text-blue-700" />
-          Photos & Videos
-        </DropdownMenuItem>
-        <DropdownMenuItem className="flex flex-row gap-x-3 text-[15px] py-3 cursor-pointer">
-          <BsCameraFill className="text-2xl text-pink-800" />
-          Camera
-        </DropdownMenuItem>
-        <DropdownMenuItem className="flex flex-row gap-x-3 text-[15px] py-3 cursor-pointer">
-          <FaUserFriends className="text-2xl text-blue-700" />
-          Friend
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <section>
+      <DropdownMenu onOpenChange={() => setPlusDropdownOpened((prev) => !prev)}>
+        <DropdownMenuTrigger>
+          {plusDropdownOpened ? (
+            <AiOutlineCloseCircle className="text-4xl cursor-pointer text-gray-400" />
+          ) : (
+            <AiOutlinePlusCircle className="text-4xl cursor-pointer text-gray-400" />
+          )}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-48">
+          {/* On click of photos and vides modal opens so making DropdownMenuItem child of dialog trigger  */}
+          {/* <Dialog> */}
+          {/* <DialogTrigger> */}
+          <DropdownMenuItem
+            className="flex flex-row gap-x-3 text-[15px] py-3 cursor-pointer min-w-full"
+            onClick={() => setOpenSendImageModal(true)}
+          >
+            <IoMdPhotos className="text-2xl text-blue-700" />
+            Photos & Videos
+          </DropdownMenuItem>
+          {/* </DialogTrigger> */}
+
+          {/* </Dialog> */}
+          {/* ends */}
+          <DropdownMenuItem className="flex flex-row gap-x-3 text-[15px] py-3 cursor-pointer">
+            <BsCameraFill className="text-2xl text-pink-800" />
+            Camera
+          </DropdownMenuItem>
+          <DropdownMenuItem className="flex flex-row gap-x-3 text-[15px] py-3 cursor-pointer">
+            <FaUserFriends className="text-2xl text-blue-700" />
+            Friend
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      {/* Send Image Dialog */}
+    </section>
   );
 };

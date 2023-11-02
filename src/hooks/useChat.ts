@@ -8,16 +8,12 @@ import Message from "@/types/types.message";
 import Room from "@/types/types.room";
 import { Unsubscribe } from "firebase/auth";
 import {
-  WriteBatch,
   addDoc,
   collection,
-  collectionGroup,
-  doc,
   getDocs,
   onSnapshot,
   orderBy,
   query,
-  updateDoc,
   where,
   writeBatch,
 } from "firebase/firestore";
@@ -34,7 +30,6 @@ const useChat = () => {
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const sectionRefMessagesDiv = useRef<HTMLDivElement | null>(null);
 
-  const [messageInp, setMessageInp] = useState<string>("");
   const [activeRoomMessages, setActiveRoomMessages] =
     useState<ActiveRoomMessages>({ data: [], status: STATUSES.LOADING });
   const [roomsUnseenMessages, setRoomsUnseenMessages] = useState<{
@@ -180,28 +175,6 @@ const useChat = () => {
     }
   };
 
-
-  const sendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const message: Message = {
-      date: Date.now(),
-      seen: false,
-      senderId: currentUser.uid,
-      text: messageInp,
-      delivered: false,
-    };
-    setMessageInp("");
-    await addDoc(
-      collection(db, "chatrooms", activeRoom?.roomDetails?.id!, "messages"),
-      message
-    );
-    // updating last message
-    await updateDoc(doc(db, "chatrooms", activeRoom?.roomDetails?.id!), {
-      lastMessage: message,
-      lastConversation: Date.now(),
-    });
-  };
-
   const scrollSectionToBottom = () => {
     if (sectionRefMessagesDiv.current) {
       const element = sectionRefMessagesDiv.current as HTMLDivElement;
@@ -261,12 +234,9 @@ const useChat = () => {
   };
 
   return {
-    messageInp,
-    setMessageInp,
     createChatRoom,
     getMyRooms,
     handleOnChatUser,
-    sendMessage,
     activeRoomMessages,
     getActiveRoomMessages,
     getFriendFromRoomUsers,

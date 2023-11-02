@@ -4,6 +4,8 @@ import getFormattedTime from "@/services/getFormattedTime";
 import Message from "@/types/types.message";
 import { IoMdCheckmark } from "react-icons/io";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 const Message = ({ msg }: { msg: Message }) => {
   const currentUser = useSelector((state: RootState) => state.currentUser);
@@ -31,10 +33,25 @@ const Message = ({ msg }: { msg: Message }) => {
               </section>
               {byMe && (
                 <section className="relative mb-1">
-                  <TwoCheck seen={msg.seen} /> 
+                  <TwoCheck seen={msg.seen} />
                 </section>
               )}
             </section>
+          </section>
+        )}
+
+        {msg.img && (
+          <section className="relative">
+            <Image
+              src={msg.img}
+              width={100}
+              height={100}
+              alt="Chat room image"
+              className="w-96 h-96 blur-[2px]"
+            />
+            <Button className="absolute top-40 text-black left-32 bg-gray-300">
+              Open Image
+            </Button>
           </section>
         )}
       </section>
@@ -43,7 +60,6 @@ const Message = ({ msg }: { msg: Message }) => {
 };
 
 export default Message;
-
 
 const TwoCheck = ({ seen }: { seen: boolean }) => {
   return (
