@@ -87,7 +87,6 @@ const useSendMessage = () => {
     }
   };
 
-
   return {
     sendMessage,
     messageInp,
