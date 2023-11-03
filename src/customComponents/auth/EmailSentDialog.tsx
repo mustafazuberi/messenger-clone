@@ -20,6 +20,7 @@ const EmailSentDialog = ({ openEmailSent, email }: Props) => {
             <Image
               src={messengerLogo}
               alt="envelopeMailImage"
+              loading="eager" 
               className="sm:w-24 sm:h-24 w-16 h-16"
             />
             <TypographyH1 text="Email Confirmation" />

@@ -119,18 +119,6 @@ const ChatRoomInfoOptions = () => {
           <BlockUserModal />
         </AlertDialogContent>
       </AlertDialog>
-
-      <AlertDialog>
-        <AlertDialogTrigger>
-          <section className="flex items-center gap-x-4 w-full text-red-500 hover:opacity-70 py-3 px-6 hover:bg-gray-900 cursor-pointer duration-300">
-            <AiFillDelete className="text-2xl " />
-            <span className="text-[17px]">Delete Chat</span>
-          </section>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <DeleteChatModal />
-        </AlertDialogContent>
-      </AlertDialog>
     </section>
   );
 };

@@ -60,13 +60,13 @@ const ChatUsers = () => {
                         <section className="flex flex-row gap-x-1 items-center">
                           <span className="w-2 h-2 rounded-full bg-blue-700" />
                           <p className="text-gray-700 font-extrabold text-[13px]">
-                            {`${
+                            {roomsUnseenMessages[room.id!]?.length ? `${
                               roomsUnseenMessages[room.id!]?.length
                             } new message${
                               roomsUnseenMessages[room.id!]?.length > 1
                                 ? "s."
                                 : "."
-                            }`}
+                            }` : ''}
                           </p>
                         </section>
                       )}
@@ -111,7 +111,7 @@ const LastMessage: React.FC<{ message: Message }> = ({ message }) => {
       : message.text;
   return (
     <section>
-      <p className="text-gray-500 text-[13px]">
+      <div className="text-gray-500 text-[13px]">
         {messageText &&
           `${messageText.slice(0, 40)}${messageText.length > 40 ? "..." : ""}`}
         {message.img && (
@@ -119,7 +119,7 @@ const LastMessage: React.FC<{ message: Message }> = ({ message }) => {
             Photo <MdInsertPhoto className="text-[17px]" />
           </div>
         )}
-      </p>
+      </div>
     </section>
   );
 };

@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import useSettings from "@/hooks/useSettings";
-import Image from "next/image";
 import React from "react";
 
 const UpdateProfilePhoto = () => {

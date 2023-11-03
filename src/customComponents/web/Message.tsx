@@ -2,18 +2,18 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import getFormattedTime from "@/services/getFormattedTime";
 import Message from "@/types/types.message";
-import { IoMdCheckmark } from "react-icons/io";
+import { RiArrowDownSLine } from "react-icons/ri";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import useSendMessage from "@/hooks/useSendMessage";
-import SendImageModal from "./SendImageModal";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
-  Dialog,
-  DialogContent,
-  DialogContentWithoutX,
-} from "@/components/ui/dialog";
-import TailwindSpinner from "./TailwindSpinner";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Message = ({ msg }: { msg: Message }) => {
   const { openImageModal, setOpenImageModal } = useSendMessage();
@@ -32,35 +32,51 @@ const Message = ({ msg }: { msg: Message }) => {
         } max-w-[70%] px-2 py-2 rounded-[6px] rounded-tr-none`}
       >
         {msg.text && (
-          <section className="flex flex-row justify-between gap-x-3">
-            <section className="text-[15px] font-extralight">
-              {msg.text}
+          <section className="flex flex-col">
+            <section className="flex flex-row justify-end">
+              <MessageDropDown message={msg} />
             </section>
-            <section className="flex flex-row justify-between items-end gap-x-1">
-              <section className="text-[9px] font-extralight flex items-end">
-                {getFormattedTime(msg.date)}
+            <section className="flex flex-row justify-between gap-x-3">
+              <section className="text-[15px] font-extralight">
+                {msg.text}
               </section>
-              {byMe && (
-                <section className="relative mb-1">
-                  <TwoCheck seen={msg.seen} />
+              <section className="flex flex-row justify-between items-end gap-x-1">
+                <section className="text-[9px] font-extralight flex items-end">
+                  {getFormattedTime(msg.date)}
                 </section>
-              )}
+                {byMe && (
+                  <section className="relative mb-1">
+                    <TwoCheck seen={msg.seen} />
+                  </section>
+                )}
+              </section>
             </section>
           </section>
         )}
 
         {msg.img && (
           <section className="relative">
+            <section className="flex flex-row justify-end pb-2">
+              <MessageDropDown message={msg} />
+            </section>
             <Image
               src={msg.img}
               width={100}
               height={100}
               alt="Chat room image"
+              loading="eager"
               className="w-96 h-96 blur-[2px]"
             />
             {byMe && (
-              <section className="relative mb-1">
-                <TwoCheck seen={msg.seen} />
+              <section className="flex flex-row justify-between items-end gap-x-1">
+                <section className="text-[9px] font-extralight flex items-end">
+                  {getFormattedTime(msg.date)}
+                </section>
+                {byMe && (
+                  <section className="relative mb-1">
+                    <TwoCheck seen={msg.seen} />
+                  </section>
+                )}
               </section>
             )}
             <Button
@@ -104,5 +120,23 @@ const TwoCheck = ({ seen }: { seen: boolean }) => {
         } relative font-extrabold top-1`}
       />
     </section>
+  );
+};
+
+const MessageDropDown: React.FC<{ message: Message }> = ({ message }) => {
+  const currentUser = useSelector((state: RootState) => state.currentUser);
+  const { handleOnUnsendMessage } = useSendMessage();
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <RiArrowDownSLine className="text-[18px]" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuItem>Forward</DropdownMenuItem>
+        {message.senderId === currentUser.uid && (
+          <DropdownMenuItem>Unsend</DropdownMenuItem>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

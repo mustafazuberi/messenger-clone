@@ -30,6 +30,7 @@ export function Toaster() {
                     width={30}
                     height={30}
                     alt="messengerLogo"
+                    loading="eager"
                   />
                   <p>{description}</p>
                 </ToastDescription>
