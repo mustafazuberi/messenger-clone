@@ -90,7 +90,7 @@ const useChat = () => {
       (querySnapshot) => {
         const messages: Message[] = [];
         querySnapshot.forEach((doc) => {
-          messages.push({ ...(doc.data() as Message) });
+          messages.push({ ...(doc.data() as Message), id: doc.id });
         });
         setActiveRoomMessages({ data: messages, status: STATUSES.IDLE });
       }

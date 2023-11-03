@@ -1,9 +1,10 @@
-const TailwindSpinner = () => {
+const TailwindSpinner = ({ size }: { size?: number }) => {
+  const sizeClassName = size ? `w-${size} h-${size}` : "w-20 h-20";
   return (
     <div role="status">
       <svg
         aria-hidden="true"
-        className="inline w-20 h-20 mr-2 text-gray-200 animate-spin dark:text-gray-600 "
+        className={`inline ${sizeClassName} mr-2 text-gray-200 animate-spin dark:text-gray-600`}
         fill="url(#gradient)"
         viewBox="0 0 100 101"
         xmlns="http://www.w3.org/2000/svg"
