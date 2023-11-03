@@ -74,7 +74,10 @@ const useChat = () => {
         querySnapshot.forEach((doc) => {
           rooms.push({ id: doc.id, ...doc.data() } as Room);
         });
-        dispatch(setRooms([...rooms]));
+        const filteredRooms = rooms.sort(
+          (a: Room, b: Room) => b.lastConversation! - a.lastConversation!
+        );
+        dispatch(setRooms([...filteredRooms]));
       }
     );
     return unsubscribe;

@@ -163,6 +163,7 @@ const MessageDropDown: React.FC<{
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem
+          className="py-2 cursor-pointer"
           onClick={() =>
             setOpenForwardMessageModal({ open: true, message: message })
           }
@@ -170,7 +171,10 @@ const MessageDropDown: React.FC<{
           Forward
         </DropdownMenuItem>
         {message.senderId === currentUser.uid && (
-          <DropdownMenuItem onClick={() => handleOnUnsendMessage(message)}>
+          <DropdownMenuItem
+            onClick={() => handleOnUnsendMessage(message)}
+            className="py-2 cursor-pointer"
+          >
             Unsend
           </DropdownMenuItem>
         )}
