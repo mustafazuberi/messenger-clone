@@ -15,8 +15,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ForwardMessageModal from "./ForwardMessageModal";
+import useChat from "@/hooks/useChat";
 
-const Message = ({ msg }: { msg: Message }) => {
+const Message = ({
+  msg,
+  activeRoomMessages,
+}: {
+  msg: Message;
+  activeRoomMessages: Message[];
+}) => {
   const {
     openImageModal,
     setOpenImageModal,
@@ -24,6 +31,7 @@ const Message = ({ msg }: { msg: Message }) => {
     setOpenForwardMessageModal,
   } = useSendMessage();
   const currentUser = useSelector((state: RootState) => state.currentUser);
+  const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const byMe = msg.senderId === currentUser.uid ? true : false;
   return (
     <>
@@ -43,6 +51,9 @@ const Message = ({ msg }: { msg: Message }) => {
                 <MessageDropDown
                   message={msg}
                   setOpenForwardMessageModal={setOpenForwardMessageModal}
+                  updatedLastMessage={
+                    activeRoomMessages[activeRoomMessages.length - 2]
+                  }
                 />
               </section>
               <section className="flex flex-row justify-between gap-x-3">
@@ -153,8 +164,10 @@ const MessageDropDown: React.FC<{
     open: boolean;
     message: Message;
   }) => void;
-}> = ({ message, setOpenForwardMessageModal }) => {
+  updatedLastMessage?: Message;
+}> = ({ message, setOpenForwardMessageModal, updatedLastMessage }) => {
   const currentUser = useSelector((state: RootState) => state.currentUser);
+  const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const { handleOnUnsendMessage } = useSendMessage();
   return (
     <DropdownMenu>
@@ -165,14 +178,22 @@ const MessageDropDown: React.FC<{
         <DropdownMenuItem
           className="py-2 cursor-pointer"
           onClick={() =>
-            setOpenForwardMessageModal({ open: true, message: message })
+            setOpenForwardMessageModal({
+              open: true,
+              message: message,
+            })
           }
         >
           Forward
         </DropdownMenuItem>
         {message.senderId === currentUser.uid && (
           <DropdownMenuItem
-            onClick={() => handleOnUnsendMessage(message)}
+            onClick={() =>
+              handleOnUnsendMessage({
+                msg: message,
+                updatedLastMessage: updatedLastMessage,
+              })
+            }
             className="py-2 cursor-pointer"
           >
             Unsend

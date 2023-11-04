@@ -78,6 +78,19 @@ const useChat = () => {
           (a: Room, b: Room) => b.lastConversation! - a.lastConversation!
         );
         dispatch(setRooms([...filteredRooms]));
+
+        // also updating active room in state if it is updated ---
+        const updatedActiveRoom = filteredRooms.find(
+          (room) => room.id === activeRoom.roomDetails?.id
+        );
+        if (updatedActiveRoom) {
+          dispatch(
+            setActiveRoom({
+              ...activeRoom,
+              roomDetails: { ...updatedActiveRoom },
+            })
+          );
+        }
       }
     );
     return unsubscribe;

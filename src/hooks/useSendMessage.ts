@@ -65,13 +65,13 @@ const useSendMessage = () => {
       delivered: false,
     };
     setMessageInp("");
-    await addDoc(
+    const msgDoc = await addDoc(
       collection(db, "chatrooms", activeRoom?.roomDetails?.id!, "messages"),
       message
     );
     // updating last message
     await updateDoc(doc(db, "chatrooms", activeRoom?.roomDetails?.id!), {
-      lastMessage: message,
+      lastMessage: { ...message, id: msgDoc.id },
       lastConversation: Date.now(),
     });
   };
@@ -86,15 +86,16 @@ const useSendMessage = () => {
         img: sendImageUrl,
         delivered: false,
       };
-      await addDoc(
+      const msgDoc = await addDoc(
         collection(db, "chatrooms", activeRoom?.roomDetails?.id!, "messages"),
         message
       );
       // updating last message
       await updateDoc(doc(db, "chatrooms", activeRoom?.roomDetails?.id!), {
-        lastMessage: message,
+        lastMessage: { ...message, id: msgDoc.id },
         lastConversation: Date.now(),
       });
+
       setSendingImage(false);
       setOpenSendImageModal(false);
       setSendImageFile(null);
@@ -106,13 +107,32 @@ const useSendMessage = () => {
     }
   };
 
-  const handleOnUnsendMessage = async (msg: Message) => {
-    await deleteDoc(
-      doc(db, "chatrooms", activeRoom.roomDetails?.id!, "messages", msg.id!)
-    );
-    toast({
-      description: "Message unsent!",
-    });
+  const handleOnUnsendMessage = async ({
+    msg,
+    updatedLastMessage,
+  }: {
+    msg: Message;
+    updatedLastMessage?: Message;
+  }) => {
+    try {
+      if (
+        activeRoom.roomDetails?.lastMessage?.id === msg.id &&
+        updatedLastMessage
+      ) {
+        await updateDoc(doc(db, "chatrooms", activeRoom?.roomDetails?.id!), {
+          lastMessage: updatedLastMessage,
+          lastConversation: Date.now(),
+        });
+      }
+      await deleteDoc(
+        doc(db, "chatrooms", activeRoom.roomDetails?.id!, "messages", msg.id!)
+      );
+      toast({
+        description: "Message unsent!",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleForwardMessage = async ({
