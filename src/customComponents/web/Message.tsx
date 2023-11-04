@@ -168,7 +168,6 @@ const MessageDropDown: React.FC<{
   updatedLastMessage?: Message;
 }> = ({ message, setOpenForwardMessageModal, updatedLastMessage }) => {
   const currentUser = useSelector((state: RootState) => state.currentUser);
-  const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const { handleOnUnsendMessage } = useSendMessage();
   return (
     <DropdownMenu>

@@ -7,4 +7,6 @@ const getFormattedTime = (milliSeconds: number): string => {
   return timeString;
 };
 
+
+
 export default getFormattedTime;
