@@ -39,7 +39,7 @@ const ChatUsers = () => {
                 key={room.id}
                 onClick={() => handleOnChatUser(friend)}
               >
-                <section className="flex flex-row gap-x-3 w-full">
+                <section className="flex flex-row gap-x-3 w-full items-center">
                   <section>
                     <UserImageAvatar user={friend} size={10} />
                   </section>
@@ -56,20 +56,20 @@ const ChatUsers = () => {
                       {room.lastMessage &&
                       !roomsUnseenMessages[room.id!]?.length ? (
                         <LastMessage message={room.lastMessage} />
-                      ) : (
+                      ) : roomsUnseenMessages[room.id!]?.length ? (
                         <section className="flex flex-row gap-x-1 items-center">
                           <span className="w-2 h-2 rounded-full bg-blue-700" />
                           <p className="text-gray-700 font-extrabold text-[13px]">
-                            {roomsUnseenMessages[room.id!]?.length ? `${
+                            {`${
                               roomsUnseenMessages[room.id!]?.length
                             } new message${
                               roomsUnseenMessages[room.id!]?.length > 1
                                 ? "s."
                                 : "."
-                            }` : ''}
+                            }`}
                           </p>
                         </section>
-                      )}
+                      ) : null}
                     </section>
                   </section>
                 </section>

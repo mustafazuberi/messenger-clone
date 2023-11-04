@@ -4,6 +4,7 @@ import getFormattedTime from "@/services/getFormattedTime";
 import Message from "@/types/types.message";
 import { RiArrowDownSLine } from "react-icons/ri";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
+import { LuForward } from "react-icons/lu";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import useSendMessage from "@/hooks/useSendMessage";
@@ -15,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ForwardMessageModal from "./ForwardMessageModal";
-import useChat from "@/hooks/useChat";
+import { MdOutlineDeleteSweep } from "react-icons/md";
 
 const Message = ({
   msg,
@@ -176,7 +177,7 @@ const MessageDropDown: React.FC<{
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem
-          className="py-2 cursor-pointer"
+          className="py-2 cursor-pointer flex flex-row gap-x-3"
           onClick={() =>
             setOpenForwardMessageModal({
               open: true,
@@ -184,7 +185,8 @@ const MessageDropDown: React.FC<{
             })
           }
         >
-          Forward
+          <LuForward className="text-2xl" />
+          <span>Forward</span>
         </DropdownMenuItem>
         {message.senderId === currentUser.uid && (
           <DropdownMenuItem
@@ -194,9 +196,10 @@ const MessageDropDown: React.FC<{
                 updatedLastMessage: updatedLastMessage,
               })
             }
-            className="py-2 cursor-pointer"
+            className="py-2 cursor-pointer flex flex-row gap-x-3"
           >
-            Unsend
+            <MdOutlineDeleteSweep className="text-2xl" />
+            <span>Unsend</span>
           </DropdownMenuItem>
         )}
       </DropdownMenuContent>
