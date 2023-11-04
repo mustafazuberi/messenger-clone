@@ -2,8 +2,14 @@ import { useToast } from "@/components/ui/use-toast";
 import { db } from "@/db/firebase.config";
 import createImageUrl from "@/services/createImageUrl";
 import { RootState } from "@/store";
-import Friend from "@/types/type.friend";
 import Message from "@/types/types.message";
+import {
+  ForwardMessageModal,
+  Forwarding,
+  OnForwardMessage,
+  OnUnsendMsg,
+  OpenImageModal,
+} from "@/types/types.miscellaneous";
 import Room from "@/types/types.room";
 import {
   addDoc,
@@ -14,14 +20,23 @@ import {
 } from "firebase/firestore";
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { TbRuler3 } from "react-icons/tb";
 import { useSelector } from "react-redux";
 
+const openImageModalInitialState: OpenImageModal = {
+  img: "",
+  open: false,
+};
+
+const forwardingInitialState: Forwarding = {
+  forwarding: false,
+  to: null,
+};
+
 const useSendMessage = () => {
+  const { toast } = useToast();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const rooms = useSelector((state: RootState) => state.rooms);
-  const { toast } = useToast();
   const [findFriendInp, setFindFriendInp] = React.useState<string>("");
   const [messageInp, setMessageInp] = React.useState<string>("");
   const [openSendImageModal, setOpenSendImageModal] = useState(false);
@@ -29,21 +44,14 @@ const useSendMessage = () => {
   const [sendImageLoading, setSendImageLoading] = useState<boolean>(false);
   const [sendImageUrl, setSendImageUrl] = useState<string>("");
   const [sendingImage, setSendingImage] = useState<boolean>(false);
-  const [openImageModal, setOpenImageModal] = useState<{
-    img: string;
-    open: boolean;
-  }>({
-    img: "",
-    open: false,
-  });
-  const [openForwardMessageModal, setOpenForwardMessageModal] = useState<{
-    message: Message | null;
-    open: boolean;
-  }>({ message: null, open: false });
-  const [forwarding, setForwarding] = useState<{
-    forwarding: boolean;
-    to: Friend | null;
-  }>({ forwarding: false, to: null });
+  const [openImageModal, setOpenImageModal] = useState<OpenImageModal>(
+    openImageModalInitialState
+  );
+  const [openForwardMessageModal, setOpenForwardMessageModal] =
+    useState<ForwardMessageModal>({ message: null, open: false });
+  const [forwarding, setForwarding] = useState<Forwarding>(
+    forwardingInitialState
+  );
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: async (e) => {
@@ -107,20 +115,14 @@ const useSendMessage = () => {
     }
   };
 
-  const handleOnUnsendMessage = async ({
-    msg,
-    updatedLastMessage,
-  }: {
-    msg: Message;
-    updatedLastMessage?: Message;
-  }) => {
+  const handleOnUnsendMsg = async ({ msg, updatedLastMsg }: OnUnsendMsg) => {
     try {
       if (
         activeRoom.roomDetails?.lastMessage?.id === msg.id &&
-        updatedLastMessage
+        updatedLastMsg
       ) {
         await updateDoc(doc(db, "chatrooms", activeRoom?.roomDetails?.id!), {
-          lastMessage: updatedLastMessage,
+          lastMessage: updatedLastMsg,
           lastConversation: Date.now(),
         });
       }
@@ -135,13 +137,7 @@ const useSendMessage = () => {
     }
   };
 
-  const handleForwardMessage = async ({
-    msg,
-    forwardTo,
-  }: {
-    msg: Message;
-    forwardTo: Friend;
-  }) => {
+  const handleForwardMessage = async ({ msg, forwardTo }: OnForwardMessage) => {
     const message: Message = {
       date: Date.now(),
       seen: false,
@@ -167,10 +163,10 @@ const useSendMessage = () => {
           forwardTo.displayName
         }`,
       });
-      setForwarding({ forwarding: false, to: null });
+      setForwarding(forwardingInitialState);
     } catch (error) {
       console.log(error);
-      setForwarding({ forwarding: false, to: null });
+      setForwarding(forwardingInitialState);
     }
   };
 
@@ -189,7 +185,7 @@ const useSendMessage = () => {
     setOpenSendImageModal,
     openImageModal,
     setOpenImageModal,
-    handleOnUnsendMessage,
+    handleOnUnsendMsg,
     findFriendInp,
     setFindFriendInp,
     openForwardMessageModal,

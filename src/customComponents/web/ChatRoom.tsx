@@ -7,7 +7,6 @@ import TailwindSpinner from "./TailwindSpinner";
 import { usePageVisibility } from "react-page-visibility";
 import { RootState } from "@/store";
 import { useSelector } from "react-redux";
-import getFormattedTime from "@/services/getFormattedTime";
 
 const ChatRoom = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
@@ -46,7 +45,9 @@ const ChatRoom = () => {
         >
           {activeRoom.roomDetails ? (
             <section className="flex justify-center">
-              <span className="px-4 py-1 bg-gray-900 text-gray-400 rounded-lg">{createdAt}</span>
+              <span className="px-4 py-1 bg-gray-900 text-gray-400 rounded-lg">
+                {createdAt}
+              </span>
             </section>
           ) : null}
           {activeRoomMessages.data?.length
