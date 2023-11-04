@@ -9,6 +9,8 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import ForwardMessageModal from "./ForwardMessageModal";
 import { TwoCheck } from "./CheckMarks";
 import MessageDropDown from "./MessageDropdown";
+import Friend from "@/types/type.friend";
+import UserImageAvatar from "./UserImageAvatar";
 
 type props = {
   msg: Message;
@@ -50,30 +52,30 @@ const Message = ({ msg, activeRoomMessages }: props) => {
                 <section className="text-[15px] font-extralight">
                   {msg.text}
                 </section>
+              ) : msg.img ? (
+                <section className="relative mt-2">
+                  <Image
+                    src={msg.img}
+                    width={100}
+                    height={100}
+                    alt="Chat room image"
+                    loading="eager"
+                    className="w-96 h-96 blur-[2px]"
+                  />
+                  <Button
+                    className="absolute top-40 text-black left-32 bg-gray-300"
+                    onClick={() =>
+                      setOpenImageModal({
+                        img: msg.img ? msg.img : "null",
+                        open: true,
+                      })
+                    }
+                  >
+                    Open Image
+                  </Button>
+                </section>
               ) : (
-                msg.img && (
-                  <section className="relative mt-2">
-                    <Image
-                      src={msg.img}
-                      width={100}
-                      height={100}
-                      alt="Chat room image"
-                      loading="eager"
-                      className="w-96 h-96 blur-[2px]"
-                    />
-                    <Button
-                      className="absolute top-40 text-black left-32 bg-gray-300"
-                      onClick={() =>
-                        setOpenImageModal({
-                          img: msg.img ? msg.img : "null",
-                          open: true,
-                        })
-                      }
-                    >
-                      Open Image
-                    </Button>
-                  </section>
-                )
+                msg.friend && <SharedFriend friend={msg.friend} />
               )}
               <section className="flex flex-row justify-between items-end gap-x-1">
                 <section className="text-[9px] font-extralight flex items-end">
@@ -117,3 +119,19 @@ const Message = ({ msg, activeRoomMessages }: props) => {
 };
 
 export default Message;
+
+const SharedFriend = ({ friend }: { friend: Friend }) => {
+  return (
+    <section className="flex flex-row justify-between">
+      <section className="flex flex-row">
+        <section>
+          <UserImageAvatar user={friend} />
+        </section>
+        <section className="flex flex-col ">
+          <span>{friend.displayName}</span>
+          <span>{friend.email}</span>
+        </section>
+      </section>
+    </section>
+  );
+};

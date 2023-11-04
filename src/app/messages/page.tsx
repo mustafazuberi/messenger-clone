@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 
 const page = () => {
   const { roomDetails } = useSelector((state: RootState) => state.activeRoom);
-
   if (!roomDetails?.id) {
     return (
       <main className="flex justify-center items-center w-full">

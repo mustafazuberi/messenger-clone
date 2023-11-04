@@ -28,6 +28,7 @@ import { Button } from "@/components/ui/button";
 import Friend from "@/types/type.friend";
 import UserImageAvatar from "./UserImageAvatar";
 import Image from "next/image";
+import ShareFriendWithModal from "./ShareFriendWithModal";
 
 const ChatRoomFriendInfo = ({ chatWith }: { chatWith: Friend }) => {
   return (
@@ -164,20 +165,7 @@ const ShareDialog = () => {
     <DialogContent>
       <DialogHeader>
         <DialogTitle>Share with</DialogTitle>
-        <section>
-          <h2>user 1</h2>
-          <h2>user 2</h2>
-          <h2>user 3</h2>
-          <h2>user 4</h2>
-          <h2>user 5</h2>
-          <h2>user 6</h2>
-          <h2>user 7</h2>
-          <h2>user 8</h2>
-          <h2>user 9</h2>
-        </section>
-        <section className="flex flex-row justify-end">
-          <Button>Share</Button>
-        </section>
+        <ShareFriendWithModal />
       </DialogHeader>
     </DialogContent>
   );

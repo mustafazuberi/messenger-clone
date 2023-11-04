@@ -42,3 +42,4 @@ export type OpenImageModal = {
   img: string;
   open: boolean;
 };
+

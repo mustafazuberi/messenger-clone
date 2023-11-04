@@ -2,6 +2,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { db } from "@/db/firebase.config";
 import createImageUrl from "@/services/createImageUrl";
 import { RootState } from "@/store";
+import Friend from "@/types/type.friend";
 import Message from "@/types/types.message";
 import {
   ForwardMessageModal,
@@ -52,6 +53,10 @@ const useSendMessage = () => {
   const [forwarding, setForwarding] = useState<Forwarding>(
     forwardingInitialState
   );
+  // This states for sharing friend from chatroom info side bar
+  const [shareWithInp, setShareWithInp] = useState("");
+  // when share function call will set that sharing with friend id in state also this will help to show loading on specfiic user we were sharing friend with
+  const [sharingWith, setSharingWith] = useState<string | false>(false);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: async (e) => {
@@ -170,6 +175,32 @@ const useSendMessage = () => {
     }
   };
 
+  const handleOnShareFriend = async (friend: Friend) => {
+    try {
+      const message: Message = {
+        date: Date.now(),
+        seen: false,
+        senderId: currentUser.uid,
+        friend: friend,
+        delivered: false,
+      };
+      setSharingWith(friend.uid);
+      const msgDoc = await addDoc(
+        collection(db, "chatrooms", activeRoom?.roomDetails?.id!, "messages"),
+        message
+      );
+      // updating last message
+      await updateDoc(doc(db, "chatrooms", activeRoom?.roomDetails?.id!), {
+        lastMessage: { ...message, id: msgDoc.id },
+        lastConversation: Date.now(),
+      });
+      setSharingWith(false);
+    } catch (error) {
+      console.log(error);
+      setSharingWith(false);
+    }
+  };
+
   return {
     sendMessage,
     messageInp,
@@ -192,6 +223,10 @@ const useSendMessage = () => {
     setOpenForwardMessageModal,
     handleForwardMessage,
     forwarding,
+    shareWithInp,
+    setShareWithInp,
+    sharingWith,
+    handleOnShareFriend,
   };
 };
 

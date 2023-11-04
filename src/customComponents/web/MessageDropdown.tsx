@@ -12,7 +12,7 @@ import { MdOutlineDeleteSweep } from "react-icons/md";
 import useSendMessage from "@/hooks/useSendMessage";
 import Message from "@/types/types.message";
 
-type MessageDropdownProps = {
+type Props = {
   message: Message;
   setOpenForwardMessageModal: (value: {
     open: boolean;
@@ -21,7 +21,7 @@ type MessageDropdownProps = {
   updatedLastMessage?: Message;
 };
 
-const MessageDropDown: React.FC<MessageDropdownProps> = ({
+const MessageDropDown: React.FC<Props> = ({
   message,
   setOpenForwardMessageModal,
   updatedLastMessage,
