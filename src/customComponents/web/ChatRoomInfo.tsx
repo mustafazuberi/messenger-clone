@@ -85,7 +85,7 @@ const ChatRoomInfoShareButton = () => {
   return (
     <Dialog>
       <section className="flex justify-center mt-2">
-        <DialogTrigger>
+        <DialogTrigger >
           <span className="p-4 hover:bg-gray-700 w-14 h-14 flex justify-center items-center rounded-full opacity-40 cursor-pointer duration-300">
             <PiShareFatFill className="text-2xl" />
           </span>

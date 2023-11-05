@@ -27,22 +27,31 @@ const useNotification = () => {
   );
 
   const sendNotification = async ({ by, to, type }: SendNotificationParam) => {
-    let message: string = "";
-    if (type === "Request Received")
-      message = `${by.displayName} has sent you a friend request.`;
-    if (type === "Request Accepted")
-      message = `${by.displayName} has accepted your friend request.`;
+    try {
+      let message: string = "";
+      if (type === "Request Received")
+        message = `${by.displayName} has sent you a friend request.`;
+      if (type === "Request Accepted")
+        message = `${by.displayName} has accepted your friend request.`;
 
-    const notificationObj: UserNotification = {
-      isNotificationRead: false,
-      isRequestRead: false,
-      timestamp: Date.now(),
-      type: "Request Received",
-      notificationBy: by,
-      message,
-    };
-    const notificationDocRef = collection(db, "users", to.uid, "notifications");
-    return addDoc(notificationDocRef, { ...notificationObj });
+      const notificationObj: UserNotification = {
+        isNotificationRead: false,
+        isRequestRead: false,
+        timestamp: Date.now(),
+        type: "Request Received",
+        notificationBy: by,
+        message,
+      };
+      const notificationDocRef = collection(
+        db,
+        "users",
+        to.uid,
+        "notifications"
+      );
+      await addDoc(notificationDocRef, { ...notificationObj });
+    } catch (error) {
+      console.log("Error in sendNotification: ", error);
+    }
   };
 
   const fetchNotifications = () => {

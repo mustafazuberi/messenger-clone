@@ -181,16 +181,22 @@ const useSendMessage = () => {
         date: Date.now(),
         seen: false,
         senderId: currentUser.uid,
-        friend: friend,
+        friend: activeRoom.chatWith!,
         delivered: false,
       };
+      const room: Room | null =
+        rooms.find(
+          (room: Room) => room.users[currentUser.uid] && room.users[friend.uid]
+        ) || null;
+
+      if (!room) return;
       setSharingWith(friend.uid);
       const msgDoc = await addDoc(
-        collection(db, "chatrooms", activeRoom?.roomDetails?.id!, "messages"),
+        collection(db, "chatrooms", room.id!, "messages"),
         message
       );
       // updating last message
-      await updateDoc(doc(db, "chatrooms", activeRoom?.roomDetails?.id!), {
+      await updateDoc(doc(db, "chatrooms", room.id!), {
         lastMessage: { ...message, id: msgDoc.id },
         lastConversation: Date.now(),
       });

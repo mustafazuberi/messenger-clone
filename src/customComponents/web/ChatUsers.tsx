@@ -11,6 +11,7 @@ import Room from "@/types/types.room";
 import Friend from "@/types/type.friend";
 import { MdInsertPhoto } from "react-icons/md";
 import Message from "@/types/types.message";
+import { FaUserFriends } from "react-icons/fa";
 
 const ChatUsers = () => {
   const friends = useSelector((state: RootState) => state.friends);
@@ -105,18 +106,24 @@ const NoFriendsToChat = () => {
 
 const LastMessage: React.FC<{ message: Message }> = ({ message }) => {
   const currentUser = useSelector((state: RootState) => state.currentUser);
-  const messageText =
-    message.text && message.senderId === currentUser.uid
-      ? `You: ${message.text}`
-      : message.text;
+  const msgByMe = message.senderId === currentUser.uid;
+  const messageText = msgByMe ? `You: ${message.text}` : message.text;
+
   return (
     <section>
       <div className="text-gray-500 text-[13px]">
-        {messageText &&
+        {message.text &&
+          messageText &&
           `${messageText.slice(0, 40)}${messageText.length > 40 ? "..." : ""}`}
         {message.img && (
           <div className="flex flex-row gap-x-1 items-center">
             Photo <MdInsertPhoto className="text-[17px]" />
+          </div>
+        )}
+        {message.friend && (
+          <div className="flex flex-row gap-x-1 items-center">
+            {msgByMe ? "You: " : ""} Shared a Friend
+            <FaUserFriends className="text-[17px]" />
           </div>
         )}
       </div>
