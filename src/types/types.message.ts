@@ -9,6 +9,7 @@ type Message = {
   date: number;
   seen: boolean;
   delivered: boolean;
+  type?: "text" | "voice" | "image" | "friend" | "audio call" | "video call";
 };
 
 export default Message;

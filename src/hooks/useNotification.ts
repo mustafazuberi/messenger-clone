@@ -38,10 +38,11 @@ const useNotification = () => {
         isNotificationRead: false,
         isRequestRead: false,
         timestamp: Date.now(),
-        type: "Request Received",
+        type: type,
         notificationBy: by,
         message,
       };
+      console.log("to.uid in sendNotification ---", to.uid);
       const notificationDocRef = collection(
         db,
         "users",

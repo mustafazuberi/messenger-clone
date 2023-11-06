@@ -51,10 +51,10 @@ const ChatRoom = () => {
             </section>
           ) : null}
           {activeRoomMessages.data?.length
-            ? activeRoomMessages.data.map((msg, i) => (
+            ? activeRoomMessages.data.map((msg) => (
                 <Message
                   msg={msg}
-                  key={i}
+                  key={msg.id}
                   activeRoomMessages={activeRoomMessages.data}
                 />
               ))

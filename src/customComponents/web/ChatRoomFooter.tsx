@@ -54,7 +54,11 @@ const ChatRoomFooter = () => {
             />
           </PopoverContent>
         </Popover>
-        <PlusDropdown setOpenSendImageModal={setOpenSendImageModal} />
+        {/* Photos */}
+        <IoMdPhotos
+          className="text-4xl cursor-pointer text-pink-800"
+          onClick={() => setOpenSendImageModal(true)}
+        />
         <Input
           placeholder="Type your message..."
           value={messageInp}
@@ -82,40 +86,3 @@ const ChatRoomFooter = () => {
 };
 
 export default ChatRoomFooter;
-
-const PlusDropdown: React.FC<{
-  setOpenSendImageModal: (value: boolean) => void;
-}> = ({ setOpenSendImageModal }) => {
-  const [plusDropdownOpened, setPlusDropdownOpened] = useState(false);
-  return (
-    <section>
-      <DropdownMenu onOpenChange={() => setPlusDropdownOpened((prev) => !prev)}>
-        <DropdownMenuTrigger>
-          {plusDropdownOpened ? (
-            <AiOutlineCloseCircle className="text-4xl cursor-pointer text-gray-400" />
-          ) : (
-            <AiOutlinePlusCircle className="text-4xl cursor-pointer text-gray-400" />
-          )}
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-48">
-          <DropdownMenuItem
-            className="flex flex-row gap-x-3 text-[15px] py-3 cursor-pointer min-w-full"
-            onClick={() => setOpenSendImageModal(true)}
-          >
-            <IoMdPhotos className="text-2xl text-blue-700" />
-            Photos & Videos
-          </DropdownMenuItem>
-
-          <DropdownMenuItem className="flex flex-row gap-x-3 text-[15px] py-3 cursor-pointer">
-            <BsCameraFill className="text-2xl text-pink-800" />
-            Camera
-          </DropdownMenuItem>
-          <DropdownMenuItem className="flex flex-row gap-x-3 text-[15px] py-3 cursor-pointer">
-            <FaUserFriends className="text-2xl text-blue-700" />
-            Friend
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </section>
-  );
-};

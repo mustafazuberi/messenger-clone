@@ -159,7 +159,7 @@ const useReq = () => {
         deleteDoc(receiverRequestRef),
       ]);
     } catch (error) {
-      console.log(error);
+      console.log("error in deleteRequest", error);
     }
   };
 

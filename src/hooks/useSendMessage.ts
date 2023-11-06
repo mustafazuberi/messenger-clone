@@ -69,24 +69,29 @@ const useSendMessage = () => {
   });
 
   const sendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const message: Message = {
-      date: Date.now(),
-      seen: false,
-      senderId: currentUser.uid,
-      text: messageInp,
-      delivered: false,
-    };
-    setMessageInp("");
-    const msgDoc = await addDoc(
-      collection(db, "chatrooms", activeRoom?.roomDetails?.id!, "messages"),
-      message
-    );
-    // updating last message
-    await updateDoc(doc(db, "chatrooms", activeRoom?.roomDetails?.id!), {
-      lastMessage: { ...message, id: msgDoc.id },
-      lastConversation: Date.now(),
-    });
+    try {
+      e.preventDefault();
+      const message: Message = {
+        date: Date.now(),
+        seen: false,
+        senderId: currentUser.uid,
+        text: messageInp,
+        delivered: false,
+        type: "text",
+      };
+      setMessageInp("");
+      const msgDoc = await addDoc(
+        collection(db, "chatrooms", activeRoom?.roomDetails?.id!, "messages"),
+        message
+      );
+      // updating last message
+      await updateDoc(doc(db, "chatrooms", activeRoom?.roomDetails?.id!), {
+        lastMessage: { ...message, id: msgDoc.id },
+        lastConversation: Date.now(),
+      });
+    } catch (error) {
+      console.log("Error in sendMessage", error);
+    }
   };
 
   const handleSendImage = async () => {
@@ -98,6 +103,7 @@ const useSendMessage = () => {
         senderId: currentUser.uid,
         img: sendImageUrl,
         delivered: false,
+        type: "image",
       };
       const msgDoc = await addDoc(
         collection(db, "chatrooms", activeRoom?.roomDetails?.id!, "messages"),
@@ -116,7 +122,7 @@ const useSendMessage = () => {
         description: "Image Sent!",
       });
     } catch (error) {
-      console.log(error);
+      console.log("error in handleSendImage", error);
     }
   };
 
@@ -149,6 +155,7 @@ const useSendMessage = () => {
       senderId: currentUser.uid,
       text: msg.text,
       delivered: false,
+      type: msg.type,
     };
     const room: Room | null =
       rooms.find(
@@ -183,6 +190,7 @@ const useSendMessage = () => {
         senderId: currentUser.uid,
         friend: activeRoom.chatWith!,
         delivered: false,
+        type: "friend",
       };
       const room: Room | null =
         rooms.find(
@@ -201,6 +209,9 @@ const useSendMessage = () => {
         lastConversation: Date.now(),
       });
       setSharingWith(false);
+      toast({
+        description: "Shared!",
+      });
     } catch (error) {
       console.log(error);
       setSharingWith(false);

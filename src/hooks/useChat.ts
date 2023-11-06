@@ -43,22 +43,26 @@ const useChat = () => {
     sender: User;
     reciever: User;
   }): Promise<void> => {
-    const users = {
-      [sender.uid]: true,
-      [reciever.uid]: true,
-    };
-    const userDetails: { [x: string]: User } = {
-      [sender.uid]: sender,
-      [reciever.uid]: reciever,
-    };
-    const room: Room = {
-      lastConversation: null,
-      lastMessage: null,
-      users: users,
-      createdAt: Date.now(),
-      userDetails: userDetails,
-    };
-    await addDoc(collection(db, "chatrooms"), { ...room });
+    try {
+      const users = {
+        [sender.uid]: true,
+        [reciever.uid]: true,
+      };
+      const userDetails: { [x: string]: User } = {
+        [sender.uid]: sender,
+        [reciever.uid]: reciever,
+      };
+      const room: Room = {
+        lastConversation: null,
+        lastMessage: null,
+        users: users,
+        createdAt: Date.now(),
+        userDetails: userDetails,
+      };
+      await addDoc(collection(db, "chatrooms"), { ...room });
+    } catch (error) {
+      console.log("Error in createChatRoom", error);
+    }
   };
 
   const getMyRooms = (): Unsubscribe => {
