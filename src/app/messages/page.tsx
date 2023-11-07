@@ -14,6 +14,7 @@ const page = () => {
       </main>
     );
   }
+
   return (
     <section className="w-full min-h-[90vh] max-h-[90vh]">
       <ChatRoom />

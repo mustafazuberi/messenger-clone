@@ -10,7 +10,7 @@ const activeRoomSlice = createSlice({
       state = { ...action.payload };
       return state;
     },
-    clearActiveRoom: (state) => ACTIVE_ROOM_INITIAL_STATE,
+    clearActiveRoom: () => ACTIVE_ROOM_INITIAL_STATE,
   },
 });
 
