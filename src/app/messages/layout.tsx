@@ -7,12 +7,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="max-h-[90vh] min-h-[90vh]">
-      <section className="flex flex-row">
+    <section className="flex flex-row min-h-full w-full">
+      <section className="sm:min-w-[30%] sm:max-w-[400px] min-h-full">
         <ChatsBox />
-        {children}
       </section>
+      <section className="flex flex-1 w-full">{children}</section>
       <Toaster />
-    </main>
+    </section>
   );
 }
