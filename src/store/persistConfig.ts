@@ -1,7 +1,6 @@
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
 import { combineReducers } from "redux";
-
 import userReducer from "@/store/slice/userSlice";
 import allUsersReducer from "@/store/slice/allUsersSlice";
 import authenticationStatusSliceReducer from "@/store/slice/authenticationStatusSlice";
