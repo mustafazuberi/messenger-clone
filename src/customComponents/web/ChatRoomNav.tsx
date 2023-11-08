@@ -2,15 +2,24 @@ import { IoCallSharp } from "react-icons/io5";
 import { BsFillCameraVideoFill } from "react-icons/bs";
 import ChatRoomFriendInfo from "./ChatRoomInfo";
 import UserImageAvatar from "./UserImageAvatar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { LastActive } from "./ChatUsers";
+import { IoIosArrowBack } from "react-icons/io";
+import { clearActiveRoom } from "@/store/slice/activeRoomSlice";
 
 const ChatRoomNav = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
+  const dispatch = useDispatch();
   return (
     <main className="flex flex-row py-3 justify-between border-b sm:px-5 px-2 ">
       <section className="flex flex-row gap-x-2 items-center">
+        <section className="sm:hidden block">
+          <IoIosArrowBack
+            className="text-2xl"
+            onClick={() => dispatch(clearActiveRoom())}
+          />
+        </section>
         {activeRoom.chatWith && (
           <UserImageAvatar user={activeRoom.chatWith} size={10} />
         )}

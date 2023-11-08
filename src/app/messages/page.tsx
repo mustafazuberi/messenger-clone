@@ -5,18 +5,25 @@ import { useSelector } from "react-redux";
 
 const page = () => {
   const { roomDetails } = useSelector((state: RootState) => state.activeRoom);
-  if (!roomDetails?.id) {
+  const roomId = roomDetails?.id;
+  if (!roomId) {
     return (
-      <main className="flex justify-center items-center min-w-full">
-        <h1 className=" text-2xl font-extrabold tracking-tight lg:text-4xl bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400">
-          No Chats Selected
-        </h1>
+      <main className="sm:flex hidden justify-center items-center min-w-full ">
+        <section className="max-w-[80%]">
+          <h1 className=" text-[60px] font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400">
+            No Chats Selected
+          </h1>
+        </section>
       </main>
     );
   }
 
   return (
-    <section className="w-full min-h-full">
+    <section
+      className={`w-full min-h-full sm:flex ${
+        !roomId ? "hidden" : "flex"
+      } flex-1`}
+    >
       <ChatRoom />
     </section>
   );

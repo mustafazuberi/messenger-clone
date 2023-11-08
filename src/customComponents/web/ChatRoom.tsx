@@ -36,7 +36,7 @@ const ChatRoom = () => {
   }, [activeRoomMessages.data.length, activeRoom.chatWith?.uid, isVisible]);
 
   return (
-    <main className="min-h-full flex flex-col justify-between">
+    <main className="min-h-full w-full flex flex-col justify-between">
       <ChatRoomNav />
       {activeRoomMessages.status === "idle" ? (
         <section
