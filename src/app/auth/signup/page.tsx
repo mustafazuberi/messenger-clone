@@ -5,8 +5,8 @@ import Link from "next/link";
 
 const SignUp = () => {
   return (
-    <main className="flex flex-col justify-center items-center px-4 mt-4">
-      <section className="flex flex-col gap-y-6 w-full max-w-lg my-3 border sm:px-8 px-3 py-12">
+    <main className="flex flex-col justify-center items-center px-4 mt-4 min-w-full">
+      <section className="flex flex-col gap-y-6 w-full max-w-lg my-3 border sm:px-8 px-3 py-12 ">
         <TypographyH1 text="Create an account" />
         <SignupForm />
         <SocialLoginButtons />
