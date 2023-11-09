@@ -7,11 +7,10 @@ import {
 } from "@/components/ui/card";
 import useNotification from "@/hooks/useNotification";
 import { cn } from "@/lib/utils";
+import getFormattedTime from "@/services/getFormattedTime";
 import { STATUSES } from "@/store/intialState";
 import UserNotification from "@/types/types.notification";
 import { NotificationsState } from "@/types/types.state";
-
-type CardProps = React.ComponentProps<typeof Card>;
 
 type NotificationCardProps = {
   unReadNotifications: UserNotification[];
@@ -24,7 +23,7 @@ const NotificationCard = (notificationCardProps: NotificationCardProps) => {
 
   return (
     <section>
-      <Card className={cn("sm:w-[350px] w-[250px] mr-4 mt-1")}>
+      <Card className={cn("sm:w-[350px] w-[250px] mr-4 mt-1 ")}>
         <CardHeader>
           <CardTitle>Notifications</CardTitle>
           {unReadNotifications.length ? (
@@ -34,8 +33,8 @@ const NotificationCard = (notificationCardProps: NotificationCardProps) => {
             </CardDescription>
           ) : null}
         </CardHeader>
-        <CardContent className="grid gap-4 min-h-[140px]">
-          <div>
+        <CardContent className="grid gap-4">
+          <div className="flex flex-col">
             {notifications.status === STATUSES.LOADING ? (
               <section className="flex flex-col justify-center items-center w-full h-full">
                 <NormalSpinner />
@@ -44,23 +43,24 @@ const NotificationCard = (notificationCardProps: NotificationCardProps) => {
               notifications.data.map((notification: UserNotification) => (
                 <div
                   key={notification._id!}
-                  className="grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0 cursor-pointer opacity-80 hover:opacity-100"
+                  className="flex flex-row gap-x-2 cursor-pointer opacity-80 hover:opacity-100 py-2"
                   onClick={() => handleOnNotification(notification)}
                 >
                   {notification.isRequestRead ? (
                     <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
-                  ) : (
-                    <span />
-                  )}
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium leading-1">
+                  ) : null}
+                  <div className="flex flex-row gap-x-2 space-y-1">
+                    <p className="text-sm font-extralight leading-1">
                       {notification.message}
                     </p>
+                    <span className="text-[12px]">
+                      {getFormattedTime(notification.timestamp)}
+                    </span>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="flex flex-col justify-center items-center text-[22px]">
+              <div className="flex flex-col justify-center items-center text-[22px] min-h-[140px]">
                 In the current moment, you have not received any notifications
               </div>
             )}

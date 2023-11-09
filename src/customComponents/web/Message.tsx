@@ -13,7 +13,6 @@ import Friend from "@/types/type.friend";
 import UserImageAvatar from "./UserImageAvatar";
 import useChat from "@/hooks/useChat";
 import useReq from "@/hooks/useReq";
-import { current } from "@reduxjs/toolkit";
 
 type props = {
   msg: Message;
@@ -85,7 +84,7 @@ const Message = ({ msg, activeRoomMessages }: props) => {
                   {getFormattedTime(msg.date)}
                 </section>
                 {byMe && (
-                  <section className="relative mb-1">
+                  <section className="mb-1">
                     <TwoCheck seen={msg.seen} />
                   </section>
                 )}

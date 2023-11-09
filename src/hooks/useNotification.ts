@@ -14,13 +14,15 @@ import {
 import Friend from "@/types/type.friend";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-
+import useChat from "./useChat";
+  
 const useNotification = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const notifications = useSelector((state: RootState) => state.notifications);
   const friends = useSelector((state: RootState) => state.friends);
+  const { handleOnChatUser } = useChat();
 
   let unReadNotifications = notifications.data.filter(
     (notf: UserNotification) => !notf.isNotificationRead
@@ -94,9 +96,12 @@ const useNotification = () => {
   const handleOnNotification = (notification: UserNotification) => {
     const isFriend = friends.data.find(
       (friend: Friend) => friend.uid === notification.notificationBy.uid
-    );
+    ); //This will give friend obj
+
     if (!isFriend && notification.type === "Request Received")
-      return router.push("?tab=requests");
+      router.push("?tab=requests");
+
+    if (isFriend) handleOnChatUser(isFriend);
   };
 
   return {
