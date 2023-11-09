@@ -12,7 +12,7 @@ export default function RootLayout({
   const { roomDetails } = useSelector((state: RootState) => state.activeRoom);
   const roomId = roomDetails?.id;
   return (
-    <section className="flex flex-row min-h-full w-full">
+    <section className="flex flex-row flex-1 w-full max-h-[89vh] min-h-[89vh]">
       <section
         className={`sm:min-w-[30%] sm:flex ${
           !roomId ? "flex" : "hidden"

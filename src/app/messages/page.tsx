@@ -20,7 +20,7 @@ const page = () => {
 
   return (
     <section
-      className={`w-full min-h-full sm:flex ${
+      className={`w-full min-h-full max-h-full sm:flex ${
         !roomId ? "hidden" : "flex"
       } flex-1`}
     >

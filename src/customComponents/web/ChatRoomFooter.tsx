@@ -34,7 +34,7 @@ const ChatRoomFooter = () => {
     setOpenSendImageModal,
   } = useSendMessage();
   return (
-    <main className="py-6 sm:px-5 px-2 ">
+    <main className="sm:px-5 px-2 py-3 flex ">
       <form
         onSubmit={sendMessage}
         className="w-full flex flex-row gap-x-4 items-center"
@@ -56,7 +56,7 @@ const ChatRoomFooter = () => {
         </Popover>
         {/* Photos */}
         <IoMdPhotos
-          className="text-4xl cursor-pointer text-pink-800"
+          className="text-4xl cursor-pointer text-gray-400"
           onClick={() => setOpenSendImageModal(true)}
         />
         <Input

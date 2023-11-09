@@ -7,7 +7,7 @@ const Navbar = () => {
   const { roomDetails } = useSelector((state: RootState) => state.activeRoom);
   return (
     <main
-      className={`p-3 ${
+      className={`h-[11vh] px-3 ${
         roomDetails?.id ? "sm:flex hidden" : "flex"
       } flex-row justify-between items-center border-b`}
     >

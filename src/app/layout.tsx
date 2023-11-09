@@ -24,7 +24,7 @@ export default function RootLayout({
             <section className="min-w-full">
               <Navbar />
             </section>
-            <section className="flex flex-1">{children}</section>
+            <section className="max-h-[89vh]">{children}</section>
           </main>
           <Toaster />
         </StoreProvider>

@@ -17,7 +17,6 @@ const ChatUsers = () => {
   const friends = useSelector((state: RootState) => state.friends);
   const rooms = useSelector((state: RootState) => state.rooms);
   const {
-    handleOnChatUser,
     getFriendFromRoomUsers,
     getRoomsUnseenMessages,
     roomsUnseenMessages,
@@ -28,62 +27,26 @@ const ChatUsers = () => {
   }, [rooms.length]);
 
   return (
-    <main className="flex flex-row justify-between p-2 items-center">
-      <section className="flex flex-col gap-y-2 min-w-full overflow-y-auto">
-        {rooms?.length ? (
-          rooms?.map((room: Room) => {
-            const friend: Friend | null = getFriendFromRoomUsers(room);
-            if (!friend) return null; // Return null when no friend found
-            return (
-              <section
-                className="flex flex-row justify-between border-b min-w-full cursor-pointer py-2 pr-2"
-                key={room.id}
-                onClick={() => handleOnChatUser(friend)}
-              >
-                <section className="flex flex-row gap-x-3 w-full items-center">
-                  <section>
-                    <UserImageAvatar user={friend} size={10} />
-                  </section>
-                  <section className="flex flex-col w-full">
-                    <section className="flex flex-row justify-between w-full">
-                      <section>
-                        <h3>{friend.displayName}</h3>
-                      </section>
-                      <section>
-                        <LastActive friend={friend} />
-                      </section>
-                    </section>
-                    <section>
-                      {room.lastMessage &&
-                      !roomsUnseenMessages[room.id!]?.length ? (
-                        <LastMessage message={room.lastMessage} />
-                      ) : roomsUnseenMessages[room.id!]?.length ? (
-                        <section className="flex flex-row gap-x-1 items-center">
-                          <span className="w-2 h-2 rounded-full bg-blue-700" />
-                          <p className="text-gray-700 font-extrabold text-[13px]">
-                            {`${
-                              roomsUnseenMessages[room.id!]?.length
-                            } new message${
-                              roomsUnseenMessages[room.id!]?.length > 1
-                                ? "s."
-                                : "."
-                            }`}
-                          </p>
-                        </section>
-                      ) : null}
-                    </section>
-                  </section>
-                </section>
-              </section>
-            );
-          })
-        ) : friends.status === STATUSES.LOADING ? (
-          <UsersSkeleton skeletonLength={7} />
-        ) : (
-          <NoFriendsToChat />
-        )}
-      </section>
-    </main>
+    <section className="flex px-2 flex-col flex-1 max-h-full overflow-y-scroll scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-track-inherit">
+      {rooms?.length ? (
+        rooms?.map((room: Room) => {
+          const friend: Friend | null = getFriendFromRoomUsers(room);
+          if (!friend) return null; // Return null when no friend found
+          return (
+            <ChatUser
+              friend={friend}
+              room={room}
+              roomsUnseenMessages={roomsUnseenMessages}
+              key={room.id}
+            />
+          );
+        })
+      ) : friends.status === STATUSES.LOADING ? (
+        <UsersSkeleton skeletonLength={10} />
+      ) : (
+        <NoFriendsToChat />
+      )}
+    </section>
   );
 };
 
@@ -150,6 +113,56 @@ export const LastActive: React.FC<{
           </span>
         </section>
       )}
+    </section>
+  );
+};
+
+type ChatUserProps = {
+  friend: Friend;
+  room: Room;
+  roomsUnseenMessages: { [x: string]: Message[] };
+};
+
+const ChatUser: React.FC<ChatUserProps> = ({
+  friend,
+  room,
+  roomsUnseenMessages,
+}) => {
+  const { handleOnChatUser } = useChat();
+  return (
+    <section
+      className="flex flex-row justify-between border-b min-w-full cursor-pointer py-2 pr-2"
+      onClick={() => handleOnChatUser(friend)}
+    >
+      <section className="flex flex-row gap-x-3 w-full items-center">
+        <section>
+          <UserImageAvatar user={friend} size={10} />
+        </section>
+        <section className="flex flex-col w-full">
+          <section className="flex flex-row justify-between w-full">
+            <section>
+              <h3>{friend.displayName}</h3>
+            </section>
+            <section>
+              <LastActive friend={friend} />
+            </section>
+          </section>
+          <section>
+            {room.lastMessage && !roomsUnseenMessages[room.id!]?.length ? (
+              <LastMessage message={room.lastMessage} />
+            ) : roomsUnseenMessages[room.id!]?.length ? (
+              <section className="flex flex-row gap-x-1 items-center">
+                <span className="w-2 h-2 rounded-full bg-blue-700" />
+                <p className="text-gray-700 font-extrabold text-[13px]">
+                  {`${roomsUnseenMessages[room.id!]?.length} new message${
+                    roomsUnseenMessages[room.id!]?.length > 1 ? "s." : "."
+                  }`}
+                </p>
+              </section>
+            ) : null}
+          </section>
+        </section>
+      </section>
     </section>
   );
 };

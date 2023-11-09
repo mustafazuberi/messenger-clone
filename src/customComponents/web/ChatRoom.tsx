@@ -36,11 +36,13 @@ const ChatRoom = () => {
   }, [activeRoomMessages.data.length, activeRoom.chatWith?.uid, isVisible]);
 
   return (
-    <main className="min-h-full w-full flex flex-col justify-between">
-      <ChatRoomNav />
+    <main className="sm:min-h-full min-h-[100vh] w-full flex flex-col max-h-full">
+      <section>
+        <ChatRoomNav />
+      </section>
       {activeRoomMessages.status === "idle" ? (
         <section
-          className="flex flex-col flex-1 gap-y-2 px-6 pt-4 pb-0 overflow-y-scroll scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-track-inherit"
+          className="flex flex-col max-h-full flex-1 gap-y-2 px-6 pt-4 pb-0 py-2 overflow-y-scroll scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-track-inherit"
           ref={sectionRefMessagesDiv}
         >
           {activeRoom.roomDetails ? (
@@ -65,7 +67,9 @@ const ChatRoom = () => {
           <TailwindSpinner />
         </section>
       )}
-      <ChatRoomFooter />
+      <section>
+        <ChatRoomFooter />
+      </section>
     </main>
   );
 };

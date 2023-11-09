@@ -41,11 +41,11 @@ const ChatsBox = () => {
     handleOnDisconnectAndConnect();
   }, []);
 
-  const isFindFriendsTab = params.get("tab") === "findFriends";
-  const isRequestsTab = params.get("tab") === "requests";
+  const isFindFriendsTab = params?.get("tab") === "findFriends";
+  const isRequestsTab = params?.get("tab") === "requests";
 
   return (
-    <main className="min-h-full min-w-full border-r">
+    <main className="min-h-full max-h-full min-w-full border-r">
       {isFindFriendsTab ? (
         <Suspense fallback={<FindFriendsSuspense />}>
           <FindFriends />
@@ -53,7 +53,7 @@ const ChatsBox = () => {
       ) : isRequestsTab ? (
         <Requests />
       ) : (
-        <section>
+        <section className="max-h-full min-h-full flex flex-col">
           <ChatsBoxNav />
           <ChatUsers />
         </section>

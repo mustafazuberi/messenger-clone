@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const UsersSkeleton = ({ skeletonLength }: { skeletonLength: number }) => {
   return (
-    <main className="flex flex-col gap-y-8">
+    <main className="flex flex-col gap-y-8 p-2">
       {[...Array(skeletonLength)].map((_, index) => (
         <div className="flex items-center space-x-4" key={index}>
           <Skeleton className="h-10 w-10 rounded-full" />
