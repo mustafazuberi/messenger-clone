@@ -13,7 +13,7 @@ const activeRoomSlice = createSlice({
     setActiveRoomMessages: (state, action: { payload: ActiveRoomMessages }) => {
       state.messages = {
         status: action.payload.status,
-        data: [...action.payload.data],
+        data: { ...action.payload.data },
       };
     },
     clearActiveRoom: () => ACTIVE_ROOM_INITIAL_STATE,

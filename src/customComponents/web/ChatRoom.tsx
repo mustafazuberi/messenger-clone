@@ -7,6 +7,7 @@ import TailwindSpinner from "./TailwindSpinner";
 import { usePageVisibility } from "react-page-visibility";
 import { RootState } from "@/store";
 import { useSelector } from "react-redux";
+import { ActiveRoomMessages } from "@/types/chatRoom";
 
 const ChatRoom = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
@@ -14,37 +15,38 @@ const ChatRoom = () => {
   const createdAt =
     activeRoom.roomDetails &&
     new Date(activeRoom.roomDetails.createdAt).toLocaleDateString();
-  const activeRoomMessages = activeRoom.messages;
+
+  // This is current room Data
+  const roomMessages: Message[] | null =
+    activeRoom.roomDetails?.id && activeRoom.messages?.data
+      ? activeRoom.messages?.data[activeRoom.roomDetails.id]
+      : null;
+  const status = activeRoom.messages.status;
+  // --------------------------
+
   const {
-    getActiveRoomMessages,
     scrollSectionToBottom,
     sectionRefMessagesDiv,
-    updateActiveRoomUnseenMessagesToSeen,
+    updateMessagesOnSeen,
   } = useChat();
-
-  // useEffect(() => {
-  //   getActiveRoomMessages(activeRoom.roomDetails?.id!);
-  // }, [activeRoom.roomDetails?.id]);
 
   useEffect(() => {
     scrollSectionToBottom();
-  }, [activeRoomMessages.data.length]);
+  }, [roomMessages?.length]);
 
   useEffect(() => {
-    if (activeRoomMessages.data.length && isVisible)
-      updateActiveRoomUnseenMessagesToSeen();
-  }, [activeRoomMessages.data.length, activeRoom.chatWith?.uid, isVisible]);
-
-  console.log("activeRoomMessages", activeRoomMessages);
+    if (roomMessages?.length && isVisible)
+      updateMessagesOnSeen();
+  }, [roomMessages?.length, activeRoom.chatWith?.uid, isVisible]);
 
   return (
     <main className="sm:min-h-full min-h-[100vh] w-full flex flex-col max-h-full">
       <section>
         <ChatRoomNav />
       </section>
-      {activeRoomMessages.status === "idle" ? (
+      {status === "idle" ? (
         <section
-          className="flex flex-col max-h-full flex-1 gap-y-2 px-6 pt-4 pb-0 py-2 overflow-y-scroll sm:scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-track-inherit"
+          className="flex flex-col max-h-full flex-1 gap-y-2 p-6 overflow-y-scroll sm:scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-track-inherit"
           ref={sectionRefMessagesDiv}
         >
           {activeRoom.roomDetails ? (
@@ -54,12 +56,12 @@ const ChatRoom = () => {
               </span>
             </section>
           ) : null}
-          {activeRoomMessages.data?.length
-            ? activeRoomMessages.data.map((msg) => (
+          {roomMessages?.length
+            ? roomMessages.map((msg) => (
                 <Message
                   msg={msg}
                   key={msg.id}
-                  activeRoomMessages={activeRoomMessages.data}
+                  activeRoomMessages={roomMessages}
                 />
               ))
             : null}

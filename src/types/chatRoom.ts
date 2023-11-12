@@ -10,6 +10,6 @@ export type ActiveRoom = {
 };
 
 export type ActiveRoomMessages = {
-  data: Message[];
+  data: { [x: string]: Message[] } | null;
   status: Status;
 };

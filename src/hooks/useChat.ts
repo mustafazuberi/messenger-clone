@@ -1,7 +1,6 @@
 import { db } from "@/db/firebase.config";
 import { RootState } from "@/store";
 import { STATUSES } from "@/store/intialState";
-import { ActiveRoomMessages } from "@/types/chatRoom";
 import { setRooms } from "@/store/slice/roomsSlice";
 import Friend from "@/types/type.friend";
 import Message from "@/types/types.message";
@@ -102,24 +101,23 @@ const useChat = () => {
     return unsubscribe;
   };
 
-  const getActiveRoomMessages = (roomId: string): Unsubscribe => {
+  const getRoomMessages = (roomId: string): Unsubscribe => {
     const unsubscribe = onSnapshot(
       query(
         collection(db, "chatrooms", roomId, "messages"),
         orderBy("date", "asc")
       ),
       (querySnapshot) => {
-        console.log("querySnapshot ---- ", querySnapshot);
         const messages: Message[] = [];
-        console.log("getActiveRoomMessages 2");
+
         querySnapshot.forEach((doc) => {
           messages.push({ ...(doc.data() as Message), id: doc.id });
         });
+
         // Dispatching active room messages in redux
-        console.log("setting these messages", messages);
         dispatch(
           setActiveRoomMessages({
-            data: [...messages],
+            data: { [roomId]: [...messages] },
             status: STATUSES.IDLE,
           })
         );
@@ -154,10 +152,10 @@ const useChat = () => {
       setActiveRoom({
         roomDetails: { ...room },
         chatWith: { ...friend },
-        messages: { status: STATUSES.IDLE, data: [] },
+        messages: { status: STATUSES.IDLE, data: null },
       })
     );
-    getActiveRoomMessages(room.id!);
+    getRoomMessages(room.id!);
   };
 
   const getRoomsUnseenMessages = async () => {
@@ -185,7 +183,7 @@ const useChat = () => {
   };
 
   // This will update message to seen when we opens any chatroom
-  const updateActiveRoomUnseenMessagesToSeen = async () => {
+  const updateMessagesOnSeen = async () => {
     if (!activeRoom.roomDetails?.id) return;
     const roomId = activeRoom.roomDetails?.id;
     const messagesCollectionRef = collection(
@@ -273,14 +271,13 @@ const useChat = () => {
     createChatRoom,
     getMyRooms,
     handleOnChatUser,
-    getActiveRoomMessages,
     getFriendFromRoomUsers,
     scrollSectionToBottom,
     sectionRefMessagesDiv,
     getTimeDifference,
     getRoomsUnseenMessages,
     roomsUnseenMessages,
-    updateActiveRoomUnseenMessagesToSeen,
+    updateMessagesOnSeen,
   };
 };
 
