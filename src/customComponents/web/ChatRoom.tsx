@@ -14,17 +14,17 @@ const ChatRoom = () => {
   const createdAt =
     activeRoom.roomDetails &&
     new Date(activeRoom.roomDetails.createdAt).toLocaleDateString();
+  const activeRoomMessages = activeRoom.messages;
   const {
-    activeRoomMessages,
     getActiveRoomMessages,
     scrollSectionToBottom,
     sectionRefMessagesDiv,
     updateActiveRoomUnseenMessagesToSeen,
   } = useChat();
 
-  useEffect(() => {
-    getActiveRoomMessages(activeRoom.roomDetails?.id!);
-  }, [activeRoom.roomDetails?.id]);
+  // useEffect(() => {
+  //   getActiveRoomMessages(activeRoom.roomDetails?.id!);
+  // }, [activeRoom.roomDetails?.id]);
 
   useEffect(() => {
     scrollSectionToBottom();
@@ -35,7 +35,7 @@ const ChatRoom = () => {
       updateActiveRoomUnseenMessagesToSeen();
   }, [activeRoomMessages.data.length, activeRoom.chatWith?.uid, isVisible]);
 
-  console.log('rendering component of messages')
+  console.log("activeRoomMessages", activeRoomMessages);
 
   return (
     <main className="sm:min-h-full min-h-[100vh] w-full flex flex-col max-h-full">
@@ -65,7 +65,7 @@ const ChatRoom = () => {
             : null}
         </section>
       ) : (
-        <section className="flex flex-col justify-center items-center min-h-full">
+        <section className="flex flex-col max-h-full flex-1 justify-center items-center">
           <TailwindSpinner />
         </section>
       )}

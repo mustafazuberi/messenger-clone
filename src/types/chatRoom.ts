@@ -6,6 +6,7 @@ import { Status } from "@/types/types.state";
 export type ActiveRoom = {
   chatWith: Friend | null;
   roomDetails: Room | null;
+  messages: ActiveRoomMessages;
 };
 
 export type ActiveRoomMessages = {

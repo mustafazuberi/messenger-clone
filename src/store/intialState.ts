@@ -49,6 +49,10 @@ export const ROOMS_INITIAL_STATE: RoomsState = [];
 export const ACTIVE_ROOM_INITIAL_STATE: ActiveRoom = {
   chatWith: null,
   roomDetails: null,
+  messages: {
+    data: [],
+    status: STATUSES.IDLE,
+  },
 };
 
 export const ACTIVE_USERS_INITIAL_STATE: { [x: string]: OnlineInfo } = {};

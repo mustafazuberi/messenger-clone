@@ -19,9 +19,12 @@ import {
 } from "firebase/firestore";
 import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setActiveRoom } from "@/store/slice/activeRoomSlice";
+import {
+  clearActiveRoom,
+  setActiveRoom,
+  setActiveRoomMessages,
+} from "@/store/slice/activeRoomSlice";
 import User from "@/types/types.user";
-import { string } from "zod";
 
 const useChat = () => {
   const dispatch = useDispatch();
@@ -31,11 +34,6 @@ const useChat = () => {
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const sectionRefMessagesDiv = useRef<HTMLDivElement | null>(null);
 
-  const [activeRoomMessages, setActiveRoomMessages] =
-    useState<ActiveRoomMessages>({
-      data: [],
-      status: STATUSES.LOADING,
-    });
   const [roomsUnseenMessages, setRoomsUnseenMessages] = useState<{
     [x: string]: Message[];
   }>({});
@@ -91,14 +89,14 @@ const useChat = () => {
         const updatedActiveRoom = filteredRooms.find(
           (room) => room.id === activeRoom.roomDetails?.id
         );
-        if (updatedActiveRoom) {
-          dispatch(
-            setActiveRoom({
-              ...activeRoom,
-              roomDetails: { ...updatedActiveRoom },
-            })
-          );
-        }
+        // if (updatedActiveRoom) {
+        //   dispatch(
+        //     setActiveRoom({
+        //       ...activeRoom,
+        //       roomDetails: { ...updatedActiveRoom },
+        //     })
+        //   );
+        // }
       }
     );
     return unsubscribe;
@@ -111,14 +109,20 @@ const useChat = () => {
         orderBy("date", "asc")
       ),
       (querySnapshot) => {
+        console.log("querySnapshot ---- ", querySnapshot);
         const messages: Message[] = [];
+        console.log("getActiveRoomMessages 2");
         querySnapshot.forEach((doc) => {
           messages.push({ ...(doc.data() as Message), id: doc.id });
         });
-        setActiveRoomMessages({
-          data: [...messages],
-          status: STATUSES.IDLE,
-        });
+        // Dispatching active room messages in redux
+        console.log("setting these messages", messages);
+        dispatch(
+          setActiveRoomMessages({
+            data: [...messages],
+            status: STATUSES.IDLE,
+          })
+        );
       }
     );
     return unsubscribe;
@@ -141,13 +145,19 @@ const useChat = () => {
   };
 
   const handleOnChatUser = (friend: Friend) => {
+    dispatch(clearActiveRoom());
     const room: Room | undefined = rooms.find(
       (room: Room) => room.users[friend.uid] && room.users[currentUser.uid]
     );
     if (!room) return;
     dispatch(
-      setActiveRoom({ roomDetails: { ...room }, chatWith: { ...friend } })
+      setActiveRoom({
+        roomDetails: { ...room },
+        chatWith: { ...friend },
+        messages: { status: STATUSES.IDLE, data: [] },
+      })
     );
+    getActiveRoomMessages(room.id!);
   };
 
   const getRoomsUnseenMessages = async () => {
@@ -263,7 +273,6 @@ const useChat = () => {
     createChatRoom,
     getMyRooms,
     handleOnChatUser,
-    activeRoomMessages,
     getActiveRoomMessages,
     getFriendFromRoomUsers,
     scrollSectionToBottom,
