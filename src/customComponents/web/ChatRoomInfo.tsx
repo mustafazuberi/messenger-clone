@@ -29,6 +29,8 @@ import Friend from "@/types/type.friend";
 import UserImageAvatar from "./UserImageAvatar";
 import Image from "next/image";
 import ShareFriendWithModal from "./ShareFriendWithModal";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 const ChatRoomFriendInfo = ({ chatWith }: { chatWith: Friend }) => {
   return (
@@ -85,7 +87,7 @@ const ChatRoomInfoShareButton = () => {
   return (
     <Dialog>
       <section className="flex justify-center mt-2">
-        <DialogTrigger >
+        <DialogTrigger>
           <span className="p-4 hover:bg-gray-700 w-14 h-14 flex justify-center items-center rounded-full opacity-40 cursor-pointer duration-300">
             <PiShareFatFill className="text-2xl" />
           </span>
@@ -97,23 +99,14 @@ const ChatRoomInfoShareButton = () => {
 };
 
 const ChatRoomInfoOptions = () => {
+  const user = useSelector((state: RootState) => state.activeRoom.chatWith);
   return (
     <section className="flex flex-col w-full">
-      <section className="flex items-center w-full justify-between px-6 py-3 hover:bg-gray-900 cursor-pointer duration-300">
-        <Label
-          htmlFor="airplane-mode"
-          className="font-extralight flex flex-row gap-x-4 items-center cursor-pointer"
-        >
-          <TbBellFilled className="text-2xl text-gray-400" />
-          <span className="text-[15px]">Mute Notifications</span>
-        </Label>
-        <Switch id="airplane-mode" className="text-gray-500" />
-      </section>
       <AlertDialog>
         <AlertDialogTrigger>
           <section className="flex items-center gap-x-4 w-full text-red-500 hover:opacity-70 py-3 px-6 hover:bg-gray-900 cursor-pointer duration-300">
             <ImBlocked className="text-2xl " />
-            <span className="text-[17px]">Block Mustafa</span>
+            <span className="text-[17px]">Block {user?.displayName}</span>
           </section>
         </AlertDialogTrigger>
         <AlertDialogContent>
@@ -125,10 +118,11 @@ const ChatRoomInfoOptions = () => {
 };
 
 const BlockUserModal = () => {
+  const user = useSelector((state: RootState) => state.activeRoom.chatWith);
   return (
     <section>
       <AlertDialogHeader>
-        <AlertDialogTitle>Block Mustafa?</AlertDialogTitle>
+        <AlertDialogTitle>Block {user?.displayName}?</AlertDialogTitle>
         <AlertDialogDescription>
           Blocked contacts will no longer be able to call you or send you
           messages. This contact will not be notified.

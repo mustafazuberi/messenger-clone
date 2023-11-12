@@ -110,7 +110,8 @@ const useSignup = () => {
         description: "Congrats! Account created account!",
       });
     } catch (error: unknown) {
-      const message = handleFirebaseError(error as FirebaseError);
+      const message =
+        handleFirebaseError(error as FirebaseError) || "Some thing went wrong!";
       toast({ variant: "destructive", description: message });
     }
   }

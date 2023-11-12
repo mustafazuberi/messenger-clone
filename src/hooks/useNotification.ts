@@ -8,6 +8,7 @@ import {
   addDoc,
   collection,
   doc,
+  getDoc,
   onSnapshot,
   updateDoc,
 } from "firebase/firestore";
@@ -15,7 +16,7 @@ import Friend from "@/types/type.friend";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import useChat from "./useChat";
-  
+
 const useNotification = () => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -44,7 +45,6 @@ const useNotification = () => {
         notificationBy: by,
         message,
       };
-      console.log("to.uid in sendNotification ---", to.uid);
       const notificationDocRef = collection(
         db,
         "users",
@@ -78,19 +78,28 @@ const useNotification = () => {
 
   const handleNotificationDropdown = async (opened: boolean) => {
     if (!unReadNotifications.length || !opened) return;
-    unReadNotifications.forEach(async (notificationRef: UserNotification) => {
-      const washingtonRef = doc(
-        db,
-        "users",
-        currentUser.uid,
-        "notifications",
-        notificationRef._id!
-      );
-      await updateDoc(washingtonRef, {
-        isNotificationRead: true,
+    try {
+      unReadNotifications.forEach(async (notification: UserNotification) => {
+        const notfRef = doc(
+          db,
+          "users",
+          currentUser.uid,
+          "notifications",
+          notification._id!
+        );
+        const notfDoc = await getDoc(notfRef);
+        if (notfDoc.exists()) {
+          await updateDoc(notfRef, {
+            isNotificationRead: true,
+          });
+        } else {
+          console.log(`Document with ID ${notification._id} does not exist.`);
+        }
       });
-    });
-    unReadNotifications = [];
+      unReadNotifications = [];
+    } catch (error) {
+      console.log("Error in handleNotificationDropdown", error);
+    }
   };
 
   const handleOnNotification = (notification: UserNotification) => {

@@ -23,8 +23,8 @@ const ChatRoom = () => {
   } = useChat();
 
   useEffect(() => {
-    getActiveRoomMessages();
-  }, [activeRoom.chatWith?.uid]);
+    getActiveRoomMessages(activeRoom.roomDetails?.id!);
+  }, [activeRoom.roomDetails?.id]);
 
   useEffect(() => {
     scrollSectionToBottom();
@@ -35,6 +35,8 @@ const ChatRoom = () => {
       updateActiveRoomUnseenMessagesToSeen();
   }, [activeRoomMessages.data.length, activeRoom.chatWith?.uid, isVisible]);
 
+  console.log('rendering component of messages')
+
   return (
     <main className="sm:min-h-full min-h-[100vh] w-full flex flex-col max-h-full">
       <section>
@@ -42,7 +44,7 @@ const ChatRoom = () => {
       </section>
       {activeRoomMessages.status === "idle" ? (
         <section
-          className="flex flex-col max-h-full flex-1 gap-y-2 px-6 pt-4 pb-0 py-2 overflow-y-scroll scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-track-inherit"
+          className="flex flex-col max-h-full flex-1 gap-y-2 px-6 pt-4 pb-0 py-2 overflow-y-scroll sm:scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-track-inherit"
           ref={sectionRefMessagesDiv}
         >
           {activeRoom.roomDetails ? (

@@ -39,7 +39,7 @@ const Message = ({ msg, activeRoomMessages }: props) => {
         <section
           className={`${
             byMe ? "bg-[#005c4b]" : "bg-[#1e293b]"
-          } max-w-[70%] px-2 py-2 rounded-[12px] rounded-tr-none text-white `}
+          } sm:max-w-[70%] max-w-[90%] px-2 py-2 rounded-2xl text-white `}
         >
           <section className="flex flex-col">
             <section className="flex flex-row justify-end">
@@ -49,7 +49,9 @@ const Message = ({ msg, activeRoomMessages }: props) => {
                 updatedLastMessage={lastMsg} //This will update if user will unsend last message
               />
             </section>
-            <section className={`flex flex-${msg.text ? "row" : "col"} gap-3`}>
+            <section
+              className={`flex flex-${msg.text ? "row" : "col"} sm:gap-3 gap-2`}
+            >
               {msg.text ? (
                 <section className="text-[15px] font-extralight">
                   {msg.text}
@@ -84,8 +86,9 @@ const Message = ({ msg, activeRoomMessages }: props) => {
                   {getFormattedTime(msg.date)}
                 </section>
                 {byMe && (
-                  <section className="mb-1">
-                    <TwoCheck seen={msg.seen} />
+                  <section className="text-[9px]">
+                    {/* <TwoCheck seen={} /> */}
+                    {msg.seen ? "seen" : "sent"}
                   </section>
                 )}
               </section>

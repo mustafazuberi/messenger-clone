@@ -5,6 +5,7 @@ import Image from "next/image";
 import messengerLogo from "@/../assets/images/messengerlogo.png";
 import { TypographyH1 } from "../web/TypographyH1";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   openEmailSent: boolean;
@@ -20,7 +21,7 @@ const EmailSentDialog = ({ openEmailSent, email }: Props) => {
             <Image
               src={messengerLogo}
               alt="envelopeMailImage"
-              loading="eager" 
+              loading="eager"
               className="sm:w-24 sm:h-24 w-16 h-16"
             />
             <TypographyH1 text="Email Confirmation" />
@@ -32,7 +33,11 @@ const EmailSentDialog = ({ openEmailSent, email }: Props) => {
               to confirm the validity of our email address. After receiving the
               email follow the link provided to complete your registration.
             </p>
-            <Link href={"/auth/signin"}>Sign In</Link>
+            <section className="flex justify-center items-center mt-3">
+              <Link href={"/auth/signin"}>
+                <Button>Sign In</Button>
+              </Link>
+            </section>
           </section>
         </section>
       </DialogContentWithoutX>

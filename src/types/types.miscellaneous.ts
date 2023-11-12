@@ -43,3 +43,4 @@ export type OpenImageModal = {
   open: boolean;
 };
 
+export type VoiceRecordState = "record" | "recording" | "recorded";

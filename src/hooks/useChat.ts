@@ -21,6 +21,7 @@ import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveRoom } from "@/store/slice/activeRoomSlice";
 import User from "@/types/types.user";
+import { string } from "zod";
 
 const useChat = () => {
   const dispatch = useDispatch();
@@ -31,7 +32,10 @@ const useChat = () => {
   const sectionRefMessagesDiv = useRef<HTMLDivElement | null>(null);
 
   const [activeRoomMessages, setActiveRoomMessages] =
-    useState<ActiveRoomMessages>({ data: [], status: STATUSES.LOADING });
+    useState<ActiveRoomMessages>({
+      data: [],
+      status: STATUSES.LOADING,
+    });
   const [roomsUnseenMessages, setRoomsUnseenMessages] = useState<{
     [x: string]: Message[];
   }>({});
@@ -100,8 +104,7 @@ const useChat = () => {
     return unsubscribe;
   };
 
-  const getActiveRoomMessages = (): Unsubscribe => {
-    const roomId = activeRoom.roomDetails?.id!;
+  const getActiveRoomMessages = (roomId: string): Unsubscribe => {
     const unsubscribe = onSnapshot(
       query(
         collection(db, "chatrooms", roomId, "messages"),
@@ -112,7 +115,10 @@ const useChat = () => {
         querySnapshot.forEach((doc) => {
           messages.push({ ...(doc.data() as Message), id: doc.id });
         });
-        setActiveRoomMessages({ data: messages, status: STATUSES.IDLE });
+        setActiveRoomMessages({
+          data: [...messages],
+          status: STATUSES.IDLE,
+        });
       }
     );
     return unsubscribe;

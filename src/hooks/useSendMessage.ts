@@ -71,6 +71,7 @@ const useSendMessage = () => {
   const sendMessage = async (e: React.FormEvent) => {
     try {
       e.preventDefault();
+      if (!messageInp) return;
       const message: Message = {
         date: Date.now(),
         seen: false,
