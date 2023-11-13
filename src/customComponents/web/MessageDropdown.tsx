@@ -18,16 +18,13 @@ type Props = {
     open: boolean;
     message: Message;
   }) => void;
-  updatedLastMessage?: Message;
 };
 
 const MessageDropDown: React.FC<Props> = ({
   message,
   setOpenForwardMessageModal,
-  updatedLastMessage,
 }) => {
   const currentUser = useSelector((state: RootState) => state.currentUser);
-  const { handleOnUnsendMsg } = useSendMessage();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -46,20 +43,6 @@ const MessageDropDown: React.FC<Props> = ({
           <LuForward className="text-2xl" />
           <span>Forward</span>
         </DropdownMenuItem>
-        {message.senderId === currentUser.uid && (
-          <DropdownMenuItem
-            onClick={() =>
-              handleOnUnsendMsg({
-                msg: message,
-                updatedLastMsg: updatedLastMessage,
-              })
-            }
-            className="py-2 cursor-pointer flex flex-row gap-x-3"
-          >
-            <MdOutlineDeleteSweep className="text-2xl" />
-            <span>Unsend</span>
-          </DropdownMenuItem>
-        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

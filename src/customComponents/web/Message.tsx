@@ -16,10 +16,9 @@ import useReq from "@/hooks/useReq";
 
 type props = {
   msg: Message;
-  activeRoomMessages: Message[];
 };
 
-const Message = ({ msg, activeRoomMessages }: props) => {
+const Message = ({ msg }: props) => {
   const {
     openImageModal,
     setOpenImageModal,
@@ -28,7 +27,7 @@ const Message = ({ msg, activeRoomMessages }: props) => {
   } = useSendMessage();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const byMe = msg.senderId === currentUser.uid ? true : false;
-  const lastMsg = activeRoomMessages[activeRoomMessages.length - 2];
+
   return (
     <section>
       <section
@@ -46,7 +45,6 @@ const Message = ({ msg, activeRoomMessages }: props) => {
               <MessageDropDown
                 message={msg}
                 setOpenForwardMessageModal={setOpenForwardMessageModal}
-                updatedLastMessage={lastMsg} //This will update if user will unsend last message
               />
             </section>
             <section

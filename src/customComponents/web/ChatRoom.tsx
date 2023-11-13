@@ -7,7 +7,6 @@ import TailwindSpinner from "./TailwindSpinner";
 import { usePageVisibility } from "react-page-visibility";
 import { RootState } from "@/store";
 import { useSelector } from "react-redux";
-import { ActiveRoomMessages } from "@/types/chatRoom";
 
 const ChatRoom = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
@@ -15,7 +14,6 @@ const ChatRoom = () => {
   const createdAt =
     activeRoom.roomDetails &&
     new Date(activeRoom.roomDetails.createdAt).toLocaleDateString();
-
   // This is current room Data
   const roomMessages: Message[] | null =
     activeRoom.roomDetails?.id && activeRoom.messages?.data
@@ -23,20 +21,15 @@ const ChatRoom = () => {
       : null;
   const status = activeRoom.messages.status;
   // --------------------------
-
-  const {
-    scrollSectionToBottom,
-    sectionRefMessagesDiv,
-    updateMessagesOnSeen,
-  } = useChat();
+  const { scrollSectionToBottom, sectionRefMessagesDiv, updateMessagesOnSeen } =
+    useChat();
 
   useEffect(() => {
     scrollSectionToBottom();
   }, [roomMessages?.length]);
 
   useEffect(() => {
-    if (roomMessages?.length && isVisible)
-      updateMessagesOnSeen();
+    if (roomMessages?.length && isVisible) updateMessagesOnSeen();
   }, [roomMessages?.length, activeRoom.chatWith?.uid, isVisible]);
 
   return (
@@ -57,13 +50,7 @@ const ChatRoom = () => {
             </section>
           ) : null}
           {roomMessages?.length
-            ? roomMessages.map((msg) => (
-                <Message
-                  msg={msg}
-                  key={msg.id}
-                  activeRoomMessages={roomMessages}
-                />
-              ))
+            ? roomMessages.map((msg) => <Message msg={msg} key={msg.id} />)
             : null}
         </section>
       ) : (

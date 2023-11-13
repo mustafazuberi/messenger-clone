@@ -88,14 +88,14 @@ const useChat = () => {
         const updatedActiveRoom = filteredRooms.find(
           (room) => room.id === activeRoom.roomDetails?.id
         );
-        // if (updatedActiveRoom) {
-        //   dispatch(
-        //     setActiveRoom({
-        //       ...activeRoom,
-        //       roomDetails: { ...updatedActiveRoom },
-        //     })
-        //   );
-        // }
+        if (updatedActiveRoom) {
+          dispatch(
+            setActiveRoom({
+              ...activeRoom,
+              roomDetails: { ...updatedActiveRoom },
+            })
+          );
+        }
       }
     );
     return unsubscribe;

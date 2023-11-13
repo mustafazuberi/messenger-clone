@@ -33,11 +33,6 @@ export type OnForwardMessage = {
   forwardTo: Friend;
 };
 
-export type OnUnsendMsg = {
-  msg: Message;
-  updatedLastMsg?: Message;
-};
-
 export type OpenImageModal = {
   img: string;
   open: boolean;

@@ -8,7 +8,6 @@ import {
   ForwardMessageModal,
   Forwarding,
   OnForwardMessage,
-  OnUnsendMsg,
   OpenImageModal,
 } from "@/types/types.miscellaneous";
 import Room from "@/types/types.room";
@@ -127,27 +126,6 @@ const useSendMessage = () => {
     }
   };
 
-  const handleOnUnsendMsg = async ({ msg, updatedLastMsg }: OnUnsendMsg) => {
-    try {
-      if (
-        activeRoom.roomDetails?.lastMessage?.id === msg.id &&
-        updatedLastMsg
-      ) {
-        await updateDoc(doc(db, "chatrooms", activeRoom?.roomDetails?.id!), {
-          lastMessage: updatedLastMsg,
-          lastConversation: Date.now(),
-        });
-      }
-      await deleteDoc(
-        doc(db, "chatrooms", activeRoom.roomDetails?.id!, "messages", msg.id!)
-      );
-      toast({
-        description: "Message unsent!",
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const handleForwardMessage = async ({ msg, forwardTo }: OnForwardMessage) => {
     const message: Message = {
@@ -234,7 +212,6 @@ const useSendMessage = () => {
     setOpenSendImageModal,
     openImageModal,
     setOpenImageModal,
-    handleOnUnsendMsg,
     findFriendInp,
     setFindFriendInp,
     openForwardMessageModal,
