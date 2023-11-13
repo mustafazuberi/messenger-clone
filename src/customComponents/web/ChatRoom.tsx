@@ -26,7 +26,7 @@ const ChatRoom = () => {
 
   useEffect(() => {
     scrollSectionToBottom();
-  }, [roomMessages?.length]);
+  }, [roomMessages?.length, activeRoom.roomDetails?.id!]);
 
   useEffect(() => {
     if (roomMessages?.length && isVisible) updateMessagesOnSeen();

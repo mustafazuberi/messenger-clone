@@ -102,9 +102,11 @@ const Message = ({ msg }: props) => {
         onOpenChange={() => setOpenImageModal({ img: "", open: false })}
       >
         <DialogContent className="min-h-[200px] ">
-          <section className="w-full mt-4 max-h-[400px] overflow-auto overflow-y-scroll scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-track-inherit">
-            <img src={openImageModal.img} className="h-auto" />
-          </section>
+          {openImageModal.img && (
+            <section className="w-full mt-4 max-h-[400px] overflow-auto overflow-y-scroll scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-track-inherit">
+              <img src={openImageModal.img} className="h-auto" />
+            </section>
+          )}
         </DialogContent>
       </Dialog>
       {/* Forward Message Modal */}

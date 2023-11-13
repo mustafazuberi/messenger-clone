@@ -12,6 +12,7 @@ import Friend from "@/types/type.friend";
 import { MdInsertPhoto } from "react-icons/md";
 import Message from "@/types/types.message";
 import { FaUserFriends } from "react-icons/fa";
+import { useTheme } from "next-themes";
 
 const ChatUsers = () => {
   const friends = useSelector((state: RootState) => state.friends);
@@ -27,18 +28,20 @@ const ChatUsers = () => {
   }, [rooms.length]);
 
   return (
-    <section className="flex px-2 flex-col flex-1 max-h-full overflow-y-scroll scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-track-inherit">
+    <section className="min-w-full flex flex-col items-center flex-1 max-h-full overflow-y-auto scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-w-3 scrollbar-track-inherit">
       {rooms?.length ? (
         rooms?.map((room: Room) => {
           const friend: Friend | null = getFriendFromRoomUsers(room);
           if (!friend) return null; // Return null when no friend found
           return (
-            <ChatUser
-              friend={friend}
-              room={room}
-              roomsUnseenMessages={roomsUnseenMessages}
-              key={room.id}
-            />
+            <section className="min-w-full">
+              <ChatUser
+                friend={friend}
+                room={room}
+                roomsUnseenMessages={roomsUnseenMessages}
+                key={room.id}
+              />
+            </section>
           );
         })
       ) : friends.status === STATUSES.LOADING ? (
@@ -129,9 +132,11 @@ const ChatUser: React.FC<ChatUserProps> = ({
   roomsUnseenMessages,
 }) => {
   const { handleOnChatUser } = useChat();
+  const { theme } = useTheme();
+  const hover = theme === "dark" ? "hover:bg-slate-800" : "hover:bg-gray-300";
   return (
     <section
-      className="flex flex-row justify-between border-b min-w-full cursor-pointer py-2 pr-2"
+      className={`flex flex-row justify-between border-b min-w-full cursor-pointer p-2 ${hover}`}
       onClick={() => handleOnChatUser(friend)}
     >
       <section className="flex flex-row gap-x-3 w-full items-center">

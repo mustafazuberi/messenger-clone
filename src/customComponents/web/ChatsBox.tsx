@@ -53,7 +53,7 @@ const ChatsBox = () => {
       ) : isRequestsTab ? (
         <Requests />
       ) : (
-        <section className="max-h-full min-h-full flex flex-col">
+        <section className="min-w-full max-h-full min-h-full flex flex-col">
           <ChatsBoxNav />
           <ChatUsers />
         </section>
