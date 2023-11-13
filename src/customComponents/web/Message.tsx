@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import useSendMessage from "@/hooks/useSendMessage";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import ForwardMessageModal from "./ForwardMessageModal";
-import { TwoCheck } from "./CheckMarks";
 import MessageDropDown from "./MessageDropdown";
 import Friend from "@/types/type.friend";
 import UserImageAvatar from "./UserImageAvatar";
@@ -76,8 +75,10 @@ const Message = ({ msg }: props) => {
                     Open Image
                   </Button>
                 </section>
+              ) : msg.friend ? (
+                <SharedFriend friend={msg.friend} />
               ) : (
-                msg.friend && <SharedFriend friend={msg.friend} />
+                msg.voice && <MsgAudioPlay msg={msg} />
               )}
               <section className="flex flex-row justify-between items-end gap-x-1">
                 <section className="text-[9px] font-extralight flex items-end">
@@ -141,7 +142,7 @@ const SharedFriend = ({ friend }: { friend: Friend }) => {
 
   return (
     <section className="flex flex-col gap-y-2 px-3">
-      <section className="flex flex-row gap-x-2 items-center">
+      <section className="flex flex-row gap-x-2 items-center sm:min-w-[300px] max-w-[70%]">
         <section>
           <UserImageAvatar user={friend} size={10} />
         </section>
@@ -198,6 +199,19 @@ const SharedFriend = ({ friend }: { friend: Friend }) => {
             </Button>
           )}
       </section>
+    </section>
+  );
+};
+
+const MsgAudioPlay = ({ msg }: { msg: Message }) => {
+  if (!msg.voice) return;
+
+  return (
+    <section className="flex">
+      <audio className="max-w-full" controls>
+        <source src={msg.voice} type="audio/wav" />
+        Your browser does not support the audio element.
+      </audio>
     </section>
   );
 };

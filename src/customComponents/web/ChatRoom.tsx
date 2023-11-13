@@ -49,9 +49,13 @@ const ChatRoom = () => {
               </span>
             </section>
           ) : null}
-          {roomMessages?.length
-            ? roomMessages.map((msg) => <Message msg={msg} key={msg.id} />)
-            : null}
+          {/* All Messages */}
+          <section className="flex flex-col w-full gap-y-5">
+            {roomMessages?.length
+              ? roomMessages.map((msg) => <Message msg={msg} key={msg.id} />)
+              : null}
+          </section>
+          {/* --- */}
         </section>
       ) : (
         <section className="flex flex-col max-h-full flex-1 justify-center items-center">

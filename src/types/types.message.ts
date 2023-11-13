@@ -4,6 +4,7 @@ type Message = {
   id?: string;
   text?: string;
   img?: string;
+  voice?: string;
   friend?: Friend;
   senderId: string;
   date: number;
