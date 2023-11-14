@@ -1,8 +1,3 @@
-import {
-  RegisterOptions,
-  FieldValues,
-  UseFormRegisterReturn,
-} from "react-hook-form";
 import UpdateDOB from "./_components/UpdateDOB";
 import UpdateFullname from "./_components/UpdateFullname";
 import UpdateGender from "./_components/UpdateGender";

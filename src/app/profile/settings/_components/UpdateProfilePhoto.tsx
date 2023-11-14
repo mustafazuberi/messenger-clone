@@ -14,6 +14,7 @@ const UpdateProfilePhoto = () => {
 
   return (
     <main className="flex flex-col gap-x-4">
+      <h3 className="mb-2">Select Profile Picture</h3>
       <div {...getRootProps()}>
         <input {...getInputProps()} type="file" accept="image/*" />
         <section className="border-dotted border-2 cursor-pointer min-h-[200px] flex justify-center items-center w-full">

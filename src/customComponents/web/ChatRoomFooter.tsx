@@ -29,8 +29,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { AlertDialogTrigger } from "@radix-ui/react-alert-dialog";
-import { ImBlocked } from "react-icons/im";
-import { useState } from "react";
 
 const ChatRoomFooter = () => {
   const blockInfo = useSelector(

@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,6 +21,7 @@ import {
 import useSignup from "@/hooks/useSignup";
 import EmailSentDialog from "../auth/EmailSentDialog";
 import { PasswordInput } from "../../components/ui/PasswordInput";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 const SignupForm = () => {
   const [isClient, setIsClient] = useState(false); // this is for solving hydration UI error on dialog
@@ -121,9 +121,11 @@ const SignupForm = () => {
       </Form>
 
       {/* This Dialog Modal Will opens on signup after sending verification email */}
-      {openEmailSent && isClient && (
-        <EmailSentDialog openEmailSent={openEmailSent} email={emailSentTo} />
-      )}
+      <Dialog open={openEmailSent}>
+        <DialogContent>
+          <EmailSentDialog email={emailSentTo} />
+        </DialogContent>
+      </Dialog>
     </main>
   );
 };
