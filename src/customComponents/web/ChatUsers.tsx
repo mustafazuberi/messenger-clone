@@ -35,7 +35,7 @@ const ChatUsers = () => {
           const friend: Friend | null = getFriendFromRoomUsers(room);
           if (!friend) return null; // Return null when no friend found
           return (
-            <section className="min-w-full">
+            <section className="min-w-full" key={i}>
               <ChatUser
                 friend={friend}
                 room={room}

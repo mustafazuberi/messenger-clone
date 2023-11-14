@@ -4,15 +4,17 @@ import { STATUSES } from "@/store/intialState";
 import { setRooms } from "@/store/slice/roomsSlice";
 import Friend from "@/types/type.friend";
 import Message from "@/types/types.message";
-import Room from "@/types/types.room";
+import Room, { Block } from "@/types/types.room";
 import { Unsubscribe } from "firebase/auth";
 import {
   addDoc,
   collection,
+  doc,
   getDocs,
   onSnapshot,
   orderBy,
   query,
+  updateDoc,
   where,
   writeBatch,
 } from "firebase/firestore";
@@ -24,6 +26,7 @@ import {
   setActiveRoomMessages,
 } from "@/store/slice/activeRoomSlice";
 import User from "@/types/types.user";
+import { toast } from "@/components/ui/use-toast";
 
 const useChat = () => {
   const dispatch = useDispatch();
@@ -36,6 +39,8 @@ const useChat = () => {
   const [roomsUnseenMessages, setRoomsUnseenMessages] = useState<{
     [x: string]: Message[];
   }>({});
+  const [blockingOper, setBlockingOper] = useState<boolean>(false);
+  const [openUnblockModal, setOpenUnblockModal] = useState(false);
 
   const createChatRoom = async ({
     sender,
@@ -59,6 +64,7 @@ const useChat = () => {
         users: users,
         createdAt: Date.now(),
         userDetails: userDetails,
+        block: { isBlocked: false, blockedBy: {} },
       };
       await addDoc(collection(db, "chatrooms"), { ...room });
     } catch (error) {
@@ -88,6 +94,7 @@ const useChat = () => {
         const updatedActiveRoom = filteredRooms.find(
           (room) => room.id === activeRoom.roomDetails?.id
         );
+        console.log(updatedActiveRoom);
         if (updatedActiveRoom) {
           dispatch(
             setActiveRoom({
@@ -267,6 +274,56 @@ const useChat = () => {
     }
   };
 
+  const handleOnBlock = async () => {
+    try {
+      setBlockingOper(true);
+      const roomRef = doc(db, "chatrooms", activeRoom.roomDetails?.id!);
+      const block: Block = {
+        blockedBy: { [currentUser.uid!]: currentUser },
+        isBlocked: true,
+      };
+      await updateDoc(roomRef, { block: block });
+      toast({
+        description: `You have blocked ${activeRoom.chatWith?.displayName}!`,
+      });
+      setBlockingOper(false);
+    } catch (error) {
+      setBlockingOper(false);
+      console.log(error);
+    }
+  };
+
+  const handleOnUnblock = async () => {
+    try {
+      setBlockingOper(true);
+      let block: Block = { ...activeRoom.roomDetails?.block! };
+
+      if (!block.blockedBy || !block.blockedBy.hasOwnProperty(currentUser.uid))
+        return;
+
+      // Deleting current user from blocked by and setting isBlocked false if no users in blocked my exists ---- users in blocked by can be me or chat partner
+      const updatedBlockedBy = { ...block.blockedBy };
+      delete updatedBlockedBy[currentUser.uid];
+      const isBlocked: boolean = Object.keys(updatedBlockedBy).length > 0;
+      const updatedBlock: Block = {
+        ...block,
+        blockedBy: updatedBlockedBy,
+        isBlocked: isBlocked,
+      };
+
+      const roomRef = doc(db, "chatrooms", activeRoom.roomDetails?.id!);
+      await updateDoc(roomRef, { block: updatedBlock });
+
+      toast({
+        description: `You have unblocked ${activeRoom.chatWith?.displayName}!`,
+      });
+      setBlockingOper(false);
+    } catch (error) {
+      setBlockingOper(false);
+      console.log(error);
+    }
+  };
+
   return {
     createChatRoom,
     getMyRooms,
@@ -278,6 +335,11 @@ const useChat = () => {
     getRoomsUnseenMessages,
     roomsUnseenMessages,
     updateMessagesOnSeen,
+    handleOnBlock,
+    blockingOper,
+    handleOnUnblock,
+    openUnblockModal,
+    setOpenUnblockModal,
   };
 };
 

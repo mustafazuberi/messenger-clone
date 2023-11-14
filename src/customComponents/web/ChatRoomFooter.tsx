@@ -14,8 +14,29 @@ import useSendMessage from "@/hooks/useSendMessage";
 import SendImageModal from "./SendImageModal";
 import useSendVoice from "@/hooks/useSendVoice";
 import TailwindSpinner from "./TailwindSpinner";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { Block } from "@/types/types.room";
+import { Button } from "@/components/ui/button";
+import useChat from "@/hooks/useChat";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { AlertDialogTrigger } from "@radix-ui/react-alert-dialog";
+import { ImBlocked } from "react-icons/im";
+import { useState } from "react";
 
 const ChatRoomFooter = () => {
+  const blockInfo = useSelector(
+    (state: RootState) => state.activeRoom.roomDetails?.block
+  );
+
   const {
     sendMessage,
     messageInp,
@@ -34,75 +55,86 @@ const ChatRoomFooter = () => {
 
   return (
     <main>
-      <section className="sm:px-5 px-2 py-3 flex ">
-        {/* Display Message form If not recording  */}
-        {!(voiceRecordState === "recording") && !sendingVoice && (
-          <form
-            onSubmit={sendMessage}
-            className="w-full flex flex-row sm:gap-x-4 gap-x-2 items-center"
-          >
-            <Popover>
-              <PopoverTrigger asChild>
-                <button>
-                  <BsEmojiSmile className="sm:text-[35px] text-[28px] cursor-pointer text-gray-400" />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto">
-                <EmojiPicker
-                  theme={Theme.DARK}
-                  onEmojiClick={({ emoji }) =>
-                    setMessageInp((e: string) => e + emoji)
-                  }
-                />
-              </PopoverContent>
-            </Popover>
-            {/* Photos */}
-            <IoMdPhotos
-              className="text-[45px] cursor-pointer text-gray-400"
-              onClick={() => setOpenSendImageModal(true)}
-            />
-            <Input
-              placeholder="Type your message..."
-              value={messageInp}
-              onChange={(e) => setMessageInp(e.target.value)}
-              className="text-[17px] h-10"
-            />
-            {messageInp ? (
-              <button type="submit">
-                <BsFillSendFill className="sm:text-[30px] text-[24px] text-gray-400" />
-              </button>
-            ) : (
-              <AiFillAudio
-                className="text-4xl cursor-pointer text-gray-400"
-                onClick={handleOnRecordVoice}
+      {!blockInfo?.isBlocked ? (
+        <section className="sm:px-5 px-2 py-3 flex ">
+          {/* Display Message form If not recording  */}
+          {!(voiceRecordState === "recording") && !sendingVoice && (
+            <form
+              onSubmit={sendMessage}
+              className="w-full flex flex-row sm:gap-x-4 gap-x-2 items-center"
+            >
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button>
+                    <BsEmojiSmile className="sm:text-[35px] text-[28px] cursor-pointer text-gray-400" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto">
+                  <EmojiPicker
+                    theme={Theme.DARK}
+                    onEmojiClick={({ emoji }) =>
+                      setMessageInp((e: string) => e + emoji)
+                    }
+                  />
+                </PopoverContent>
+              </Popover>
+              {/* Photos */}
+              <IoMdPhotos
+                className="text-[45px] cursor-pointer text-gray-400"
+                onClick={() => setOpenSendImageModal(true)}
               />
-            )}
-          </form>
-        )}
-        {/* Voice Record Audio Waves */}
-        {(voiceRecordState === "recording" || sendingVoice) && (
-          <section className="min-w-full flex justify-between items-center gap-x-1 px-3 py-2 rounded-2xl bg-[#1e293b]">
-            <section className="flex flex-row items-center gap-x-2">
-              <button className="bg-black p-2 rounded-full">
-                <AiFillDelete
-                  className="text-2xl text-white"
-                  onClick={handleOnDeleteVoice}
+              <Input
+                placeholder="Type your message..."
+                value={messageInp}
+                onChange={(e) => setMessageInp(e.target.value)}
+                className="text-[17px] h-10"
+              />
+              {messageInp ? (
+                <button type="submit">
+                  <BsFillSendFill className="sm:text-[30px] text-[24px] text-gray-400" />
+                </button>
+              ) : (
+                <AiFillAudio
+                  className="text-4xl cursor-pointer text-gray-400"
+                  onClick={handleOnRecordVoice}
                 />
-              </button>
-              <section className="flex flex-row gap-x-1">
-                <section className="text-white">Recording</section>
-                <section className="tracking-widest font-extrabold">
-                  ...
+              )}
+            </form>
+          )}
+          {/* Voice Record Audio Waves */}
+          {(voiceRecordState === "recording" || sendingVoice) && (
+            <section className="min-w-full flex justify-between items-center gap-x-1 px-3 py-2 rounded-2xl bg-[#1e293b]">
+              <section className="flex flex-row items-center gap-x-2">
+                <button className="bg-black p-2 rounded-full">
+                  <AiFillDelete
+                    className="text-2xl text-white"
+                    onClick={handleOnDeleteVoice}
+                  />
+                </button>
+                <section className="flex flex-row gap-x-1">
+                  <section className="text-white">Recording</section>
+                  <section className="tracking-widest font-extrabold">
+                    ...
+                  </section>
                 </section>
               </section>
+              {!sendingVoice ? (
+                <button
+                  className="relative"
+                  onClick={() => handleOnSendVoice()}
+                >
+                  <span className="animate-ping right-0 absolute inline-flex h-6 w-6 rounded-full bg-sky-400 opacity-75"></span>
+                  <BsFillSendFill className="text-2xl text-white" />
+                </button>
+              ) : (
+                <TailwindSpinner size={8} />
+              )}
             </section>
-            {!sendingVoice ? <button className="relative" onClick={() => handleOnSendVoice()}>
-              <span className="animate-ping right-0 absolute inline-flex h-6 w-6 rounded-full bg-sky-400 opacity-75"></span>
-              <BsFillSendFill className="text-2xl text-white" />
-            </button> : <TailwindSpinner size={8} />}
-          </section>
-        )}
-      </section>
+          )}
+        </section>
+      ) : (
+        <FooterIfChatRoomBlocked />
+      )}
 
       {openSendImageModal && (
         <Dialog
@@ -117,3 +149,63 @@ const ChatRoomFooter = () => {
 };
 
 export default ChatRoomFooter;
+
+const FooterIfChatRoomBlocked = () => {
+  const {
+    handleOnUnblock,
+    openUnblockModal,
+    setOpenUnblockModal,
+    blockingOper,
+  } = useChat();
+  const activeRoom = useSelector((state: RootState) => state.activeRoom);
+  const currentUser = useSelector((state: RootState) => state.currentUser);
+  const blockedByMe = activeRoom.roomDetails?.block?.blockedBy[currentUser.uid]
+    ? true
+    : false;
+
+  const handleOnUnblockButton = async () => {
+    await handleOnUnblock();
+    setOpenUnblockModal(false);
+  };
+
+  return (
+    <section className="sm:px-5 px-2 py-3 flex flex-row gap-x-0 items-center">
+      <section>
+        You cannot reply to this conversation.{" "}
+        {blockedByMe && (
+          <AlertDialog open={openUnblockModal}>
+            <AlertDialogTrigger>
+              <span
+                className="text-[17px] bg-clip-text cursor-pointer text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400"
+                onClick={() => setOpenUnblockModal(true)}
+              >
+                Learn more
+              </span>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <section>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Unblock {currentUser?.displayName}?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    You have blocked Mustafa Zuberi. Would you like to unblock
+                    him?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter className="mt-3">
+                  <AlertDialogCancel onClick={() => setOpenUnblockModal(false)}>
+                    Cancel
+                  </AlertDialogCancel>
+                  <Button onClick={() => handleOnUnblockButton()}>
+                    {blockingOper ? "Please wait..." : "Unblock"}
+                  </Button>
+                </AlertDialogFooter>
+              </section>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
+      </section>
+    </section>
+  );
+};

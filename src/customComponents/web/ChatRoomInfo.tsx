@@ -1,11 +1,7 @@
 import { FaInfoCircle } from "react-icons/fa";
 import { PiShareFatFill } from "react-icons/pi";
-import { TbBellFilled } from "react-icons/tb";
 import { ImBlocked } from "react-icons/im";
-import { AiFillDelete } from "react-icons/ai";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,6 +27,8 @@ import Image from "next/image";
 import ShareFriendWithModal from "./ShareFriendWithModal";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import useChat from "@/hooks/useChat";
+import { useState } from "react";
 
 const ChatRoomFriendInfo = ({ chatWith }: { chatWith: Friend }) => {
   return (
@@ -99,26 +97,39 @@ const ChatRoomInfoShareButton = () => {
 };
 
 const ChatRoomInfoOptions = () => {
+  const [isBlockAlertOpen, setIsBlockAlertOpen] = useState<boolean>(false);
   const user = useSelector((state: RootState) => state.activeRoom.chatWith);
   return (
     <section className="flex flex-col w-full">
-      <AlertDialog>
+      <AlertDialog open={isBlockAlertOpen}>
         <AlertDialogTrigger>
-          <section className="flex items-center gap-x-4 w-full text-red-500 hover:opacity-70 py-3 px-6 hover:bg-gray-900 cursor-pointer duration-300">
-            <ImBlocked className="text-2xl " />
-            <span className="text-[17px]">Block {user?.displayName}</span>
+          <section
+            className="flex items-center gap-x-4 w-full hover:opacity-70 py-3 px-6 hover:bg-slate-800 cursor-pointer duration-300"
+            onClick={() => setIsBlockAlertOpen(true)}
+          >
+            <ImBlocked className="text-2xl text-red-500 " />
+            <span className="text-[17px] ">Block {user?.displayName} ? </span>
           </section>
         </AlertDialogTrigger>
         <AlertDialogContent>
-          <BlockUserModal />
+          <BlockUserModal setIsBlockAlertOpen={setIsBlockAlertOpen} />
         </AlertDialogContent>
       </AlertDialog>
     </section>
   );
 };
 
-const BlockUserModal = () => {
+const BlockUserModal = ({
+  setIsBlockAlertOpen,
+}: {
+  setIsBlockAlertOpen: (val: boolean) => void;
+}) => {
   const user = useSelector((state: RootState) => state.activeRoom.chatWith);
+  const { handleOnBlock, blockingOper } = useChat();
+  const handleOnBlockButton = async () => {
+    await handleOnBlock();
+    setIsBlockAlertOpen(false);
+  };
   return (
     <section>
       <AlertDialogHeader>
@@ -129,26 +140,12 @@ const BlockUserModal = () => {
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter className="mt-3">
-        <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction>
-          <Button>Block</Button>
-        </AlertDialogAction>
-      </AlertDialogFooter>
-    </section>
-  );
-};
-
-const DeleteChatModal = () => {
-  return (
-    <section>
-      <AlertDialogHeader>
-        <AlertDialogTitle>Delete this chat?</AlertDialogTitle>
-      </AlertDialogHeader>
-      <AlertDialogFooter className="mt-3">
-        <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction>
-          <Button>Delete</Button>
-        </AlertDialogAction>
+        <AlertDialogCancel onClick={() => setIsBlockAlertOpen(false)}>
+          Cancel
+        </AlertDialogCancel>
+        <Button onClick={() => handleOnBlockButton()}>
+          {blockingOper ? "Please wait..." : "Block"}
+        </Button>
       </AlertDialogFooter>
     </section>
   );
