@@ -170,9 +170,38 @@ const FooterIfChatRoomBlocked = () => {
 
   return (
     <section className="sm:px-5 px-2 py-3 flex flex-row gap-x-0 items-center">
-      <section>
-        You cannot reply to this conversation.{" "}
-        {blockedByMe && (
+      {activeRoom.roomDetails?.block && !blockedByMe ? (
+        <section>
+          You cannot reply to this conversation.{" "}
+          <AlertDialog open={openUnblockModal}>
+            <AlertDialogTrigger>
+              <span
+                className="text-[17px] bg-clip-text cursor-pointer text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400"
+                onClick={() => setOpenUnblockModal(true)}
+              >
+                Learn more
+              </span>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <section>
+                <AlertDialogHeader>
+                  <AlertDialogDescription>
+                    {activeRoom.chatWith?.displayName.split(" ")[0]} has blocked
+                    you, you cannot engage in conversation until he unblocks you
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter className="mt-3">
+                  <AlertDialogCancel onClick={() => setOpenUnblockModal(false)}>
+                    Cancel
+                  </AlertDialogCancel>
+                </AlertDialogFooter>
+              </section>
+            </AlertDialogContent>
+          </AlertDialog>{" "}
+        </section>
+      ) : (
+        <section>
+          You cannot reply to this conversation.
           <AlertDialog open={openUnblockModal}>
             <AlertDialogTrigger>
               <span
@@ -204,8 +233,8 @@ const FooterIfChatRoomBlocked = () => {
               </section>
             </AlertDialogContent>
           </AlertDialog>
-        )}
-      </section>
+        </section>
+      )}
     </section>
   );
 };

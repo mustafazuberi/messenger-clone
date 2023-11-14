@@ -98,23 +98,30 @@ const ChatRoomInfoShareButton = () => {
 
 const ChatRoomInfoOptions = () => {
   const [isBlockAlertOpen, setIsBlockAlertOpen] = useState<boolean>(false);
+  const currentUser = useSelector((state: RootState) => state.currentUser);
   const user = useSelector((state: RootState) => state.activeRoom.chatWith);
+  const activeRoom = useSelector((state: RootState) => state.activeRoom);
+  console.log(activeRoom.roomDetails?.block);
   return (
     <section className="flex flex-col w-full">
-      <AlertDialog open={isBlockAlertOpen}>
-        <AlertDialogTrigger>
-          <section
-            className="flex items-center gap-x-4 w-full hover:opacity-70 py-3 px-6 hover:bg-slate-800 cursor-pointer duration-300"
-            onClick={() => setIsBlockAlertOpen(true)}
-          >
-            <ImBlocked className="text-2xl text-red-500 " />
-            <span className="text-[17px] ">Block {user?.displayName} ? </span>
-          </section>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <BlockUserModal setIsBlockAlertOpen={setIsBlockAlertOpen} />
-        </AlertDialogContent>
-      </AlertDialog>
+      {!activeRoom.roomDetails?.block?.blockedBy[currentUser.uid] ? (
+        <AlertDialog open={isBlockAlertOpen}>
+          <AlertDialogTrigger>
+            <section
+              className="flex items-center gap-x-4 w-full hover:opacity-70 py-3 px-6 hover:bg-slate-800 cursor-pointer duration-300"
+              onClick={() => setIsBlockAlertOpen(true)}
+            >
+              <ImBlocked className="text-2xl text-red-500 " />
+              <span className="text-[17px] ">Block {user?.displayName} ? </span>
+            </section>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <BlockUserModal setIsBlockAlertOpen={setIsBlockAlertOpen} />
+          </AlertDialogContent>
+        </AlertDialog>
+      ) : (
+        <UnblockOption />
+      )}
     </section>
   );
 };
@@ -159,5 +166,63 @@ const ShareDialog = () => {
         <ShareFriendWithModal />
       </DialogHeader>
     </DialogContent>
+  );
+};
+
+const UnblockOption = () => {
+  const {
+    handleOnUnblock,
+    openUnblockModal,
+    setOpenUnblockModal,
+    blockingOper,
+  } = useChat();
+  const activeRoom = useSelector((state: RootState) => state.activeRoom);
+  const currentUser = useSelector((state: RootState) => state.currentUser);
+  const blockedByMe = activeRoom.roomDetails?.block?.blockedBy[currentUser.uid]
+    ? true
+    : false;
+
+  const handleOnUnblockButton = async () => {
+    await handleOnUnblock();
+    setOpenUnblockModal(false);
+  };
+
+  return (
+    <section>
+      {blockedByMe && (
+        <AlertDialog open={openUnblockModal}>
+          <AlertDialogTrigger
+            className="flex items-center gap-x-4 min-w-full hover:opacity-70 py-3 px-6 hover:bg-slate-800 cursor-pointer duration-300"
+            onClick={() => setOpenUnblockModal(true)}
+          >
+            <ImBlocked className="text-2xl text-red-500 " />
+            <span className="text-[17px] ">
+              Unblock {activeRoom.chatWith?.displayName} ?{" "}
+            </span>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <section>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Unblock {currentUser?.displayName}?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  You have blocked Mustafa Zuberi. Would you like to unblock
+                  him?
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter className="mt-3">
+                <AlertDialogCancel onClick={() => setOpenUnblockModal(false)}>
+                  Cancel
+                </AlertDialogCancel>
+                <Button onClick={() => handleOnUnblockButton()}>
+                  {blockingOper ? "Please wait..." : "Unblock"}
+                </Button>
+              </AlertDialogFooter>
+            </section>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+    </section>
   );
 };

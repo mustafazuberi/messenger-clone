@@ -275,7 +275,10 @@ const useChat = () => {
       setBlockingOper(true);
       const roomRef = doc(db, "chatrooms", activeRoom.roomDetails?.id!);
       const block: Block = {
-        blockedBy: { [currentUser.uid!]: currentUser },
+        blockedBy: {
+          ...activeRoom.roomDetails?.block?.blockedBy,
+          [currentUser.uid!]: currentUser,
+        },
         isBlocked: true,
       };
       await updateDoc(roomRef, { block: block });
@@ -294,22 +297,13 @@ const useChat = () => {
       setBlockingOper(true);
       let block: Block = { ...activeRoom.roomDetails?.block! };
 
-      if (!block.blockedBy || !block.blockedBy.hasOwnProperty(currentUser.uid))
-        return;
-
-      // Deleting current user from blocked by and setting isBlocked false if no users in blocked my exists ---- users in blocked by can be me or chat partner
-      const updatedBlockedBy = { ...block.blockedBy };
-      delete updatedBlockedBy[currentUser.uid];
-      const isBlocked: boolean = Object.keys(updatedBlockedBy).length > 0;
       const updatedBlock: Block = {
-        ...block,
-        blockedBy: updatedBlockedBy,
-        isBlocked: isBlocked,
+        blockedBy: { ...block.blockedBy, [currentUser.uid]: null },
+        isBlocked: block.blockedBy[activeRoom.chatWith!?.uid] ? true : false,
       };
 
       const roomRef = doc(db, "chatrooms", activeRoom.roomDetails?.id!);
       await updateDoc(roomRef, { block: updatedBlock });
-
       toast({
         description: `You have unblocked ${activeRoom.chatWith?.displayName}!`,
       });
