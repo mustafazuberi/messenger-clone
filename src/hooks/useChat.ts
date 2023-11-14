@@ -94,7 +94,6 @@ const useChat = () => {
         const updatedActiveRoom = filteredRooms.find(
           (room) => room.id === activeRoom.roomDetails?.id
         );
-        console.log(updatedActiveRoom);
         if (updatedActiveRoom) {
           dispatch(
             setActiveRoom({
