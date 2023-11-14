@@ -11,13 +11,7 @@ import {
   OpenImageModal,
 } from "@/types/types.miscellaneous";
 import Room from "@/types/types.room";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useSelector } from "react-redux";
@@ -125,7 +119,6 @@ const useSendMessage = () => {
       console.log("error in handleSendImage", error);
     }
   };
-
 
   const handleForwardMessage = async ({ msg, forwardTo }: OnForwardMessage) => {
     const message: Message = {

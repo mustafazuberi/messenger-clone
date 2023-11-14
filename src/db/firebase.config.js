@@ -2,17 +2,16 @@ import { getApp, getApps, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore, writeBatch } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
-import { getMessaging } from "firebase/messaging";
 import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDaAUVXiU_EGWmk6UXBniSp1q7mgrtGXmk",
-  authDomain: "messenger-ca7d6.firebaseapp.com",
-  projectId: "messenger-ca7d6",
-  storageBucket: "messenger-ca7d6.appspot.com",
-  messagingSenderId: "159957457030",
-  appId: "1:159957457030:web:0b4aecdcf5e309d1645907",
-  measurementId: "G-22PFJFBF1R",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
@@ -22,4 +21,4 @@ const storage = getStorage(app);
 const batch = writeBatch(db);
 const database = getDatabase(app);
 
-export { app, db, storage, auth, batch,database };
+export { app, db, storage, auth, batch, database };
