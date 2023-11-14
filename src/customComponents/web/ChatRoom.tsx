@@ -21,8 +21,12 @@ const ChatRoom = () => {
       : null;
   const status = activeRoom.messages.status;
   // --------------------------
-  const { scrollSectionToBottom, sectionRefMessagesDiv, updateMessagesOnSeen } =
-    useChat();
+  const {
+    scrollSectionToBottom,
+    sectionRefMessagesDiv,
+    updateMessagesOnSeen,
+    getActiveRoomBlockInfoRealTime,
+  } = useChat();
 
   useEffect(() => {
     scrollSectionToBottom();
@@ -31,6 +35,12 @@ const ChatRoom = () => {
   useEffect(() => {
     if (roomMessages?.length && isVisible) updateMessagesOnSeen();
   }, [roomMessages?.length, activeRoom.chatWith?.uid, isVisible]);
+
+  // This is for getting real time updates of block unblock
+  useEffect(() => {
+    if (activeRoom.roomDetails?.id)
+      getActiveRoomBlockInfoRealTime(activeRoom.roomDetails?.id);
+  }, [activeRoom.roomDetails?.id]);
 
   return (
     <main className="sm:min-h-full min-h-[100vh] w-full flex flex-col max-h-full">

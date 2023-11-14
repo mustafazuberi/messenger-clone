@@ -24,6 +24,7 @@ import {
   clearActiveRoom,
   setActiveRoom,
   setActiveRoomMessages,
+  updateActiveRoomBlock,
 } from "@/store/slice/activeRoomSlice";
 import User from "@/types/types.user";
 import { toast } from "@/components/ui/use-toast";
@@ -89,22 +90,18 @@ const useChat = () => {
           (a: Room, b: Room) => b.lastConversation! - a.lastConversation!
         );
         dispatch(setRooms([...filteredRooms]));
-
-        // also updating active room in state if it is updated ---
-        const updatedActiveRoom = filteredRooms.find(
-          (room) => room.id === activeRoom.roomDetails?.id
-        );
-        if (updatedActiveRoom) {
-          dispatch(
-            setActiveRoom({
-              ...activeRoom,
-              roomDetails: { ...updatedActiveRoom },
-            })
-          );
-        }
       }
     );
     return unsubscribe;
+  };
+
+  const getActiveRoomBlockInfoRealTime = (roomId: string) => {
+    const unsub = onSnapshot(doc(db, "chatrooms", roomId), (doc) => {
+      if (doc.data()) {
+        dispatch(updateActiveRoomBlock({ ...(doc.data()?.block as Block) }));
+      }
+    });
+    return unsub;
   };
 
   const getRoomMessages = (roomId: string): Unsubscribe => {
@@ -339,6 +336,7 @@ const useChat = () => {
     handleOnUnblock,
     openUnblockModal,
     setOpenUnblockModal,
+    getActiveRoomBlockInfoRealTime,
   };
 };
 
