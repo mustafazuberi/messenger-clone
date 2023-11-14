@@ -8,6 +8,7 @@ import useReq from "@/hooks/useReq";
 import UsersSkeleton from "./UsersSkeleton";
 import ReceivedRequests from "./ReceivedRequests";
 import UserImageAvatar from "./UserImageAvatar";
+import TailwindSpinner from "./TailwindSpinner";
 
 type ActiveTab = "sentRequests" | "receivedRequests";
 
@@ -69,7 +70,7 @@ const SentRequests = () => {
   const sentRequests = useSelector(
     (state: RootState) => state.chatRequests.sentRequests
   );
-  const { unsendChatRequest } = useReq();
+  const { unsendChatRequest, loading } = useReq();
   return (
     <section className="mt-3 flex flex-col gap-y-4">
       {sentRequests.data?.length && sentRequests.status === "idle" ? (
@@ -89,6 +90,7 @@ const SentRequests = () => {
                 variant={"outline"}
                 className="w-[70px] h-8"
                 onClick={() => unsendChatRequest(req)}
+                disabled={loading}
               >
                 Unsend
               </Button>

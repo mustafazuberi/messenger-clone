@@ -4,12 +4,13 @@ import { RootState } from "@/store";
 import { useSelector } from "react-redux";
 import UsersSkeleton from "./ChatUsersSkeleton";
 import UserImageAvatar from "./UserImageAvatar";
+import TailwindSpinner from "./TailwindSpinner";
 
 const ReceivedRequests = () => {
   const receivedRequests = useSelector(
     (state: RootState) => state.chatRequests.receivedRequests
   );
-  const { confirmChatRequest } = useReq();
+  const { confirmChatRequest, loading } = useReq();
 
   return (
     <section className="mt-3 flex flex-col gap-y-4">
@@ -30,6 +31,7 @@ const ReceivedRequests = () => {
                 variant={"outline"}
                 className="px-3 h-8"
                 onClick={() => confirmChatRequest(req)}
+                disabled={loading}
               >
                 Confirm
               </Button>

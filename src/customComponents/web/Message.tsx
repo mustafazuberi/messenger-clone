@@ -54,26 +54,28 @@ const Message = ({ msg }: props) => {
                   {msg.text}
                 </section>
               ) : msg.img ? (
-                <section className="relative mt-2">
-                  <Image
-                    src={msg.img}
-                    width={100}
-                    height={100}
-                    alt="Chat room image"
-                    loading="eager"
-                    className="w-96 h-96 blur-[2px]"
-                  />
-                  <Button
-                    className="absolute top-40 text-black left-32 bg-gray-300"
-                    onClick={() =>
-                      setOpenImageModal({
-                        img: msg.img ? msg.img : "null",
-                        open: true,
-                      })
-                    }
-                  >
-                    Open Image
-                  </Button>
+                <section>
+                  <section className="z-0 relative mt-2">
+                    <Image
+                      src={msg.img}
+                      width={100}
+                      height={100}
+                      alt="Chat room image"
+                      loading="eager"
+                      className="w-96 h-96 blur-[2px]"
+                    />
+                    <Button
+                      className="absolute top-40 text-black left-32 bg-gray-300"
+                      onClick={() =>
+                        setOpenImageModal({
+                          img: msg.img ? msg.img : "null",
+                          open: true,
+                        })
+                      }
+                    >
+                      Open Image
+                    </Button>
+                  </section>
                 </section>
               ) : msg.friend ? (
                 <SharedFriend friend={msg.friend} />

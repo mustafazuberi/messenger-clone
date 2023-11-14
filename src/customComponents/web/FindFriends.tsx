@@ -13,6 +13,7 @@ import UsersSkeleton from "./UsersSkeleton";
 import User from "@/types/types.user";
 import UserImageAvatar from "./UserImageAvatar";
 import { useRouter } from "next/navigation";
+import TailwindSpinner from "./TailwindSpinner";
 
 const FindFriends = () => {
   const [unknownUsers, setUnknownUsers] = useState<User[]>([]);
@@ -91,7 +92,7 @@ export const FindFriendsNav = () => {
 
 const UnknownUser = ({ unknownUser }: { unknownUser: User }) => {
   const currentUser = useSelector((state: RootState) => state.currentUser);
-  const { sendChatRequest } = useReq();
+  const { sendChatRequest, loading } = useReq();
   return (
     <section className="flex flex-row justify-between border-b min-w-full py-2 pr-2">
       <section className="flex flex-row gap-x-3">
@@ -120,6 +121,7 @@ const UnknownUser = ({ unknownUser }: { unknownUser: User }) => {
               },
             })
           }
+          disabled={loading}
         >
           Add
         </Button>

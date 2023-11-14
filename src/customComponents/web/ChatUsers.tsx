@@ -12,6 +12,7 @@ import Friend from "@/types/type.friend";
 import { MdInsertPhoto } from "react-icons/md";
 import Message from "@/types/types.message";
 import { FaUserFriends } from "react-icons/fa";
+import { AiFillAudio } from "react-icons/ai";
 import { useTheme } from "next-themes";
 
 const ChatUsers = () => {
@@ -30,7 +31,7 @@ const ChatUsers = () => {
   return (
     <section className="min-w-full flex flex-col items-center flex-1 max-h-full overflow-y-auto scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-w-3 scrollbar-track-inherit">
       {rooms?.length ? (
-        rooms?.map((room: Room) => {
+        rooms?.map((room: Room, i) => {
           const friend: Friend | null = getFriendFromRoomUsers(room);
           if (!friend) return null; // Return null when no friend found
           return (
@@ -39,7 +40,7 @@ const ChatUsers = () => {
                 friend={friend}
                 room={room}
                 roomsUnseenMessages={roomsUnseenMessages}
-                key={room.id}
+                key={i}
               />
             </section>
           );
@@ -90,6 +91,12 @@ const LastMessage: React.FC<{ message: Message }> = ({ message }) => {
           <div className="flex flex-row gap-x-1 items-center">
             {msgByMe ? "You: " : ""} Shared a Friend
             <FaUserFriends className="text-[17px]" />
+          </div>
+        )}
+        {message.voice && (
+          <div className="flex flex-row gap-x-1 items-center">
+            {msgByMe ? "You: " : ""} Audio
+            <AiFillAudio className="text-[17px]" />
           </div>
         )}
       </div>

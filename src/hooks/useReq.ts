@@ -25,9 +25,10 @@ import ChatRequest from "@/types/types.request";
 import { SendChatReqParam } from "@/types/types.miscellaneous";
 import useNotification from "./useNotification";
 import useChat from "./useChat";
-import Friend from "@/types/type.friend";
+import { useState } from "react";
 
 const useReq = () => {
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const { toast } = useToast();
@@ -35,6 +36,7 @@ const useReq = () => {
   const { createChatRoom } = useChat();
 
   const sendChatRequest = async ({ sender, receiver }: SendChatReqParam) => {
+    setLoading(true);
     const chatRequest: ChatRequest = {
       senderId: sender.uid,
       receiverId: receiver.uid,
@@ -71,31 +73,35 @@ const useReq = () => {
         by: sender,
       });
 
+      setLoading(false);
       toast({
         description: `Request Sent to ${receiver.displayName}!`,
       });
     } catch (error) {
+      setLoading(false);
       console.error("Error sending chat request:", error);
     }
   };
 
   const unsendChatRequest = async (request: ChatRequest) => {
     if (!request.id) return;
+    setLoading(true);
 
     try {
       await deleteRequest(request);
-
       toast({
         description: "Request Unsent!",
       });
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
   };
 
   const confirmChatRequest = async (request: ChatRequest) => {
     if (!request.id) return;
-
+    setLoading(true);
     try {
       const receiverFriendRef = doc(
         db,
@@ -130,7 +136,9 @@ const useReq = () => {
       toast({
         description: `You and ${request.sender.displayName} are now friends!`,
       });
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
   };
@@ -220,6 +228,7 @@ const useReq = () => {
     getChatRequests,
     getSentRequests,
     getReceivedRequests,
+    loading
   };
 };
 

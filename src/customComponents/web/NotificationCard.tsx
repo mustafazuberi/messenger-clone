@@ -23,7 +23,7 @@ const NotificationCard = (notificationCardProps: NotificationCardProps) => {
 
   return (
     <section>
-      <Card className={cn("sm:w-[350px] w-[250px] mr-4 mt-1 ")}>
+      <Card className={cn("sm:w-[350px] w-[250px] mr-4 mt-1")}>
         <CardHeader>
           <CardTitle>Notifications</CardTitle>
           {unReadNotifications.length ? (
