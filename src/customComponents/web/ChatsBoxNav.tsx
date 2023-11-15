@@ -1,7 +1,6 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { FaUserFriends } from "react-icons/fa";
-import ChatsNavDropDown from "./ChatsNavDropDown";
 import useHome from "@/hooks/useHome";
 import React from "react";
 import Link from "next/link";
@@ -29,7 +28,6 @@ const ChatsBoxNav = () => {
           >
             <FaUserFriends />
           </Link>
-          <ChatsNavDropDown />
         </section>
       </section>
       <section>

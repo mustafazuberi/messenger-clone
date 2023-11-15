@@ -20,6 +20,7 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { updateUserDetails } from "@/store/slice/userSlice";
+import AddBioSchema from "@/schema/schema.bio";
 
 const useSettings = () => {
   const dispatch = useDispatch();
@@ -49,10 +50,21 @@ const useSettings = () => {
     resolver: zodResolver(DOBSchema),
   });
 
-  const formGender = useForm<z.infer<typeof GenderSchema>>({
+  const formGender: UseFormReturn<z.infer<typeof GenderSchema>> = useForm<
+    z.infer<typeof GenderSchema>
+  >({
     resolver: zodResolver(GenderSchema),
     defaultValues: {
       gender: "",
+    },
+  });
+
+  const formAddBio: UseFormReturn<z.infer<typeof AddBioSchema>> = useForm<
+    z.infer<typeof AddBioSchema>
+  >({
+    resolver: zodResolver(AddBioSchema),
+    defaultValues: {
+      bio: "",
     },
   });
 
@@ -221,6 +233,37 @@ const useSettings = () => {
     }
   };
 
+  const onSubmitBio = async (values: z.infer<typeof AddBioSchema>) => {
+    setUpdating(true);
+    try {
+      const userDocRef = doc(db, "users", currentUser.uid); //updating in DB
+      await updateDoc(userDocRef, {
+        bio: values.bio,
+      });
+
+      await updateFriendsBatch("bio", values.bio);
+      // updating current user in redux
+      dispatch(
+        updateUserDetails({
+          ...currentUser,
+          bio: values.bio,
+        })
+      );
+      setUpdating(false);
+      toast({
+        description: "Bio updated successfully!",
+      });
+    } catch (error) {
+      console.log(error);
+      setUpdating(false);
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+      });
+    }
+  };
+
   return {
     formFullName,
     formDOB,
@@ -233,6 +276,8 @@ const useSettings = () => {
     getInputProps,
     updateProfilePhoto,
     updating,
+    formAddBio,
+    onSubmitBio,
   };
 };
 

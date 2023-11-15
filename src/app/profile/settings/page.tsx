@@ -1,3 +1,4 @@
+import AddBio from "./_components/AddBio";
 import UpdateDOB from "./_components/UpdateDOB";
 import UpdateFullname from "./_components/UpdateFullname";
 import UpdateGender from "./_components/UpdateGender";
@@ -12,6 +13,7 @@ const page = () => {
       <UpdateFullname />
       <UpdateGender />
       <UpdateDOB />
+      <AddBio />
     </main>
   );
 };

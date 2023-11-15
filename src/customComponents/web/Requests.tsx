@@ -9,6 +9,7 @@ import UsersSkeleton from "./UsersSkeleton";
 import ReceivedRequests from "./ReceivedRequests";
 import UserImageAvatar from "./UserImageAvatar";
 import TailwindSpinner from "./TailwindSpinner";
+import { useTheme } from "next-themes";
 
 type ActiveTab = "sentRequests" | "receivedRequests";
 
@@ -20,7 +21,7 @@ type RequestsNavProps = {
 const Requests = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>("receivedRequests");
   return (
-    <main className="flex flex-col justify-between p-2 w-full gap-y-3">
+    <main className="flex flex-col justify-between w-full gap-y-3">
       <RequestsNav activeTab={activeTab} setActiveTab={setActiveTab} />
       {activeTab === "receivedRequests" && <ReceivedRequests />}
       {activeTab === "sentRequests" && <SentRequests />}
@@ -39,7 +40,7 @@ const RequestsNav = ({ activeTab, setActiveTab }: RequestsNavProps) => {
     }
   };
   return (
-    <section className="flex flex-row justify-between items-center w-full mt-2">
+    <section className="flex flex-row justify-between items-center w-full mt-2 p-2">
       <section className="flex flex-row gap-x-2 items-center">
         <section>
           <Link href={"/messages"}>
@@ -70,12 +71,18 @@ const SentRequests = () => {
   const sentRequests = useSelector(
     (state: RootState) => state.chatRequests.sentRequests
   );
+  const { theme } = useTheme();
+  const hover = theme === "dark" ? "hover:bg-slate-800" : "hover:bg-gray-300";
   const { unsendChatRequest, loading } = useReq();
+
   return (
     <section className="mt-3 flex flex-col gap-y-4">
       {sentRequests.data?.length && sentRequests.status === "idle" ? (
         sentRequests.data?.map((req, i) => (
-          <section className="flex flex-row justify-between px-1 " key={i}>
+          <section
+            className={`flex flex-row justify-between items-center px-1 min-w-full cursor-pointer p-2 ${hover}`}
+            key={i}
+          >
             <section className="flex flex-row gap-x-3">
               <section>
                 <UserImageAvatar user={req.receiver} />
@@ -87,7 +94,6 @@ const SentRequests = () => {
             </section>
             <section>
               <Button
-                variant={"outline"}
                 className="w-[70px] h-8"
                 onClick={() => unsendChatRequest(req)}
                 disabled={loading}

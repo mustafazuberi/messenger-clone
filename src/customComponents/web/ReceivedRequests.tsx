@@ -5,18 +5,24 @@ import { useSelector } from "react-redux";
 import UsersSkeleton from "./ChatUsersSkeleton";
 import UserImageAvatar from "./UserImageAvatar";
 import TailwindSpinner from "./TailwindSpinner";
+import { useTheme } from "next-themes";
 
 const ReceivedRequests = () => {
   const receivedRequests = useSelector(
     (state: RootState) => state.chatRequests.receivedRequests
   );
+  const { theme } = useTheme();
+  const hover = theme === "dark" ? "hover:bg-slate-800" : "hover:bg-gray-300";
   const { confirmChatRequest, loading } = useReq();
 
   return (
     <section className="mt-3 flex flex-col gap-y-4">
       {receivedRequests.data?.length && receivedRequests.status === "idle" ? (
         receivedRequests.data?.map((req) => (
-          <section className="flex flex-row justify-between px-1 " key={req.id}>
+          <section
+            className={`flex flex-row justify-between items-center px-1 min-w-full cursor-pointer p-2 ${hover}`}
+            key={req.id}
+          >
             <section className="flex flex-row gap-x-3">
               <section>
                 <UserImageAvatar user={req.sender} />
@@ -28,7 +34,6 @@ const ReceivedRequests = () => {
             </section>
             <section>
               <Button
-                variant={"outline"}
                 className="px-3 h-8"
                 onClick={() => confirmChatRequest(req)}
                 disabled={loading}

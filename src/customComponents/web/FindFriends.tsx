@@ -14,6 +14,7 @@ import User from "@/types/types.user";
 import UserImageAvatar from "./UserImageAvatar";
 import { useRouter } from "next/navigation";
 import TailwindSpinner from "./TailwindSpinner";
+import { useTheme } from "next-themes";
 
 const FindFriends = () => {
   const [unknownUsers, setUnknownUsers] = useState<User[]>([]);
@@ -36,7 +37,7 @@ const FindFriends = () => {
   }, [myFriends.data, sentRequests.data, receivedRequests.data]);
 
   return (
-    <main className="p-2">
+    <main>
       <FindFriendsNav />
       <section className="mt-4">
         {allUsers.status === STATUSES.LOADING ? (
@@ -66,7 +67,7 @@ export default FindFriends;
 export const FindFriendsNav = () => {
   const router = useRouter();
   return (
-    <main className="flex flex-col gap-y-3 mt-2">
+    <main className="flex flex-col gap-y-3 mt-2 p-2">
       <section className="flex flex-row gap-x-2 items-center w-full">
         <Link href={"/messages"}>
           <BiArrowBack className="cursor-pointer text-2xl" />
@@ -92,9 +93,14 @@ export const FindFriendsNav = () => {
 
 const UnknownUser = ({ unknownUser }: { unknownUser: User }) => {
   const currentUser = useSelector((state: RootState) => state.currentUser);
+  const { theme } = useTheme();
+  const hover = theme === "dark" ? "hover:bg-slate-800" : "hover:bg-gray-300";
   const { sendChatRequest, loading } = useReq();
+
   return (
-    <section className="flex flex-row justify-between border-b min-w-full py-2 pr-2">
+    <section
+      className={`flex flex-row justify-between border-b min-w-full py-2 pr-2 cursor-pointer p-2 ${hover}`}
+    >
       <section className="flex flex-row gap-x-3">
         <section>
           <UserImageAvatar user={unknownUser} />
@@ -106,7 +112,6 @@ const UnknownUser = ({ unknownUser }: { unknownUser: User }) => {
       </section>
       <section>
         <Button
-          variant="outline"
           className="px-3 h-8"
           onClick={() =>
             sendChatRequest({

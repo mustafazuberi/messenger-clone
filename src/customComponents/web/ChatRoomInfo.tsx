@@ -29,6 +29,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import useChat from "@/hooks/useChat";
 import { useState } from "react";
+import { useTheme } from "next-themes";
 
 const ChatRoomFriendInfo = ({ chatWith }: { chatWith: Friend }) => {
   return (
@@ -97,13 +98,13 @@ const ChatRoomInfoShareButton = () => {
 };
 
 const ChatRoomInfoOptions = () => {
+  const { theme } = useTheme();
   const [isBlockAlertOpen, setIsBlockAlertOpen] = useState<boolean>(false);
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const user = useSelector((state: RootState) => state.activeRoom.chatWith);
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
-  console.log(activeRoom.roomDetails?.block);
   return (
-    <section className="flex flex-col w-full">
+    <section className="flex flex-col w-full gap-y-4">
       {!activeRoom.roomDetails?.block?.blockedBy[currentUser.uid] ? (
         <AlertDialog open={isBlockAlertOpen}>
           <AlertDialogTrigger>
@@ -121,6 +122,13 @@ const ChatRoomInfoOptions = () => {
         </AlertDialog>
       ) : (
         <UnblockOption />
+      )}
+      {/* About (Bio) */}
+      {user?.bio && (
+        <section className="w-full px-6 py-3 flex flex-col bg-slate-800">
+          <h6 className="opacity-60">~About</h6>
+          <p className="mt-2">{user.bio}</p>
+        </section>
       )}
     </section>
   );

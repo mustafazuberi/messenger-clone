@@ -8,6 +8,7 @@ type Friend = {
   gender?: "male" | "female" | "other" | string;
   photoUrl?: string;
   DOB?: Date;
+  bio?: string;
 };
 
 export default Friend;
