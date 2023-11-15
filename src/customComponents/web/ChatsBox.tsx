@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import { useSearchParams } from "next/navigation";
 import ChatsBoxNav from "./ChatsBoxNav";
 import ChatUsers from "./ChatUsers";
-import Requests, { RequestsNav } from "./Requests";
 import useHome from "@/hooks/useHome";
 import useReq from "@/hooks/useReq";
 import { RootState } from "@/store";
@@ -12,6 +11,9 @@ import FindFriendsSuspense from "./FindFriendsSuspense";
 import useChat from "@/hooks/useChat";
 import useActive from "@/hooks/useActive";
 import { ActiveTab } from "@/types/types.miscellaneous";
+import ReceivedRequests from "./ReceivedRequests";
+import SentRequests from "./SentRequests";
+import RequestsNav from "./RequestsNav";
 
 const FindFriends = React.lazy(() => import("./FindFriends"));
 
@@ -56,7 +58,8 @@ const ChatsBox = () => {
       ) : isRequestsTab ? (
         <section className="flex flex-col min-w-full max-h-full min-h-full">
           <RequestsNav activeTab={activeTab} setActiveTab={setActiveTab} />
-          <Requests activeTab={activeTab} />
+          {activeTab === "receivedRequests" && <ReceivedRequests />}
+          {activeTab === "sentRequests" && <SentRequests />}
         </section>
       ) : (
         <section className="flex flex-col min-w-full max-h-full min-h-full">
