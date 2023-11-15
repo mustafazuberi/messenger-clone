@@ -64,17 +64,19 @@ const Message = ({ msg }: props) => {
                       loading="eager"
                       className="w-96 h-96 blur-[2px]"
                     />
-                    <Button
-                      className="absolute top-40 text-black left-32 bg-gray-300"
-                      onClick={() =>
-                        setOpenImageModal({
-                          img: msg.img ? msg.img : "null",
-                          open: true,
-                        })
-                      }
-                    >
-                      Open Image
-                    </Button>
+                    <section className="flex justify-center w-full absolute top-40 ">
+                      <Button
+                        className="bg-gray-300 text-black"
+                        onClick={() =>
+                          setOpenImageModal({
+                            img: msg.img ? msg.img : "null",
+                            open: true,
+                          })
+                        }
+                      >
+                        Open Image
+                      </Button>
+                    </section>
                   </section>
                 </section>
               ) : msg.friend ? (

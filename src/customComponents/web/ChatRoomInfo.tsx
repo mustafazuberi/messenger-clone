@@ -98,7 +98,6 @@ const ChatRoomInfoShareButton = () => {
 };
 
 const ChatRoomInfoOptions = () => {
-  const { theme } = useTheme();
   const [isBlockAlertOpen, setIsBlockAlertOpen] = useState<boolean>(false);
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const user = useSelector((state: RootState) => state.activeRoom.chatWith);
