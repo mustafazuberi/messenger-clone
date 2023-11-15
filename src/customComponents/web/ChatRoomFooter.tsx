@@ -54,17 +54,17 @@ const ChatRoomFooter = () => {
   return (
     <main>
       {!blockInfo?.isBlocked ? (
-        <section className="sm:px-5 px-2 py-3 flex ">
+        <section className="lg:px-5 md:px-5 px-2 py-3 flex ">
           {/* Display Message form If not recording  */}
           {!(voiceRecordState === "recording") && !sendingVoice && (
             <form
               onSubmit={sendMessage}
-              className="w-full flex flex-row sm:gap-x-4 gap-x-2 items-center"
+              className="w-full flex flex-row lg:gap-x-4 md:gap-x-4 gap-x-2 items-center"
             >
               <Popover>
                 <PopoverTrigger asChild>
                   <button>
-                    <BsEmojiSmile className="sm:text-[35px] text-[28px] cursor-pointer text-gray-400" />
+                    <BsEmojiSmile className="lg:text-[35px] md:text-[35px] text-[28px] cursor-pointer text-gray-400" />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto">
@@ -89,7 +89,7 @@ const ChatRoomFooter = () => {
               />
               {messageInp ? (
                 <button type="submit">
-                  <BsFillSendFill className="sm:text-[30px] text-[24px] text-gray-400" />
+                  <BsFillSendFill className="lg:text-[30px] md:text-[30px] text-[24px] text-gray-400" />
                 </button>
               ) : (
                 <AiFillAudio
@@ -167,7 +167,7 @@ const FooterIfChatRoomBlocked = () => {
   };
 
   return (
-    <section className="sm:px-5 px-2 py-3 flex flex-row gap-x-0 items-center">
+    <section className="lg:px-5 md:px-5 px-2 py-3 flex flex-row gap-x-0 items-center">
       {activeRoom.roomDetails?.block && !blockedByMe ? (
         <section>
           You cannot reply to this conversation.{" "}

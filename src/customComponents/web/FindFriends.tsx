@@ -15,6 +15,7 @@ import UserImageAvatar from "./UserImageAvatar";
 import { useRouter } from "next/navigation";
 import TailwindSpinner from "./TailwindSpinner";
 import { useTheme } from "next-themes";
+import { Main } from "next/document";
 
 const FindFriends = () => {
   const [unknownUsers, setUnknownUsers] = useState<User[]>([]);
@@ -37,27 +38,28 @@ const FindFriends = () => {
   }, [myFriends.data, sentRequests.data, receivedRequests.data]);
 
   return (
-    <main>
-      <FindFriendsNav />
-      <section className="mt-4">
-        {allUsers.status === STATUSES.LOADING ? (
-          <UsersSkeleton skeletonLength={7} />
-        ) : null}
-
-        {!(allUsers.status === STATUSES.LOADING) && unknownUsers.length
-          ? unknownUsers?.map((user) => {
-              return <UnknownUser unknownUser={user} key={user.uid} />;
-            })
-          : null}
-
-        {!(allUsers.status === STATUSES.LOADING) && !unknownUsers.length ? (
-          <section className="flex flex-col justify-center gap-y-2 items-center mt-4 px-4">
-            <h1 className="text-[19px] font-light">
-              No users are available on the website
-            </h1>
-          </section>
-        ) : null}
+    <main className="min-w-full max-h-full min-h-full flex flex-col ">
+      <section>
+        <FindFriendsNav />
       </section>
+
+      {allUsers.status === STATUSES.LOADING ? (
+        <section>
+          <UsersSkeleton skeletonLength={7} />
+        </section>
+      ) : unknownUsers.length ? (
+        <section className="min-w-full flex flex-col items-center flex-1 max-h-full overflow-y-auto scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-w-3 scrollbar-track-inherit">
+          {unknownUsers?.map((user) => {
+            return <UnknownUser unknownUser={user} key={user.uid} />;
+          })}
+        </section>
+      ) : (
+        <section className="flex flex-col justify-center gap-y-2 items-center mt-4 px-4">
+          <h1 className="text-[19px] font-light">
+            No users are available on the website
+          </h1>
+        </section>
+      )}
     </main>
   );
 };
@@ -99,7 +101,7 @@ const UnknownUser = ({ unknownUser }: { unknownUser: User }) => {
 
   return (
     <section
-      className={`flex flex-row justify-between border-b min-w-full py-2 pr-2 cursor-pointer p-2 ${hover}`}
+      className={`flex flex-row justify-between border-b min-w-full py-4 pr-2 p-2 ${hover}`}
     >
       <section className="flex flex-row gap-x-3">
         <section>

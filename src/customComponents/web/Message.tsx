@@ -37,7 +37,7 @@ const Message = ({ msg }: props) => {
         <section
           className={`${
             byMe ? "bg-[#005c4b]" : "bg-[#1e293b]"
-          } sm:max-w-[70%] max-w-[90%] px-2 py-2 rounded-2xl text-white `}
+          } lg:max-w-[70%] md:max-w-[70%] max-w-[90%] px-2 py-2 rounded-2xl text-white `}
         >
           <section className="flex flex-col">
             <section className="flex flex-row justify-end">
@@ -47,7 +47,7 @@ const Message = ({ msg }: props) => {
               />
             </section>
             <section
-              className={`flex flex-${msg.text ? "row" : "col"} sm:gap-3 gap-2`}
+              className={`flex flex-${msg.text ? "row" : "col"} lg:gap-3 md:gap-3 gap-2`}
             >
               {msg.text ? (
                 <section className="text-[15px] font-extralight">
@@ -148,7 +148,7 @@ const SharedFriend = ({ friend }: { friend: Friend }) => {
 
   return (
     <section className="flex flex-col gap-y-2 px-3">
-      <section className="flex flex-row gap-x-2 items-center sm:min-w-[300px] max-w-[70%]">
+      <section className="flex flex-row gap-x-2 items-center lg:min-w-[300px] md:min-w-[300px] max-w-[70%]">
         <section>
           <UserImageAvatar user={friend} size={10} />
         </section>

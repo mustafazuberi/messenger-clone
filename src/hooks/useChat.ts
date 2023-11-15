@@ -256,15 +256,15 @@ const useChat = () => {
     const years = Math.floor(days / 365);
 
     if (years > 0) {
-      return `${years} year${years === 1 ? "" : "s"}`;
+      return `${years} yr`;
     } else if (days > 0) {
-      return `${days} day${days === 1 ? "" : "s"}`;
+      return `${days} d`;
     } else if (hours > 0) {
-      return `${hours} hour${hours === 1 ? "" : "s"}`;
+      return `${hours} h`;
     } else if (minutes > 0) {
-      return `${minutes} minute${minutes === 1 ? "" : "s"}`;
+      return `${minutes} m`;
     } else if (seconds > 1) {
-      return `${seconds} second${seconds === 1 ? "" : "s"}`;
+      return `${seconds} s`;
     } else {
       return "1 second";
     }

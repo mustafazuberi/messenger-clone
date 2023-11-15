@@ -7,7 +7,7 @@ const FullNameSchema = z.object({
       message: "Full Name must be at least 6 characters.",
     })
     .max(30, {
-      message: "Full name must not exceed 30 characters.",
+      message: "Full name must not exceed 16 characters.",
     }),
 });
 

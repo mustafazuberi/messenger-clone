@@ -39,3 +39,6 @@ export type OpenImageModal = {
 };
 
 export type VoiceRecordState = "record" | "recording" | "recorded";
+
+
+export type ActiveTab = "sentRequests" | "receivedRequests";

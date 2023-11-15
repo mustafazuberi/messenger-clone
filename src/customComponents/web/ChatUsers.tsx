@@ -118,8 +118,11 @@ export const LastActive: React.FC<{
         </section>
       ) : (
         <section className="flex flex-row gap-x-1">
-          <span className="text-gray-600 text-[12px]">
-            Active {getTimeDifference(activeUsers[friend.uid]?.lastActive)} ago
+          <span className="text-gray-600 text-[12px] flex flex-row gap-x-1">
+            <span className="lg:flex md:hidden hidden">Active</span>
+            <span>
+              {getTimeDifference(activeUsers[friend.uid]?.lastActive)} ago
+            </span>
           </span>
         </section>
       )}
@@ -143,7 +146,7 @@ const ChatUser: React.FC<ChatUserProps> = ({
   const hover = theme === "dark" ? "hover:bg-slate-800" : "hover:bg-gray-300";
   return (
     <section
-      className={`flex flex-row justify-between border-b min-w-full cursor-pointer p-2 ${hover}`}
+      className={`flex flex-row justify-between border-b min-w-full cursor-pointer p-2 py-4 ${hover}`}
       onClick={() => handleOnChatUser(friend)}
     >
       <section className="flex flex-row gap-x-3 w-full items-center">

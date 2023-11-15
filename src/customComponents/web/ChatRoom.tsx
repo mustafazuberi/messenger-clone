@@ -43,13 +43,13 @@ const ChatRoom = () => {
   }, [activeRoom.roomDetails?.id]);
 
   return (
-    <main className="sm:min-h-full min-h-[100vh] w-full flex flex-col max-h-full">
+    <main className="lg:min-h-full md:min-h-full min-h-[100vh] w-full flex flex-col max-h-full">
       <section>
         <ChatRoomNav />
       </section>
       {status === "idle" ? (
         <section
-          className="flex flex-col max-h-full flex-1 gap-y-2 p-6 overflow-y-scroll sm:scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-track-inherit"
+          className="flex flex-col max-h-full flex-1 gap-y-2 p-6 overflow-y-scroll lg:scrollbar md:scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-track-inherit"
           ref={sectionRefMessagesDiv}
         >
           {activeRoom.roomDetails ? (

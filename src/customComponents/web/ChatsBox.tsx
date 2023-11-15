@@ -1,16 +1,17 @@
 "use client";
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "next/navigation";
 import ChatsBoxNav from "./ChatsBoxNav";
 import ChatUsers from "./ChatUsers";
-import Requests from "./Requests";
+import Requests, { RequestsNav } from "./Requests";
 import useHome from "@/hooks/useHome";
 import useReq from "@/hooks/useReq";
 import { RootState } from "@/store";
 import FindFriendsSuspense from "./FindFriendsSuspense";
 import useChat from "@/hooks/useChat";
 import useActive from "@/hooks/useActive";
+import { ActiveTab } from "@/types/types.miscellaneous";
 
 const FindFriends = React.lazy(() => import("./FindFriends"));
 
@@ -44,6 +45,8 @@ const ChatsBox = () => {
   const isFindFriendsTab = params?.get("tab") === "findFriends";
   const isRequestsTab = params?.get("tab") === "requests";
 
+  const [activeTab, setActiveTab] = useState<ActiveTab>("receivedRequests");
+
   return (
     <main className="min-h-full max-h-full min-w-full border-r">
       {isFindFriendsTab ? (
@@ -51,9 +54,12 @@ const ChatsBox = () => {
           <FindFriends />
         </Suspense>
       ) : isRequestsTab ? (
-        <Requests />
+        <section className="flex flex-col min-w-full max-h-full min-h-full">
+          <RequestsNav activeTab={activeTab} setActiveTab={setActiveTab} />
+          <Requests activeTab={activeTab} />
+        </section>
       ) : (
-        <section className="min-w-full max-h-full min-h-full flex flex-col">
+        <section className="flex flex-col min-w-full max-h-full min-h-full">
           <ChatsBoxNav />
           <ChatUsers />
         </section>

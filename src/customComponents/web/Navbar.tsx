@@ -8,7 +8,7 @@ const Navbar = () => {
   return (
     <main
       className={`h-[11vh] px-3 ${
-        roomDetails?.id ? "sm:flex hidden" : "flex"
+        roomDetails?.id ? "lg:flex md:flex hidden" : "flex"
       } flex-row justify-between items-center border-b`}
     >
       <MessengerTextAndLogo />

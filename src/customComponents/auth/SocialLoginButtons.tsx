@@ -8,7 +8,7 @@ const SocialLoginButtons = () => {
   const { continueWithGoogle, continueWithFacebook } = useSignup();
   return (
     <section>
-      <div className="w-full flex sm:flex-row flex-col sm:gap-x-4 gap-y-4">
+      <div className="w-full flex lg:flex-row md:flex-row flex-col lg:gap-x-4 md:gap-x-4 gap-y-4">
         <Button
           className="flex flex-row gap-x-3 py-6 w-full"
           variant={"outline"}

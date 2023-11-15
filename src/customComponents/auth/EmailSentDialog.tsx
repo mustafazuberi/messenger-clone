@@ -8,14 +8,14 @@ import { Button } from "@/components/ui/button";
 
 const EmailSentDialog = ({ email }: { email: string }) => {
   return (
-    <section className="sm:max-w-[475px] max-w-[260px]">
+    <section className="lg:max-w-[475px] md:max-w-[475px] max-w-[260px]">
       <section className="py-6 flex flex-col gap-y-6">
         <section className="w-full flex flex-col justify-center items-center gap-y-8  ">
           <Image
             src={messengerLogo}
             alt="envelopeMailImage"
             loading="eager"
-            className="sm:w-24 sm:h-24 w-16 h-16"
+            className="lg:w-24 md:w-24 lg:h-24 md:h-24 w-16 h-16"
           />
           <TypographyH1 text="Email Confirmation" />
         </section>

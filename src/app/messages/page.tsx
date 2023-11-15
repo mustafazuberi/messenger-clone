@@ -8,7 +8,7 @@ const page = () => {
   const roomId = roomDetails?.id;
   if (!roomId) {
     return (
-      <main className="sm:flex hidden justify-center items-center min-w-full ">
+      <main className="lg:flex md:flex hidden justify-center items-center min-w-full ">
         <section className="max-w-[80%]">
           <h1 className=" text-[60px] font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400">
             No Chats Selected
@@ -20,7 +20,7 @@ const page = () => {
 
   return (
     <section
-      className={`w-full min-h-full max-h-full sm:flex ${
+      className={`w-full min-h-full max-h-full lg:flex md:flex ${
         !roomId ? "hidden" : "flex"
       } flex-1`}
     >

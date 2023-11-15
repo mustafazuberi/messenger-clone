@@ -8,30 +8,28 @@ import useReq from "@/hooks/useReq";
 import UsersSkeleton from "./UsersSkeleton";
 import ReceivedRequests from "./ReceivedRequests";
 import UserImageAvatar from "./UserImageAvatar";
-import TailwindSpinner from "./TailwindSpinner";
 import { useTheme } from "next-themes";
-
-type ActiveTab = "sentRequests" | "receivedRequests";
+import { ActiveTab } from "@/types/types.miscellaneous";
 
 type RequestsNavProps = {
   activeTab: ActiveTab;
   setActiveTab: (tab: ActiveTab) => void;
 };
 
-const Requests = () => {
-  const [activeTab, setActiveTab] = useState<ActiveTab>("receivedRequests");
+const Requests = ({ activeTab }: { activeTab: ActiveTab }) => {
   return (
-    <main className="flex flex-col justify-between w-full gap-y-3">
-      <RequestsNav activeTab={activeTab} setActiveTab={setActiveTab} />
-      {activeTab === "receivedRequests" && <ReceivedRequests />}
-      {activeTab === "sentRequests" && <SentRequests />}
+    <main className="min-h-full bg-black">
+      <main className="flex flex-col min-w-full max-h-full min-h-full">
+        {activeTab === "receivedRequests" && <ReceivedRequests />}
+        {activeTab === "sentRequests" && <SentRequests />}
+      </main>
     </main>
   );
 };
 
 export default Requests;
 
-const RequestsNav = ({ activeTab, setActiveTab }: RequestsNavProps) => {
+export const RequestsNav = ({ activeTab, setActiveTab }: RequestsNavProps) => {
   const handleActiveTabToggle = () => {
     if (activeTab === "receivedRequests") {
       setActiveTab("sentRequests");
@@ -76,35 +74,129 @@ const SentRequests = () => {
   const { unsendChatRequest, loading } = useReq();
 
   return (
-    <section className="mt-3 flex flex-col gap-y-4">
-      {sentRequests.data?.length && sentRequests.status === "idle" ? (
-        sentRequests.data?.map((req, i) => (
-          <section
-            className={`flex flex-row justify-between items-center px-1 min-w-full cursor-pointer p-2 ${hover}`}
-            key={i}
-          >
-            <section className="flex flex-row gap-x-3">
-              <section>
-                <UserImageAvatar user={req.receiver} />
-              </section>
-              <section className="flex flex-col ">
-                <h3>{req.receiver.displayName}</h3>
-                <h6 className="text-[12px]">{req.receiver.email}</h6>
-              </section>
-            </section>
-            <section>
-              <Button
-                className="w-[70px] h-8"
-                onClick={() => unsendChatRequest(req)}
-                disabled={loading}
-              >
-                Unsend
-              </Button>
-            </section>
-          </section>
-        ))
-      ) : false && sentRequests.status === "loading" ? (
+    <section className="min-w-full flex flex-col items-center flex-1 max-h-full overflow-y-auto scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-w-3 scrollbar-track-inherit">
+      {sentRequests.status === "loading" ? (
         <UsersSkeleton skeletonLength={7} />
+      ) : sentRequests.data?.length && sentRequests.status === "idle" ? (
+        sentRequests.data?.map((req, i) => (
+          <>
+            <section
+              className={`flex flex-row justify-between items-center px-1 min-w-full cursor-pointer p-2 py-4 border-b ${hover}`}
+              key={i}
+            >
+              <section className="flex flex-row gap-x-3">
+                <section>
+                  <UserImageAvatar user={req.receiver} />
+                </section>
+                <section className="flex flex-col ">
+                  <h3>{req.receiver.displayName}</h3>
+                  <h6 className="text-[12px]">{req.receiver.email}</h6>
+                </section>
+              </section>
+              <section>
+                <Button
+                  className="w-[70px] h-8"
+                  onClick={() => unsendChatRequest(req)}
+                  disabled={loading}
+                >
+                  Unsend
+                </Button>
+              </section>
+            </section>
+            <section
+              className={`flex flex-row justify-between items-center px-1 min-w-full cursor-pointer p-2 py-4 border-b ${hover}`}
+              key={i}
+            >
+              <section className="flex flex-row gap-x-3">
+                <section>
+                  <UserImageAvatar user={req.receiver} />
+                </section>
+                <section className="flex flex-col ">
+                  <h3>{req.receiver.displayName}</h3>
+                  <h6 className="text-[12px]">{req.receiver.email}</h6>
+                </section>
+              </section>
+              <section>
+                <Button
+                  className="w-[70px] h-8"
+                  onClick={() => unsendChatRequest(req)}
+                  disabled={loading}
+                >
+                  Unsend
+                </Button>
+              </section>
+            </section>
+            <section
+              className={`flex flex-row justify-between items-center px-1 min-w-full cursor-pointer p-2 py-4 border-b ${hover}`}
+              key={i}
+            >
+              <section className="flex flex-row gap-x-3">
+                <section>
+                  <UserImageAvatar user={req.receiver} />
+                </section>
+                <section className="flex flex-col ">
+                  <h3>{req.receiver.displayName}</h3>
+                  <h6 className="text-[12px]">{req.receiver.email}</h6>
+                </section>
+              </section>
+              <section>
+                <Button
+                  className="w-[70px] h-8"
+                  onClick={() => unsendChatRequest(req)}
+                  disabled={loading}
+                >
+                  Unsend
+                </Button>
+              </section>
+            </section>
+            <section
+              className={`flex flex-row justify-between items-center px-1 min-w-full cursor-pointer p-2 py-4 border-b ${hover}`}
+              key={i}
+            >
+              <section className="flex flex-row gap-x-3">
+                <section>
+                  <UserImageAvatar user={req.receiver} />
+                </section>
+                <section className="flex flex-col ">
+                  <h3>{req.receiver.displayName}</h3>
+                  <h6 className="text-[12px]">{req.receiver.email}</h6>
+                </section>
+              </section>
+              <section>
+                <Button
+                  className="w-[70px] h-8"
+                  onClick={() => unsendChatRequest(req)}
+                  disabled={loading}
+                >
+                  Unsend
+                </Button>
+              </section>
+            </section>
+            <section
+              className={`flex flex-row justify-between items-center px-1 min-w-full cursor-pointer p-2 py-4 border-b ${hover}`}
+              key={i}
+            >
+              <section className="flex flex-row gap-x-3">
+                <section>
+                  <UserImageAvatar user={req.receiver} />
+                </section>
+                <section className="flex flex-col ">
+                  <h3>{req.receiver.displayName}</h3>
+                  <h6 className="text-[12px]">{req.receiver.email}</h6>
+                </section>
+              </section>
+              <section>
+                <Button
+                  className="w-[70px] h-8"
+                  onClick={() => unsendChatRequest(req)}
+                  disabled={loading}
+                >
+                  Unsend
+                </Button>
+              </section>
+            </section>
+          </>
+        ))
       ) : (
         <section className="flex flex-col justify-center gap-y-2 items-center mt-4 px-4">
           <h1 className="text-[19px] font-light">
