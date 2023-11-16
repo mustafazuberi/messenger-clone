@@ -21,7 +21,7 @@ export default SignUp;
 const AlreadyHaveAnAccount = () => {
   return (
     <main>
-      <p className="text-center">
+      <p className="text-center text-gray-700 dark:text-gray-300">
         Already have an account?{" "}
         <Link href={"/auth/signin"} className="font-normal text-blue-600">
           Login

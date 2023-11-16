@@ -14,7 +14,10 @@ const SocialLoginButtons = () => {
           variant={"outline"}
           onClick={continueWithGoogle}
         >
-          <BsGoogle style={{ fontSize: "1.5rem" }} />
+          <BsGoogle
+            style={{ fontSize: "1.5rem" }}
+            className="text-gray-700 dark:text-gray-300"
+          />
           Google
         </Button>
         <Button
@@ -22,7 +25,10 @@ const SocialLoginButtons = () => {
           variant={"outline"}
           onClick={continueWithFacebook}
         >
-          <BsFacebook style={{ fontSize: "1.5rem" }} />
+          <BsFacebook
+            style={{ fontSize: "1.5rem" }}
+            className="text-gray-700 dark:text-gray-300"
+          />
           Facebook
         </Button>
       </div>
