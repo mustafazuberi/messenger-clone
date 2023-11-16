@@ -3,9 +3,7 @@ import { RootState } from "@/store";
 import { STATUSES } from "@/store/intialState";
 import { useSelector } from "react-redux";
 import Link from "next/link";
-import React, { useEffect } from "react";
-import UsersSkeleton from "./UsersSkeleton";
-import UserImageAvatar from "./UserImageAvatar";
+import React, { Suspense, useEffect } from "react";
 import useChat from "@/hooks/useChat";
 import Room from "@/types/types.room";
 import Friend from "@/types/type.friend";
@@ -14,6 +12,7 @@ import Message from "@/types/types.message";
 import { FaUserFriends } from "react-icons/fa";
 import { AiFillAudio } from "react-icons/ai";
 import { useTheme } from "next-themes";
+import UserImageAvatar from "./UserImageAvatar";
 
 const ChatUsers = () => {
   const friends = useSelector((state: RootState) => state.friends);
@@ -30,7 +29,7 @@ const ChatUsers = () => {
 
   return (
     <section className="min-w-full flex flex-col items-center flex-1 max-h-full overflow-y-auto scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-w-3 scrollbar-track-inherit">
-      {rooms?.length ? (
+      {rooms?.length && friends.status === STATUSES.IDLE ? (
         rooms?.map((room: Room, i) => {
           const friend: Friend | null = getFriendFromRoomUsers(room);
           if (!friend) return null; // Return null when no friend found
@@ -40,13 +39,10 @@ const ChatUsers = () => {
                 friend={friend}
                 room={room}
                 roomsUnseenMessages={roomsUnseenMessages}
-                key={i}
               />
             </section>
           );
         })
-      ) : friends.status === STATUSES.LOADING ? (
-        <UsersSkeleton skeletonLength={10} />
       ) : (
         <NoFriendsToChat />
       )}

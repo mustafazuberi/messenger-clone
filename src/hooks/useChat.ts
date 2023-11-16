@@ -60,7 +60,7 @@ const useChat = () => {
         [reciever.uid]: reciever,
       };
       const room: Room = {
-        lastConversation: null,
+        lastConversation: Date.now(),
         lastMessage: null,
         users: users,
         createdAt: Date.now(),

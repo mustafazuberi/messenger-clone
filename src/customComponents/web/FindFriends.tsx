@@ -9,13 +9,12 @@ import useReq from "@/hooks/useReq";
 import { Button } from "@/components/ui/button";
 import getUnknownUsers from "@/services/getUnknownUsers";
 import { useEffect, useState } from "react";
-import UsersSkeleton from "./UsersSkeleton";
 import User from "@/types/types.user";
-import UserImageAvatar from "./UserImageAvatar";
 import { useRouter } from "next/navigation";
-import TailwindSpinner from "./TailwindSpinner";
 import { useTheme } from "next-themes";
-import { Main } from "next/document";
+import { Skeleton } from "@/components/ui/skeleton";
+import dynamic from "next/dynamic";
+import UserImageAvatar from "./UserImageAvatar";
 
 const FindFriends = () => {
   const [unknownUsers, setUnknownUsers] = useState<User[]>([]);
@@ -38,21 +37,11 @@ const FindFriends = () => {
   }, [myFriends.data, sentRequests.data, receivedRequests.data]);
 
   return (
-    <main className="min-w-full max-h-full min-h-full flex flex-col ">
-      <section>
-        <FindFriendsNav />
-      </section>
-
-      {allUsers.status === STATUSES.LOADING ? (
-        <section>
-          <UsersSkeleton skeletonLength={7} />
-        </section>
-      ) : unknownUsers.length ? (
-        <section className="min-w-full flex flex-col items-center flex-1 max-h-full overflow-y-auto scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-w-3 scrollbar-track-inherit">
-          {unknownUsers?.map((user) => {
-            return <UnknownUser unknownUser={user} key={user.uid} />;
-          })}
-        </section>
+    <section className="min-w-full flex flex-col items-center flex-1 max-h-full overflow-y-auto scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-w-3 scrollbar-track-inherit">
+      {allUsers.status === STATUSES.IDLE ? (
+        unknownUsers?.map((user) => {
+          return <UnknownUser unknownUser={user} key={user.uid} />;
+        })
       ) : (
         <section className="flex flex-col justify-center gap-y-2 items-center mt-4 px-4">
           <h1 className="text-[19px] font-light">
@@ -60,7 +49,7 @@ const FindFriends = () => {
           </h1>
         </section>
       )}
-    </main>
+    </section>
   );
 };
 

@@ -2,10 +2,10 @@ import { RootState } from "@/store";
 import { useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 import useReq from "@/hooks/useReq";
-import UsersSkeleton from "./UsersSkeleton";
 import UserImageAvatar from "./UserImageAvatar";
 import { useTheme } from "next-themes";
 import ChatRequest from "@/types/types.request";
+import { STATUSES } from "@/store/intialState";
 
 const SentRequests = () => {
   const sentReqs = useSelector(
@@ -14,9 +14,7 @@ const SentRequests = () => {
 
   return (
     <section className="min-w-full flex flex-col items-center flex-1 max-h-full overflow-y-auto scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-w-3 scrollbar-track-inherit">
-      {sentReqs.status === "loading" ? (
-        <UsersSkeleton skeletonLength={7} />
-      ) : sentReqs.data?.length ? (
+      {sentReqs.status === STATUSES.IDLE && sentReqs.data?.length ? (
         sentReqs.data?.map((req, i) => <SentReqUser key={i} req={req} />)
       ) : (
         <section className="flex flex-col justify-center gap-y-2 items-center mt-4 px-4">

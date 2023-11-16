@@ -6,6 +6,7 @@ import UsersSkeleton from "./ChatUsersSkeleton";
 import UserImageAvatar from "./UserImageAvatar";
 import { useTheme } from "next-themes";
 import ChatRequest from "@/types/types.request";
+import { STATUSES } from "@/store/intialState";
 
 const ReceivedRequests = () => {
   const receivedReqs = useSelector(
@@ -14,9 +15,7 @@ const ReceivedRequests = () => {
 
   return (
     <section className="min-w-full flex flex-col items-center flex-1 max-h-full overflow-y-auto scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-w-3 scrollbar-track-inherit">
-      {receivedReqs.status === "loading" ? (
-        <UsersSkeleton skeletonLength={7} />
-      ) : receivedReqs.data?.length ? (
+      {receivedReqs.status === STATUSES.IDLE && receivedReqs.data.length ? (
         receivedReqs.data?.map((req, i) => (
           <ReceivedReqUser key={i} req={req} />
         ))

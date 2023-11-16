@@ -1,19 +1,48 @@
 import User from "@/types/types.user";
+import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import React from "react";
+import { auth } from "@/db/firebase.config";
+import { Skeleton } from "@/components/ui/skeleton";
 
-type props = { user: User; size?: Number };
+type Props = { user: User; size?: number };
 
-const UserImageAvatar = ({ user, size }: props) => {
+const UserImageAvatar = ({ user, size }: Props) => {
+  const [imageLoading, setImageLoading] = useState(true);
   const sizeW = size ? `w-${size}` : "w-12";
   const sizeH = size ? `h-${size}` : "h-12";
+
+  const handleImageLoad = () => {
+    setImageLoading(false);
+  };
+
   return (
     <Avatar>
-      <AvatarImage
-        src={user.photoUrl}
-        className={`rounded-full ${sizeW} ${sizeH}`}
-        alt="@shadcn"
-      />
+      {user.photoUrl ? (
+        <>
+          {imageLoading && (
+            <Skeleton className={`rounded-full ${sizeW} ${sizeH}`} />
+          )}
+          <AvatarImage
+            src={user.photoUrl}
+            className={`rounded-full ${sizeW} ${sizeH}`}
+            alt="@shadcn"
+            onLoad={handleImageLoad}
+          />
+        </>
+      ) : auth.currentUser?.photoURL ? (
+        <>
+          {imageLoading && (
+            <Skeleton className={`rounded-full ${sizeW} ${sizeH}`} />
+          )}
+          <AvatarImage
+            src={auth.currentUser?.photoURL}
+            className={`rounded-full ${sizeW} ${sizeH}`}
+            alt="@shadcn"
+            onLoad={handleImageLoad}
+          />
+        </>
+      ) : null}
+
       {!user.photoUrl && (
         <AvatarFallback>
           <div
@@ -28,7 +57,3 @@ const UserImageAvatar = ({ user, size }: props) => {
 };
 
 export default UserImageAvatar;
-
-{
-  /* <Skeleton className="h-12 w-12 rounded-full" /> */
-}
