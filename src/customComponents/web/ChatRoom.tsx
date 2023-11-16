@@ -11,16 +11,11 @@ import { useSelector } from "react-redux";
 const ChatRoom = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const isVisible = usePageVisibility();
-  const createdAt =
-    activeRoom.roomDetails &&
-    new Date(activeRoom.roomDetails.createdAt).toLocaleDateString();
-  // This is current room Data
-  const roomMessages: Message[] | null =
-    activeRoom.roomDetails?.id && activeRoom.messages?.data
-      ? activeRoom.messages?.data[activeRoom.roomDetails.id]
-      : null;
+  const createdAt = new Date(activeRoom.roomDetails!.createdAt).toDateString();
+  const roomMessages: Message[] =
+    activeRoom.messages?.data![activeRoom.roomDetails!.id!];
   const status = activeRoom.messages.status;
-  // --------------------------
+
   const {
     scrollSectionToBottom,
     sectionRefMessagesDiv,
