@@ -8,8 +8,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MdOutlineDeleteSweep } from "react-icons/md";
-import useSendMessage from "@/hooks/useSendMessage";
 import Message from "@/types/types.message";
 
 type Props = {

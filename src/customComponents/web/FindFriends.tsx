@@ -12,8 +12,6 @@ import { useEffect, useState } from "react";
 import User from "@/types/types.user";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { Skeleton } from "@/components/ui/skeleton";
-import dynamic from "next/dynamic";
 import UserImageAvatar from "./UserImageAvatar";
 
 const FindFriends = () => {

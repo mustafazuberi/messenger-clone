@@ -3,7 +3,7 @@ import { RootState } from "@/store";
 import { STATUSES } from "@/store/intialState";
 import { useSelector } from "react-redux";
 import Link from "next/link";
-import React, { Suspense, useEffect } from "react";
+import React, { useEffect } from "react";
 import useChat from "@/hooks/useChat";
 import Room from "@/types/types.room";
 import Friend from "@/types/type.friend";

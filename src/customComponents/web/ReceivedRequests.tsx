@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import useReq from "@/hooks/useReq";
 import { RootState } from "@/store";
 import { useSelector } from "react-redux";
-import UsersSkeleton from "./ChatUsersSkeleton";
 import UserImageAvatar from "./UserImageAvatar";
 import { useTheme } from "next-themes";
 import ChatRequest from "@/types/types.request";

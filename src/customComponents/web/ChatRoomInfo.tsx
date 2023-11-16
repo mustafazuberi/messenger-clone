@@ -4,7 +4,6 @@ import { ImBlocked } from "react-icons/im";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -22,14 +21,12 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Friend from "@/types/type.friend";
-import UserImageAvatar from "./UserImageAvatar";
 import Image from "next/image";
 import ShareFriendWithModal from "./ShareFriendWithModal";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import useChat from "@/hooks/useChat";
 import { useState } from "react";
-import { useTheme } from "next-themes";
 
 const ChatRoomFriendInfo = ({ chatWith }: { chatWith: Friend }) => {
   return (
