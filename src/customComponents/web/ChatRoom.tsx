@@ -50,11 +50,13 @@ const ChatRoom = () => {
         >
           {activeRoom.roomDetails ? (
             <section className="flex justify-center">
-              <span className="px-4 py-1 bg-gray-900 text-gray-400 rounded-lg">
+              {/* text-gray-700 dark:text-gray-300  */}
+              <span className="px-4 py-1 bg-gray-300 dark:bg-gray-700 rounded-lg">
                 {createdAt}
               </span>
             </section>
           ) : null}
+          {/* All Messages */}
           <section className="flex flex-col w-full gap-y-5">
             {roomMessages?.length
               ? roomMessages.map((msg) => <Message msg={msg} key={msg.id} />)

@@ -34,10 +34,11 @@ const Message = ({ msg }: props) => {
           byMe ? "justify-end" : "justify-start"
         }`}
       >
+        {/*   */}
         <section
           className={`${
             byMe ? "bg-[#005c4b]" : "bg-[#1e293b]"
-          } lg:max-w-[70%] md:max-w-[70%] max-w-[90%] px-2 py-2 rounded-2xl text-white `}
+          } lg:max-w-[70%] md:max-w-[70%] max-w-[90%] px-2 py-2 text-white`}
         >
           <section className="flex flex-col">
             <section className="flex flex-row justify-end">
@@ -47,7 +48,9 @@ const Message = ({ msg }: props) => {
               />
             </section>
             <section
-              className={`flex flex-${msg.text ? "row" : "col"} lg:gap-3 md:gap-3 gap-2`}
+              className={`flex flex-${
+                msg.text ? "row" : "col"
+              } lg:gap-3 md:gap-3 gap-2`}
             >
               {msg.text ? (
                 <section className="text-[15px] font-extralight">
@@ -160,8 +163,8 @@ const SharedFriend = ({ friend }: { friend: Friend }) => {
       <section className="flex justify-center">
         {isFriend && (
           <Button
-            className="w-full"
-            variant={"default"}
+            className="w-full text-black dark:text-black dark:bg-white dark:hover:bg-white"
+            variant={"outline"}
             onClick={() => handleOnChatUser(friend)}
           >
             Message
@@ -169,8 +172,8 @@ const SharedFriend = ({ friend }: { friend: Friend }) => {
         )}
         {isReqReceived && (
           <Button
-            className="w-full"
-            variant={"default"}
+            className="w-full text-black"
+            variant={"outline"}
             onClick={() => confirmChatRequest(isReqReceived)}
           >
             Confirm
@@ -178,15 +181,15 @@ const SharedFriend = ({ friend }: { friend: Friend }) => {
         )}
         {isReqSent && (
           <Button
-            className="w-full"
-            variant={"default"}
+            className="w-full text-black"
+            variant={"outline"}
             onClick={() => unsendChatRequest(isReqSent)}
           >
             Unsent
           </Button>
         )}
         {friend.uid === currentUser.uid && (
-          <Button className="w-full" variant={"default"}>
+          <Button className="w-full text-black" variant={"outline"}>
             You
           </Button>
         )}

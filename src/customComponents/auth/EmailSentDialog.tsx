@@ -20,7 +20,7 @@ const EmailSentDialog = ({ email }: { email: string }) => {
           <TypographyH1 text="Email Confirmation" />
         </section>
         <section>
-          <p>
+          <p className="text-gray-700 dark:text-gray-300">
             We have sent email to
             <span className="text-blue-500"> {email} </span>
             to confirm the validity of our email address. After receiving the

@@ -36,7 +36,7 @@ const SignupForm = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full flex flex-col gap-y-3"
+          className="w-full flex flex-col gap-y-3 "
         >
           {/* Full Name Input. */}
           <FormField
@@ -44,7 +44,7 @@ const SignupForm = () => {
             name="fullName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Full Name</FormLabel>
+                <FormLabel className="text-gray-700 dark:text-gray-300">Full Name</FormLabel>
                 <FormControl>
                   <Input placeholder="First Last" {...field} />
                 </FormControl>
@@ -61,7 +61,7 @@ const SignupForm = () => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel className="text-gray-700 dark:text-gray-300">Email</FormLabel>
                 <FormControl>
                   <Input placeholder="m@example.com" {...field} />
                 </FormControl>
@@ -75,7 +75,7 @@ const SignupForm = () => {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel className="text-gray-700 dark:text-gray-300">Password</FormLabel>
                 <FormControl>
                   <PasswordInput
                     type="password"
@@ -93,7 +93,7 @@ const SignupForm = () => {
             name="gender"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Gender</FormLabel>
+                <FormLabel className="text-gray-700 dark:text-gray-300">Gender</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}

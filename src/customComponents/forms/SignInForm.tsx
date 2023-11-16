@@ -28,7 +28,7 @@ const SigninForm = () => {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel className="text-gray-700 dark:text-gray-300">Email</FormLabel>
               <FormControl>
                 <Input placeholder="Email" {...field} />
               </FormControl>
@@ -42,7 +42,7 @@ const SigninForm = () => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel className="text-gray-700 dark:text-gray-300">Password</FormLabel>
               <FormControl>
                 <PasswordInput
                   type="password"

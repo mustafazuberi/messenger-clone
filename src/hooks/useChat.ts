@@ -155,7 +155,7 @@ const useChat = () => {
       setActiveRoom({
         roomDetails: { ...room },
         chatWith: { ...friend },
-        messages: { status: STATUSES.IDLE, data: null },
+        messages: { status: STATUSES.LOADING, data: null },
       })
     );
     getRoomMessages(room.id!);
