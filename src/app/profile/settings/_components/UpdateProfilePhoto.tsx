@@ -14,16 +14,16 @@ const UpdateProfilePhoto = () => {
 
   return (
     <main className="flex flex-col gap-x-4">
-      <h3 className="mb-2">Select Profile Picture</h3>
+      <h3 className="mb-2 text-gray-700 dark:text-gray-300">Select Profile Picture</h3>
       <div {...getRootProps()}>
         <input {...getInputProps()} type="file" accept="image/*" />
         <section className="border-dotted border-2 cursor-pointer min-h-[200px] flex justify-center items-center w-full">
           {!uploadedFile ? (
-            <p className="max-w-[80%]">
+            <p className="max-w-[80%] text-gray-700 dark:text-gray-300">
               Drag and drop files here or click to browse.
             </p>
           ) : (
-            <p className="max-w-[80%]">
+            <p className="max-w-[80%] text-gray-700 dark:text-gray-300">
               Now that you have selected an image {uploadedFile.name}, you can
               proceed with the update.
             </p>

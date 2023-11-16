@@ -34,7 +34,7 @@ const UpdateDOB = () => {
             name="dob"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Date of birth</FormLabel>
+                <FormLabel className="text-gray-700 dark:text-gray-300">Date of birth</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>

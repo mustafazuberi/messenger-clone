@@ -25,9 +25,9 @@ const NotificationCard = (notificationCardProps: NotificationCardProps) => {
     <section>
       <Card className={cn("sm:w-[350px] w-[250px] mr-4 mt-1")}>
         <CardHeader>
-          <CardTitle>Notifications</CardTitle>
+          <CardTitle className="text-gray-700 dark:text-gray-300">Notifications</CardTitle>
           {unReadNotifications.length ? (
-            <CardDescription>
+            <CardDescription className="text-gray-700 dark:text-gray-300">
               You have {unReadNotifications.length} unread notification
               {unReadNotifications.length > 1 && "s"}.
             </CardDescription>
@@ -50,7 +50,7 @@ const NotificationCard = (notificationCardProps: NotificationCardProps) => {
                     <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
                   ) : null}
                   <div className="flex flex-row gap-x-2 space-y-1">
-                    <p className="text-sm font-extralight leading-1">
+                    <p className="text-sm font-extralight leading-1 text-gray-700 dark:text-gray-300">
                       {notification.message}
                     </p>
                     <span className="text-[12px]">

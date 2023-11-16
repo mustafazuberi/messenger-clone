@@ -32,7 +32,7 @@ const UpdateGender = () => {
             name="gender"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Gender</FormLabel>
+                <FormLabel className="text-gray-700 dark:text-gray-300">Gender</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}

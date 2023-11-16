@@ -12,10 +12,11 @@ const ChatRoom = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const isVisible = usePageVisibility();
   const createdAt = new Date(activeRoom.roomDetails!.createdAt).toDateString();
-  const roomMessages: Message[] =
-    activeRoom.messages?.data![activeRoom.roomDetails!.id!];
+  const roomMessages: Message[] | null =
+    activeRoom.roomDetails?.id && activeRoom.messages?.data
+      ? activeRoom.messages?.data[activeRoom.roomDetails.id]
+      : null;
   const status = activeRoom.messages.status;
-
   const {
     scrollSectionToBottom,
     sectionRefMessagesDiv,
@@ -54,13 +55,11 @@ const ChatRoom = () => {
               </span>
             </section>
           ) : null}
-          {/* All Messages */}
           <section className="flex flex-col w-full gap-y-5">
             {roomMessages?.length
               ? roomMessages.map((msg) => <Message msg={msg} key={msg.id} />)
               : null}
           </section>
-          {/* --- */}
         </section>
       ) : (
         <section className="flex flex-col max-h-full flex-1 justify-center items-center">

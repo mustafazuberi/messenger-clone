@@ -50,8 +50,8 @@ export const ACTIVE_ROOM_INITIAL_STATE: ActiveRoom = {
   chatWith: null,
   roomDetails: null,
   messages: {
-    data: [],
-    status: STATUSES.IDLE,
+    data: {},
+    status: STATUSES.LOADING,
   },
 };
 

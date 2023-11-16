@@ -64,7 +64,7 @@ const ChatRoomFooter = () => {
               <Popover>
                 <PopoverTrigger asChild>
                   <button>
-                    <BsEmojiSmile className="lg:text-[35px] md:text-[35px] text-[28px] cursor-pointer text-gray-400" />
+                    <BsEmojiSmile className="lg:text-[35px] md:text-[35px] text-[28px] cursor-pointer text-gray-700 dark:text-gray-300" />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto">
@@ -78,7 +78,7 @@ const ChatRoomFooter = () => {
               </Popover>
               {/* Photos */}
               <IoMdPhotos
-                className="text-[45px] cursor-pointer text-gray-400"
+                className="text-[45px] cursor-pointer text-gray-700 dark:text-gray-300"
                 onClick={() => setOpenSendImageModal(true)}
               />
               <Input
@@ -93,7 +93,7 @@ const ChatRoomFooter = () => {
                 </button>
               ) : (
                 <AiFillAudio
-                  className="text-4xl cursor-pointer text-gray-400"
+                  className="text-4xl cursor-pointer text-gray-700 dark:text-gray-300"
                   onClick={handleOnRecordVoice}
                 />
               )}

@@ -27,7 +27,7 @@ const UpdateFullname = () => {
             name="fullName"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Full Name</FormLabel>
+                <FormLabel className="text-gray-700 dark:text-gray-300">Full Name</FormLabel>
                 <FormControl>
                   <Input placeholder="First Last" {...field} />
                 </FormControl>

@@ -32,7 +32,7 @@ const ChatRoomFriendInfo = ({ chatWith }: { chatWith: Friend }) => {
   return (
     <Sheet>
       <SheetTrigger>
-        <FaInfoCircle className="text-2xl cursor-pointer" />
+        <FaInfoCircle className="text-2xl cursor-pointer text-gray-700 dark:text-gray-300" />
       </SheetTrigger>
       <SheetContent className="max-w-80 w-full border py-6">
         <section className="flex flex-col gap-y-2">
@@ -68,10 +68,10 @@ const ChatRoomFriendBasicInfo = ({ chatWith }: { chatWith: Friend }) => {
         )}
       </section>
       <section className="max-w-40 text-center">
-        <h3 className="text-gray-300 text-4xl font-extrabold">
+        <h3 className="text-gray-700 dark:text-gray-300 text-4xl font-extrabold">
           {chatWith.displayName}
         </h3>
-        <span className="text-gray-400 text-[11 px] font-extralight italic">
+        <span className="text-gray-700 dark:text-gray-300 font-extralight italic">
           {chatWith.email}
         </span>
       </section>
@@ -84,7 +84,7 @@ const ChatRoomInfoShareButton = () => {
     <Dialog>
       <section className="flex justify-center mt-2">
         <DialogTrigger>
-          <span className="p-4 hover:bg-gray-700 w-14 h-14 flex justify-center items-center rounded-full opacity-40 cursor-pointer duration-300">
+          <span className="p-4 dark:hover:bg-slate-800 hover:bg-gray-300 w-14 h-14 flex justify-center items-center rounded-full opacity-40 cursor-pointer duration-300">
             <PiShareFatFill className="text-2xl" />
           </span>
         </DialogTrigger>
@@ -105,7 +105,7 @@ const ChatRoomInfoOptions = () => {
         <AlertDialog open={isBlockAlertOpen}>
           <AlertDialogTrigger>
             <section
-              className="flex items-center gap-x-4 w-full hover:opacity-70 py-3 px-6 hover:bg-slate-800 cursor-pointer duration-300"
+              className="flex items-center gap-x-4 w-full hover:opacity-70 py-3 px-6 dark:hover:bg-slate-800 hover:bg-gray-300 cursor-pointer duration-300"
               onClick={() => setIsBlockAlertOpen(true)}
             >
               <ImBlocked className="text-2xl text-red-500 " />

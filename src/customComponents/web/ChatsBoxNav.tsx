@@ -13,7 +13,9 @@ const ChatsBoxNav = () => {
     <main className="flex flex-col justify-between p-2 w-full gap-y-3">
       <section className="flex flex-row justify-between items-center w-full">
         <section>
-          <h3 className="text-2xl font-bold">Chats</h3>
+          <h3 className="text-2xl font-bold text-gray-700 dark:text-gray-300">
+            Chats
+          </h3>
         </section>
         <section className="flex flex-row gap-x-2 items-center">
           <span
@@ -26,7 +28,7 @@ const ChatsBoxNav = () => {
             href={`/messages/?tab=requests`}
             className="p-2 text-2xl border rounded-full hover:opacity-60"
           >
-            <FaUserFriends />
+            <FaUserFriends className="text-gray-700 dark:text-gray-300" />
           </Link>
         </section>
       </section>

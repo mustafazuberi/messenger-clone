@@ -24,13 +24,13 @@ const ChatRoomNav = () => {
           <UserImageAvatar user={activeRoom.chatWith} size={10} />
         )}
         <section className="flex flex-col">
-          <section>{activeRoom.chatWith?.displayName}</section>
+          <section className="text-gray-700 dark:text-gray-300">{activeRoom.chatWith?.displayName}</section>
           <LastActive friend={activeRoom.chatWith!} />
         </section>
       </section>
       <section className="flex flex-row gap-x-4 items-center justify-center">
-        <IoCallSharp className="text-2xl cursor-pointer" />
-        <BsFillCameraVideoFill className="text-2xl cursor-pointer" />
+        <IoCallSharp className="text-2xl cursor-pointer text-gray-700 dark:text-gray-300" />
+        <BsFillCameraVideoFill className="text-2xl cursor-pointer text-gray-700 dark:text-gray-300" />
         {activeRoom.chatWith && (
           <ChatRoomFriendInfo chatWith={activeRoom.chatWith} />
         )}

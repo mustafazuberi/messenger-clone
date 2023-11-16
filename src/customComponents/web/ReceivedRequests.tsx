@@ -20,7 +20,7 @@ const ReceivedRequests = () => {
         ))
       ) : (
         <section className="flex flex-col justify-center gap-y-2 items-center mt-4 px-4">
-          <h1 className="text-[19px] font-light">
+          <h1 className="text-[19px] font-light text-gray-700 dark:text-gray-300">
             You haven't reached out to anyone with requests.
           </h1>
         </section>

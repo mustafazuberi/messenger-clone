@@ -114,7 +114,7 @@ export const LastActive: React.FC<{
         </section>
       ) : (
         <section className="flex flex-row gap-x-1">
-          <span className="text-gray-600 text-[12px] flex flex-row gap-x-1">
+          <span className="text-gray-700 dark:text-gray-300 text-[12px] flex flex-row gap-x-1">
             <span className="lg:flex md:hidden hidden">Active</span>
             <span>
               {getTimeDifference(activeUsers[friend.uid]?.lastActive)} ago
@@ -152,7 +152,7 @@ const ChatUser: React.FC<ChatUserProps> = ({
         <section className="flex flex-col w-full">
           <section className="flex flex-row justify-between w-full">
             <section>
-              <h3>{friend.displayName}</h3>
+              <h3 className="text-gray-700 dark:text-gray-300">{friend.displayName}</h3>
             </section>
             <section>
               <LastActive friend={friend} />

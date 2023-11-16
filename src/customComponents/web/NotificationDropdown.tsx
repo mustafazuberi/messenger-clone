@@ -32,7 +32,7 @@ const NotificationDropdown = () => {
               </div>
             ) : null}
             <Button variant="outline" className="rounded-full w-12 h-12 p-0">
-              <RiNotification2Fill className="text-[20px]" />
+              <RiNotification2Fill className="text-[20px] text-gray-700 dark:text-gray-300" />
             </Button>
           </div>
         </DropdownMenuTrigger>
