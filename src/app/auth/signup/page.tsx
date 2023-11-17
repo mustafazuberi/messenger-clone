@@ -28,5 +28,5 @@ const AlreadyHaveAnAccount = () => {
         </Link>
       </p>
     </main>
-  );
+  ); 
 };
