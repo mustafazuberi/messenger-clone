@@ -18,7 +18,7 @@ import {
   where,
   writeBatch,
 } from "firebase/firestore";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   clearActiveRoom,
@@ -43,37 +43,40 @@ const useChat = () => {
   const [blockingOper, setBlockingOper] = useState<boolean>(false);
   const [openUnblockModal, setOpenUnblockModal] = useState(false);
 
-  const createChatRoom = async ({
-    sender,
-    reciever,
-  }: {
-    sender: User;
-    reciever: User;
-  }): Promise<void> => {
-    try {
-      const users = {
-        [sender.uid]: true,
-        [reciever.uid]: true,
-      };
-      const userDetails: { [x: string]: User } = {
-        [sender.uid]: sender,
-        [reciever.uid]: reciever,
-      };
-      const room: Room = {
-        lastConversation: Date.now(),
-        lastMessage: null,
-        users: users,
-        createdAt: Date.now(),
-        userDetails: userDetails,
-        block: { isBlocked: false, blockedBy: {} },
-      };
-      await addDoc(collection(db, "chatrooms"), { ...room });
-    } catch (error) {
-      console.log("Error in createChatRoom", error);
-    }
-  };
+  const createChatRoom = useCallback(
+    async ({
+      sender,
+      reciever,
+    }: {
+      sender: User;
+      reciever: User;
+    }): Promise<void> => {
+      try {
+        const users = {
+          [sender.uid]: true,
+          [reciever.uid]: true,
+        };
+        const userDetails: { [x: string]: User } = {
+          [sender.uid]: sender,
+          [reciever.uid]: reciever,
+        };
+        const room: Room = {
+          lastConversation: Date.now(),
+          lastMessage: null,
+          users: users,
+          createdAt: Date.now(),
+          userDetails: userDetails,
+          block: { isBlocked: false, blockedBy: {} },
+        };
+        await addDoc(collection(db, "chatrooms"), { ...room });
+      } catch (error) {
+        console.log("Error in createChatRoom", error);
+      }
+    },
+    []
+  );
 
-  const getMyRooms = (): Unsubscribe => {
+  const getMyRooms = useCallback((): Unsubscribe => {
     const unsubscribe = onSnapshot(
       query(
         query(
@@ -93,75 +96,84 @@ const useChat = () => {
       }
     );
     return unsubscribe;
-  };
+  }, []);
 
-  const getActiveRoomBlockInfoRealTime = (roomId: string) => {
+  const getActiveRoomBlockInfoRealTime = useCallback((roomId: string) => {
     const unsub = onSnapshot(doc(db, "chatrooms", roomId), (doc) => {
       if (doc.data()) {
         dispatch(updateActiveRoomBlock({ ...(doc.data()?.block as Block) }));
       }
     });
     return unsub;
-  };
+  }, []);
 
-  const getRoomMessages = (roomId: string): Unsubscribe => {
-    const unsubscribe = onSnapshot(
-      query(
-        collection(db, "chatrooms", roomId, "messages"),
-        orderBy("date", "asc")
-      ),
-      (querySnapshot) => {
-        const messages: Message[] = [];
+  const getRoomMessages = useCallback(
+    (roomId: string): Unsubscribe => {
+      const unsubscribe = onSnapshot(
+        query(
+          collection(db, "chatrooms", roomId, "messages"),
+          orderBy("date", "asc")
+        ),
+        (querySnapshot) => {
+          const messages: Message[] = [];
 
-        querySnapshot.forEach((doc) => {
-          messages.push({ ...(doc.data() as Message), id: doc.id });
-        });
+          querySnapshot.forEach((doc) => {
+            messages.push({ ...(doc.data() as Message), id: doc.id });
+          });
 
-        // Dispatching active room messages in redux
-        dispatch(
-          setActiveRoomMessages({
-            data: { [roomId]: [...messages] },
-            status: STATUSES.IDLE,
-          })
-        );
-      }
-    );
-    return unsubscribe;
-  };
+          // Dispatching active room messages in redux
+          dispatch(
+            setActiveRoomMessages({
+              data: { [roomId]: [...messages] },
+              status: STATUSES.IDLE,
+            })
+          );
+        }
+      );
+      return unsubscribe;
+    },
+    [dispatch, rooms, currentUser]
+  );
 
-  const getFriendFromRoomUsers = (room: Room): Friend | null => {
-    let chatUser: Friend | null = null;
-    for (const friend of friends.data) {
-      for (const uid in room.userDetails) {
-        if (room.userDetails.hasOwnProperty(uid) && friend.uid === uid) {
-          chatUser = friend;
+  const getFriendFromRoomUsers = useCallback(
+    (room: Room): Friend | null => {
+      let chatUser: Friend | null = null;
+      for (const friend of friends.data) {
+        for (const uid in room.userDetails) {
+          if (room.userDetails.hasOwnProperty(uid) && friend.uid === uid) {
+            chatUser = friend;
+            break;
+          }
+        }
+        if (chatUser) {
           break;
         }
       }
-      if (chatUser) {
-        break;
-      }
-    }
-    return chatUser;
-  };
+      return chatUser;
+    },
+    [friends.data]
+  );
 
-  const handleOnChatUser = (friend: Friend) => {
-    dispatch(clearActiveRoom());
-    const room: Room | undefined = rooms.find(
-      (room: Room) => room.users[friend.uid] && room.users[currentUser.uid]
-    );
-    if (!room) return;
-    dispatch(
-      setActiveRoom({
-        roomDetails: { ...room },
-        chatWith: { ...friend },
-        messages: { status: STATUSES.LOADING, data: null },
-      })
-    );
-    getRoomMessages(room.id!);
-  };
+  const handleOnChatUser = useCallback(
+    (friend: Friend) => {
+      dispatch(clearActiveRoom());
+      const room: Room | undefined = rooms.find(
+        (room: Room) => room.users[friend.uid] && room.users[currentUser.uid]
+      );
+      if (!room) return;
+      dispatch(
+        setActiveRoom({
+          roomDetails: { ...room },
+          chatWith: { ...friend },
+          messages: { status: STATUSES.LOADING, data: null },
+        })
+      );
+      getRoomMessages(room.id!);
+    },
+    [dispatch]
+  );
 
-  const getRoomsUnseenMessages = async () => {
+  const getRoomsUnseenMessages = useCallback(async () => {
     rooms.forEach((room: Room) => {
       const unsubscribe = onSnapshot(
         query(
@@ -183,10 +195,10 @@ const useChat = () => {
       );
       return unsubscribe;
     });
-  };
+  }, [rooms, currentUser]);
 
   // This will update message to seen when we opens any chatroom
-  const updateMessagesOnSeen = async () => {
+  const updateMessagesOnSeen = useCallback(async () => {
     if (!activeRoom.roomDetails?.id) return;
     const roomId = activeRoom.roomDetails?.id;
     const messagesCollectionRef = collection(
@@ -210,9 +222,9 @@ const useChat = () => {
     } catch (err) {
       console.log(err, "Error while updating unseen messages to seen");
     }
-  };
+  }, [activeRoom.roomDetails?.id]);
 
-  const scrollSectionToBottom = () => {
+  const scrollSectionToBottom = useCallback(() => {
     if (sectionRefMessagesDiv.current) {
       const element = sectionRefMessagesDiv.current as HTMLDivElement;
       const start = element.scrollTop;
@@ -245,9 +257,9 @@ const useChat = () => {
 
       requestAnimationFrame(scroll);
     }
-  };
+  }, [sectionRefMessagesDiv.current]);
 
-  const getTimeDifference = (milliSeconds: number): string => {
+  const getTimeDifference = useCallback((milliSeconds: number): string => {
     const timeDifferenceMs = Date.now() - milliSeconds;
     const seconds = Math.floor(timeDifferenceMs / 1000);
     const minutes = Math.floor(seconds / 60);
@@ -268,9 +280,9 @@ const useChat = () => {
     } else {
       return "1 second";
     }
-  };
+  }, []);
 
-  const handleOnBlock = async () => {
+  const handleOnBlock = useCallback(async () => {
     try {
       setBlockingOper(true);
       const roomRef = doc(db, "chatrooms", activeRoom.roomDetails?.id!);
@@ -290,9 +302,9 @@ const useChat = () => {
       setBlockingOper(false);
       console.log(error);
     }
-  };
+  }, [setBlockingOper, activeRoom.roomDetails, currentUser]);
 
-  const handleOnUnblock = async () => {
+  const handleOnUnblock = useCallback(async () => {
     try {
       setBlockingOper(true);
       let block: Block = { ...activeRoom.roomDetails?.block! };
@@ -312,7 +324,7 @@ const useChat = () => {
       setBlockingOper(false);
       console.log(error);
     }
-  };
+  }, [setBlockingOper, activeRoom.roomDetails, currentUser]);
 
   return {
     createChatRoom,

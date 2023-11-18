@@ -36,7 +36,6 @@ const useSignin = () => {
     });
   };
 
-
   const handleUserError = (errorMessage: string) => {
     showErrorToast(errorMessage);
     setIsSubmitting(false);

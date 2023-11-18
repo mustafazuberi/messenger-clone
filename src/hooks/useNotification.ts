@@ -16,6 +16,7 @@ import Friend from "@/types/type.friend";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import useChat from "./useChat";
+import { useCallback } from "react";
 
 const useNotification = () => {
   const router = useRouter();
@@ -29,35 +30,38 @@ const useNotification = () => {
     (notf: UserNotification) => !notf.isNotificationRead
   );
 
-  const sendNotification = async ({ by, to, type }: SendNotificationParam) => {
-    try {
-      let message: string = "";
-      if (type === "Request Received")
-        message = `${by.displayName} has sent you a friend request.`;
-      if (type === "Request Accepted")
-        message = `${by.displayName} has accepted your friend request.`;
+  const sendNotification = useCallback(
+    async ({ by, to, type }: SendNotificationParam) => {
+      try {
+        let message: string = "";
+        if (type === "Request Received")
+          message = `${by.displayName} has sent you a friend request.`;
+        if (type === "Request Accepted")
+          message = `${by.displayName} has accepted your friend request.`;
 
-      const notificationObj: UserNotification = {
-        isNotificationRead: false,
-        isRequestRead: false,
-        timestamp: Date.now(),
-        type: type,
-        notificationBy: by,
-        message,
-      };
-      const notificationDocRef = collection(
-        db,
-        "users",
-        to.uid,
-        "notifications"
-      );
-      await addDoc(notificationDocRef, { ...notificationObj });
-    } catch (error) {
-      console.log("Error in sendNotification: ", error);
-    }
-  };
+        const notificationObj: UserNotification = {
+          isNotificationRead: false,
+          isRequestRead: false,
+          timestamp: Date.now(),
+          type: type,
+          notificationBy: by,
+          message,
+        };
+        const notificationDocRef = collection(
+          db,
+          "users",
+          to.uid,
+          "notifications"
+        );
+        await addDoc(notificationDocRef, { ...notificationObj });
+      } catch (error) {
+        console.log("Error in sendNotification: ", error);
+      }
+    },
+    []
+  );
 
-  const fetchNotifications = () => {
+  const fetchNotifications = useCallback(() => {
     const unsubscribe = onSnapshot(
       collection(db, "users", currentUser.uid, "notifications"),
       (querySnapshot) => {
@@ -74,44 +78,50 @@ const useNotification = () => {
       }
     );
     return unsubscribe;
-  };
+  }, [dispatch, currentUser]);
 
-  const handleNotificationDropdown = async (opened: boolean) => {
-    if (!unReadNotifications.length || !opened) return;
-    try {
-      unReadNotifications.forEach(async (notification: UserNotification) => {
-        const notfRef = doc(
-          db,
-          "users",
-          currentUser.uid,
-          "notifications",
-          notification._id!
-        );
-        const notfDoc = await getDoc(notfRef);
-        if (notfDoc.exists()) {
-          await updateDoc(notfRef, {
-            isNotificationRead: true,
-          });
-        } else {
-          console.log(`Document with ID ${notification._id} does not exist.`);
-        }
-      });
-      unReadNotifications = [];
-    } catch (error) {
-      console.log("Error in handleNotificationDropdown", error);
-    }
-  };
+  const handleNotificationDropdown = useCallback(
+    async (opened: boolean) => {
+      if (!unReadNotifications.length || !opened) return;
+      try {
+        unReadNotifications.forEach(async (notification: UserNotification) => {
+          const notfRef = doc(
+            db,
+            "users",
+            currentUser.uid,
+            "notifications",
+            notification._id!
+          );
+          const notfDoc = await getDoc(notfRef);
+          if (notfDoc.exists()) {
+            await updateDoc(notfRef, {
+              isNotificationRead: true,
+            });
+          } else {
+            console.log(`Document with ID ${notification._id} does not exist.`);
+          }
+        });
+        unReadNotifications = [];
+      } catch (error) {
+        console.log("Error in handleNotificationDropdown", error);
+      }
+    },
+    [unReadNotifications, currentUser]
+  );
 
-  const handleOnNotification = (notification: UserNotification) => {
-    const isFriend = friends.data.find(
-      (friend: Friend) => friend.uid === notification.notificationBy.uid
-    ); //This will give friend obj
+  const handleOnNotification = useCallback(
+    (notification: UserNotification) => {
+      const isFriend = friends.data.find(
+        (friend: Friend) => friend.uid === notification.notificationBy.uid
+      ); //This will give friend obj
 
-    if (!isFriend && notification.type === "Request Received")
-      router.push("?tab=requests");
+      if (!isFriend && notification.type === "Request Received")
+        router.push("?tab=requests");
 
-    if (isFriend) handleOnChatUser(isFriend);
-  };
+      if (isFriend) handleOnChatUser(isFriend);
+    },
+    [handleOnChatUser, friends, router]
+  );
 
   return {
     sendNotification,

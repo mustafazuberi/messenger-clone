@@ -17,6 +17,7 @@ import { clearActiveRoom } from "@/store/slice/activeRoomSlice";
 import { serverTimestamp, set } from "firebase/database";
 import { ref } from "firebase/database";
 import { clearActiveUsers } from "@/store/slice/activeUsersSlice";
+import { useCallback } from "react";
 
 const useHome = () => {
   const router = useRouter();
@@ -24,7 +25,7 @@ const useHome = () => {
   const { toast } = useToast();
   const currentUser = useSelector((state: RootState) => state.currentUser);
 
-  const getAllUsers = (): Unsubscribe => {
+  const getAllUsers = useCallback((): Unsubscribe => {
     const unsubscribe = onSnapshot(collection(db, "users"), (querySnapshot) => {
       const users: User[] = [];
       querySnapshot.forEach((doc) => {
@@ -35,9 +36,9 @@ const useHome = () => {
       dispatch(setAllUsers({ status: STATUSES.IDLE, data: users }));
     });
     return unsubscribe;
-  };
+  }, [dispatch, currentUser]);
 
-  const getMyFriends = (): Unsubscribe => {
+  const getMyFriends = useCallback((): Unsubscribe => {
     const unsubscribe = onSnapshot(
       collection(db, "users", currentUser.uid, "friends"),
       (querySnapshot) => {
@@ -52,9 +53,19 @@ const useHome = () => {
       //
     );
     return unsubscribe;
-  };
+  }, [dispatch, currentUser]);
 
-  const handleSignOut = async (): Promise<void> => {
+  const clearReduxData = useCallback(() => {
+    dispatch(clearCurrentUser());
+    dispatch(setAuthenticationStatus(false));
+    dispatch(clearAllUsers());
+    dispatch(clearRequests());
+    dispatch(clearFriends());
+    dispatch(clearActiveRoom());
+    dispatch(clearActiveUsers());
+  }, [dispatch]);
+
+  const handleSignOut = useCallback(async (): Promise<void> => {
     try {
       await signOut(auth);
       clearReduxData();
@@ -72,24 +83,16 @@ const useHome = () => {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [toast, router, currentUser, clearReduxData]);
 
-  const handleAuthStateChange = () => {};
+  const handleAuthStateChange = useCallback(() => {}, []);
 
-  const clearReduxData = () => {
-    dispatch(clearCurrentUser());
-    dispatch(setAuthenticationStatus(false));
-    dispatch(clearAllUsers());
-    dispatch(clearRequests());
-    dispatch(clearFriends());
-    dispatch(clearActiveRoom());
-    dispatch(clearActiveUsers());
-  };
-
-  const handleOnSearchMessenger = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
-  };
-
+  const handleOnSearchMessenger = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      console.log(e.target.value);
+    },
+    []
+  );
   return {
     handleOnSearchMessenger,
     handleSignOut,

@@ -12,7 +12,7 @@ import {
 } from "@/types/types.miscellaneous";
 import Room from "@/types/types.room";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useSelector } from "react-redux";
 
@@ -61,34 +61,37 @@ const useSendMessage = () => {
     },
   });
 
-  const sendMessage = async (e: React.FormEvent) => {
-    try {
-      e.preventDefault();
-      if (!messageInp) return;
-      const message: Message = {
-        date: Date.now(),
-        seen: false,
-        senderId: currentUser.uid,
-        text: messageInp,
-        delivered: false,
-        type: "text",
-      };
-      setMessageInp("");
-      const msgDoc = await addDoc(
-        collection(db, "chatrooms", activeRoom?.roomDetails?.id!, "messages"),
-        message
-      );
-      // updating last message
-      await updateDoc(doc(db, "chatrooms", activeRoom?.roomDetails?.id!), {
-        lastMessage: { ...message, id: msgDoc.id },
-        lastConversation: Date.now(),
-      });
-    } catch (error) {
-      console.log("Error in sendMessage", error);
-    }
-  };
+  const sendMessage = useCallback(
+    async (e: React.FormEvent) => {
+      try {
+        e.preventDefault();
+        if (!messageInp) return;
+        const message: Message = {
+          date: Date.now(),
+          seen: false,
+          senderId: currentUser.uid,
+          text: messageInp,
+          delivered: false,
+          type: "text",
+        };
+        setMessageInp("");
+        const msgDoc = await addDoc(
+          collection(db, "chatrooms", activeRoom?.roomDetails?.id!, "messages"),
+          message
+        );
+        // updating last message
+        await updateDoc(doc(db, "chatrooms", activeRoom?.roomDetails?.id!), {
+          lastMessage: { ...message, id: msgDoc.id },
+          lastConversation: Date.now(),
+        });
+      } catch (error) {
+        console.log("Error in sendMessage", error);
+      }
+    },
+    [messageInp, setMessageInp, currentUser, activeRoom]
+  );
 
-  const handleSendImage = async () => {
+  const handleSendImage = useCallback(async () => {
     try {
       setSendingImage(true);
       const message: Message = {
@@ -118,77 +121,96 @@ const useSendMessage = () => {
     } catch (error) {
       console.log("error in handleSendImage", error);
     }
-  };
+  }, [
+    setSendingImage,
+    setOpenSendImageModal,
+    setSendImageFile,
+    sendImageUrl,
+    currentUser,
+    activeRoom,
+    toast,
+  ]);
 
-  const handleForwardMessage = async ({ msg, forwardTo }: OnForwardMessage) => {
-    const message: Message = {
-      date: Date.now(),
-      seen: false,
-      senderId: currentUser.uid,
-      text: msg.text,
-      delivered: false,
-      type: msg.type,
-    };
-    const room: Room | null =
-      rooms.find(
-        (room: Room) => room.users[currentUser.uid] && room.users[forwardTo.uid]
-      ) || null;
-
-    if (!room) return;
-    try {
-      setForwarding({ forwarding: true, to: forwardTo });
-      await addDoc(collection(db, "chatrooms", room.id!, "messages"), message);
-      await updateDoc(doc(db, "chatrooms", room.id!), {
-        lastMessage: message,
-        lastConversation: Date.now(),
-      });
-      toast({
-        description: `${msg.img ? "Image" : "Message"} forwared to ${
-          forwardTo.displayName
-        }`,
-      });
-      setForwarding(forwardingInitialState);
-    } catch (error) {
-      console.log(error);
-      setForwarding(forwardingInitialState);
-    }
-  };
-
-  const handleOnShareFriend = async (friend: Friend) => {
-    try {
+  const handleForwardMessage = useCallback(
+    async ({ msg, forwardTo }: OnForwardMessage) => {
       const message: Message = {
         date: Date.now(),
         seen: false,
         senderId: currentUser.uid,
-        friend: activeRoom.chatWith!,
+        text: msg.text,
         delivered: false,
-        type: "friend",
+        type: msg.type,
       };
       const room: Room | null =
         rooms.find(
-          (room: Room) => room.users[currentUser.uid] && room.users[friend.uid]
+          (room: Room) =>
+            room.users[currentUser.uid] && room.users[forwardTo.uid]
         ) || null;
 
       if (!room) return;
-      setSharingWith(friend.uid);
-      const msgDoc = await addDoc(
-        collection(db, "chatrooms", room.id!, "messages"),
-        message
-      );
-      // updating last message
-      await updateDoc(doc(db, "chatrooms", room.id!), {
-        lastMessage: { ...message, id: msgDoc.id },
-        lastConversation: Date.now(),
-      });
-      setSharingWith(false);
-      toast({
-        description: "Shared!",
-      });
-    } catch (error) {
-      console.log(error);
-      setSharingWith(false);
-    }
-  };
+      try {
+        setForwarding({ forwarding: true, to: forwardTo });
+        await addDoc(
+          collection(db, "chatrooms", room.id!, "messages"),
+          message
+        );
+        await updateDoc(doc(db, "chatrooms", room.id!), {
+          lastMessage: message,
+          lastConversation: Date.now(),
+        });
+        toast({
+          description: `${msg.img ? "Image" : "Message"} forwared to ${
+            forwardTo.displayName
+          }`,
+        });
+        setForwarding(forwardingInitialState);
+      } catch (error) {
+        console.log(error);
+        setForwarding(forwardingInitialState);
+      }
+    },
+    [currentUser, rooms, setForwarding, toast]
+  );
+
+  const handleOnShareFriend = useCallback(
+    async (friend: Friend) => {
+      try {
+        const message: Message = {
+          date: Date.now(),
+          seen: false,
+          senderId: currentUser.uid,
+          friend: activeRoom.chatWith!,
+          delivered: false,
+          type: "friend",
+        };
+        const room: Room | null =
+          rooms.find(
+            (room: Room) =>
+              room.users[currentUser.uid] && room.users[friend.uid]
+          ) || null;
+
+        if (!room) return;
+        setSharingWith(friend.uid);
+        const msgDoc = await addDoc(
+          collection(db, "chatrooms", room.id!, "messages"),
+          message
+        );
+        // updating last message
+        await updateDoc(doc(db, "chatrooms", room.id!), {
+          lastMessage: { ...message, id: msgDoc.id },
+          lastConversation: Date.now(),
+        });
+        setSharingWith(false);
+        toast({
+          description: "Shared!",
+        });
+      } catch (error) {
+        console.log(error);
+        setSharingWith(false);
+      }
+    },
+    [currentUser, activeRoom, rooms, setSharingWith, toast]
+  );
 
   return {
     sendMessage,
