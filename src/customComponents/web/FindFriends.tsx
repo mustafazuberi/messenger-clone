@@ -62,7 +62,9 @@ export const FindFriendsNav = () => {
           <BiArrowBack className="cursor-pointer text-2xl text-gray-700 dark:text-gray-300" />
         </Link>
         <section className="flex flex-row justify-between w-full">
-          <h3 className="text-2xl font-bold text-gray-700 dark:text-gray-300">Find Friends</h3>
+          <h3 className="text-2xl font-bold text-gray-700 dark:text-gray-300">
+            Find Friends
+          </h3>
           <section className="flex flex-row gap-x-2 items-center">
             <span
               className="text-[14px] cursor-pointer bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400"

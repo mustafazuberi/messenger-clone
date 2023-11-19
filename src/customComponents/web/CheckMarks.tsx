@@ -1,6 +1,7 @@
+import React from "react";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
 
-export const TwoCheck = ({ seen }: { seen: boolean }) => {
+const TwoCheck = React.memo(({ seen }: { seen: boolean }) => {
   return (
     <section className="flex flex-col justify-end items-end">
       <IoCheckmarkDoneSharp
@@ -10,4 +11,6 @@ export const TwoCheck = ({ seen }: { seen: boolean }) => {
       />
     </section>
   );
-};
+});
+
+export default TwoCheck;

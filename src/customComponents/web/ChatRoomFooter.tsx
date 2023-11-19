@@ -16,7 +16,6 @@ import useSendVoice from "@/hooks/useSendVoice";
 import TailwindSpinner from "./TailwindSpinner";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
-import { Block } from "@/types/types.room";
 import { Button } from "@/components/ui/button";
 import useChat from "@/hooks/useChat";
 import {
@@ -50,6 +49,9 @@ const ChatRoomFooter = () => {
     handleOnSendVoice,
     sendingVoice,
   } = useSendVoice();
+
+  const isRecordingOrSendingVoice =
+    voiceRecordState === "recording" || sendingVoice;
 
   return (
     <main>
@@ -100,7 +102,7 @@ const ChatRoomFooter = () => {
             </form>
           )}
           {/* Voice Record Audio Waves */}
-          {(voiceRecordState === "recording" || sendingVoice) && (
+          {isRecordingOrSendingVoice && (
             <section className="min-w-full flex justify-between items-center gap-x-1 px-3 py-2 rounded-2xl bg-[#1e293b]">
               <section className="flex flex-row items-center gap-x-2">
                 <button className="bg-black p-2 rounded-full">
@@ -185,7 +187,7 @@ const FooterIfChatRoomBlocked = () => {
                 <AlertDialogHeader>
                   <AlertDialogDescription>
                     {activeRoom.chatWith?.displayName.split(" ")[0]} has blocked
-                    you, you cannot engage in conversation until he unblocks you
+                    you, you cannot engage in conversation until he unblocks you.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter className="mt-3">

@@ -26,7 +26,7 @@ import ShareFriendWithModal from "./ShareFriendWithModal";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import useChat from "@/hooks/useChat";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 const ChatRoomFriendInfo = ({ chatWith }: { chatWith: Friend }) => {
   return (
@@ -48,12 +48,16 @@ const ChatRoomFriendInfo = ({ chatWith }: { chatWith: Friend }) => {
 export default ChatRoomFriendInfo;
 
 const ChatRoomFriendBasicInfo = ({ chatWith }: { chatWith: Friend }) => {
+  const photoUrl = useMemo(() => chatWith.photoUrl, [chatWith.photoUrl]);
+  const displayName = useMemo(() => chatWith.displayName, [chatWith.displayName]);
+  const email = useMemo(() => chatWith.email, [chatWith.email]);
+
   return (
     <main className="w-full flex flex-col gap-y-3 justify-between items-center">
       <section className="px-6 flex justify-center">
         {chatWith.photoUrl ? (
           <Image
-            src={chatWith.photoUrl}
+            src={photoUrl!}
             alt="Profile Info Profile Picture"
             width={100}
             height={100}
@@ -63,16 +67,16 @@ const ChatRoomFriendBasicInfo = ({ chatWith }: { chatWith: Friend }) => {
           <div
             className={`w-40 h-40 rounded-full flex justify-center items-center border text-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400`}
           >
-            {chatWith.displayName.charAt(0)[0]?.toUpperCase()}
+            {}
           </div>
         )}
       </section>
       <section className="max-w-40 text-center">
         <h3 className="text-gray-700 dark:text-gray-300 text-4xl font-extrabold">
-          {chatWith.displayName}
+          {displayName}
         </h3>
         <span className="text-gray-700 dark:text-gray-300 font-extralight italic">
-          {chatWith.email}
+          {email}
         </span>
       </section>
     </main>
@@ -99,9 +103,16 @@ const ChatRoomInfoOptions = () => {
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const user = useSelector((state: RootState) => state.activeRoom.chatWith);
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
+
+  const blockedByMe = useMemo(() => {
+    return activeRoom.roomDetails?.block?.blockedBy[currentUser.uid]
+      ? true
+      : false;
+  }, [activeRoom.roomDetails?.block, currentUser.uid]);
+
   return (
     <section className="flex flex-col w-full gap-y-4">
-      {!activeRoom.roomDetails?.block?.blockedBy[currentUser.uid] ? (
+      {!blockedByMe ? (
         <AlertDialog open={isBlockAlertOpen}>
           <AlertDialogTrigger>
             <section
@@ -182,9 +193,11 @@ const UnblockOption = () => {
   } = useChat();
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const currentUser = useSelector((state: RootState) => state.currentUser);
-  const blockedByMe = activeRoom.roomDetails?.block?.blockedBy[currentUser.uid]
-    ? true
-    : false;
+  const blockedByMe = useMemo(() => {
+    return activeRoom.roomDetails?.block?.blockedBy[currentUser.uid]
+      ? true
+      : false;
+  }, [activeRoom.roomDetails?.block, currentUser.uid]);
 
   const handleOnUnblockButton = async () => {
     await handleOnUnblock();

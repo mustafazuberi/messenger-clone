@@ -7,10 +7,13 @@ import { RootState } from "@/store";
 import { LastActive } from "./ChatUsers";
 import { IoIosArrowBack } from "react-icons/io";
 import { clearActiveRoom } from "@/store/slice/activeRoomSlice";
+import { useMemo } from "react";
 
 const ChatRoomNav = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const dispatch = useDispatch();
+  const user = useMemo(() => activeRoom.chatWith, [activeRoom.chatWith]);
+
   return (
     <main className="flex flex-row justify-between border-b lg:px-5 md:px-5 px-2 py-3">
       <section className="flex flex-row gap-x-2 items-center">
@@ -20,20 +23,18 @@ const ChatRoomNav = () => {
             onClick={() => dispatch(clearActiveRoom())}
           />
         </section>
-        {activeRoom.chatWith && (
-          <UserImageAvatar user={activeRoom.chatWith} size={10} />
-        )}
+        {user && <UserImageAvatar user={user} size={10} />}
         <section className="flex flex-col">
-          <section className="text-gray-700 dark:text-gray-300">{activeRoom.chatWith?.displayName}</section>
-          <LastActive friend={activeRoom.chatWith!} />
+          <section className="text-gray-700 dark:text-gray-300">
+            {user?.displayName}
+          </section>
+          {user && <LastActive friend={user} />}
         </section>
       </section>
       <section className="flex flex-row gap-x-4 items-center justify-center">
         <IoCallSharp className="text-2xl cursor-pointer text-gray-700 dark:text-gray-300" />
         <BsFillCameraVideoFill className="text-2xl cursor-pointer text-gray-700 dark:text-gray-300" />
-        {activeRoom.chatWith && (
-          <ChatRoomFriendInfo chatWith={activeRoom.chatWith} />
-        )}
+        {user && <ChatRoomFriendInfo chatWith={user} />}
       </section>
     </main>
   );

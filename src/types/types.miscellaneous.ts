@@ -1,5 +1,6 @@
 import Friend from "./type.friend";
 import Message from "./types.message";
+import Room from "./types.room";
 import User from "./types.user";
 
 export type SendChatReqParam = {
@@ -40,5 +41,10 @@ export type OpenImageModal = {
 
 export type VoiceRecordState = "record" | "recording" | "recorded";
 
-
 export type ActiveTab = "sentRequests" | "receivedRequests";
+
+export type ChatUserProps = {
+  friend: Friend;
+  room: Room;
+  roomsUnseenMessages: { [x: string]: Message[] };
+};

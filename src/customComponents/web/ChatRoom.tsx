@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import ChatRoomNav from "./ChatRoomNav";
 import ChatRoomFooter from "./ChatRoomFooter";
 import Message from "./Message";
@@ -11,11 +11,20 @@ import { useSelector } from "react-redux";
 const ChatRoom = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const isVisible = usePageVisibility();
-  const createdAt = new Date(activeRoom.roomDetails!.createdAt).toDateString();
-  const roomMessages: Message[] | null =
-    activeRoom.roomDetails?.id && activeRoom.messages?.data
-      ? activeRoom.messages?.data[activeRoom.roomDetails.id]
-      : null;
+
+  const createdAt = useMemo(() => {
+    return activeRoom.roomDetails
+      ? new Date(activeRoom.roomDetails.createdAt).toDateString()
+      : "";
+  }, [activeRoom.roomDetails?.createdAt]);
+
+  const roomMessages = useMemo(() => {
+    if (activeRoom.roomDetails?.id && activeRoom.messages?.data) {
+      return activeRoom.messages.data[activeRoom.roomDetails.id] || null;
+    }
+    return null;
+  }, [activeRoom.roomDetails?.id, activeRoom.messages]);
+
   const status = activeRoom.messages.status;
   const {
     scrollSectionToBottom,
@@ -50,7 +59,6 @@ const ChatRoom = () => {
         >
           {activeRoom.roomDetails ? (
             <section className="flex justify-center">
-              {/* text-gray-700 dark:text-gray-300  */}
               <span className="px-4 py-1 bg-gray-300 dark:bg-gray-700 rounded-lg">
                 {createdAt}
               </span>

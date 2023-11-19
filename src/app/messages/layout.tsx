@@ -14,7 +14,7 @@ export default function RootLayout({
   return (
     <section className="flex flex-row flex-1 w-full max-h-[89vh] min-h-[89vh]">
       <section
-        className={`lg:min-w-[30%] md:min-w-[300px] lg:flex md:flex ${
+        className={`lg:w-[30%] md:min-w-[300px] lg:flex md:flex ${
           !roomId ? "flex" : "hidden"
         } min-w-full lg:max-w-[400px] md:max-w-[400px] max-w-full min-h-full`}
       >

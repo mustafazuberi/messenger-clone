@@ -12,12 +12,9 @@ import Friend from "@/types/type.friend";
 import UserImageAvatar from "./UserImageAvatar";
 import useChat from "@/hooks/useChat";
 import useReq from "@/hooks/useReq";
+import React from "react";
 
-type props = {
-  msg: Message;
-};
-
-const Message = ({ msg }: props) => {
+const Message: React.FC<{ msg: Message }> = React.memo(({ msg }) => {
   const {
     openImageModal,
     setOpenImageModal,
@@ -34,7 +31,6 @@ const Message = ({ msg }: props) => {
           byMe ? "justify-end" : "justify-start"
         }`}
       >
-        {/*   */}
         <section
           className={`${
             byMe ? "bg-[#005c4b]" : "bg-[#1e293b]"
@@ -129,11 +125,11 @@ const Message = ({ msg }: props) => {
       </Dialog>
     </section>
   );
-};
+});
 
 export default Message;
 
-const SharedFriend = ({ friend }: { friend: Friend }) => {
+const SharedFriend: React.FC<{ friend: Friend }> = React.memo(({ friend }) => {
   const { handleOnChatUser } = useChat();
   const { unsendChatRequest, confirmChatRequest, sendChatRequest } = useReq();
 
@@ -210,7 +206,7 @@ const SharedFriend = ({ friend }: { friend: Friend }) => {
       </section>
     </section>
   );
-};
+});
 
 const MsgAudioPlay = ({ msg }: { msg: Message }) => {
   if (!msg.voice) return;
