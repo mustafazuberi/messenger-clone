@@ -1,14 +1,20 @@
 "use client";
+import React from "react";
 import { Input } from "@/components/ui/input";
 import { FaUserFriends } from "react-icons/fa";
-import useHome from "@/hooks/useHome";
-import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-const ChatsBoxNav = () => {
+type props = {
+  searchMessengerInput: string;
+  setSearchMessengerInput: (val: string) => void;
+};
+
+const ChatsBoxNav: React.FC<props> = ({
+  searchMessengerInput,
+  setSearchMessengerInput,
+}) => {
   const router = useRouter();
-  const { handleOnSearchMessenger } = useHome();
   return (
     <main className="flex flex-col justify-between p-2 w-full gap-y-3">
       <section className="flex flex-row justify-between items-center w-full">
@@ -34,9 +40,9 @@ const ChatsBoxNav = () => {
       </section>
       <section>
         <Input
-          type="search"
           placeholder="Search Messenger..."
-          onChange={handleOnSearchMessenger}
+          value={searchMessengerInput}
+          onChange={(e) => setSearchMessengerInput(e.target.value)}
         />
       </section>
     </main>

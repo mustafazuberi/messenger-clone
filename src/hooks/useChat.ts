@@ -2,7 +2,7 @@ import { db } from "@/db/firebase.config";
 import { RootState } from "@/store";
 import { STATUSES } from "@/store/intialState";
 import { setRooms } from "@/store/slice/roomsSlice";
-import Friend from "@/types/type.friend";
+import Friend, { ChatUser } from "@/types/type.friend";
 import Message from "@/types/types.message";
 import Room, { Block } from "@/types/types.room";
 import { Unsubscribe } from "firebase/auth";
@@ -42,6 +42,9 @@ const useChat = () => {
   }>({});
   const [blockingOper, setBlockingOper] = useState<boolean>(false);
   const [openUnblockModal, setOpenUnblockModal] = useState(false);
+  const [searchMessengerInput, setSearchMessengerInput] = useState<string>("");
+  const [findFriendsSearchInput, setFindFriendsSearchInput] =
+    useState<string>("");
 
   const createChatRoom = useCallback(
     async ({
@@ -135,23 +138,23 @@ const useChat = () => {
     [dispatch, rooms, currentUser]
   );
 
-  const getFriendFromRoomUsers = useCallback(
-    (room: Room): Friend | null => {
-      let chatUser: Friend | null = null;
-      for (const friend of friends.data) {
-        for (const uid in room.userDetails) {
-          if (room.userDetails.hasOwnProperty(uid) && friend.uid === uid) {
-            chatUser = friend;
-            break;
+  const getChatUsers = useCallback(
+    (rooms: Room[]): ChatUser[] => {
+      const chatUsers: (ChatUser | null)[] = rooms.map((room) => {
+        for (const friend of friends.data) {
+          for (const uid in room.userDetails) {
+            if (room.userDetails.hasOwnProperty(uid) && friend.uid === uid) {
+              const chatUser: ChatUser = { ...friend, fromRoom: room }; // Return the friend when a match is found
+              return chatUser;
+            }
           }
         }
-        if (chatUser) {
-          break;
-        }
-      }
-      return chatUser;
+        return null; // Return null if no matching friend is found for the room
+      });
+
+      return chatUsers.filter((cU): cU is ChatUser => cU !== null);
     },
-    [friends.data]
+    [friends.data, rooms]
   );
 
   const handleOnChatUser = useCallback(
@@ -330,7 +333,7 @@ const useChat = () => {
     createChatRoom,
     getMyRooms,
     handleOnChatUser,
-    getFriendFromRoomUsers,
+    getChatUsers,
     scrollSectionToBottom,
     sectionRefMessagesDiv,
     getTimeDifference,
@@ -343,6 +346,10 @@ const useChat = () => {
     openUnblockModal,
     setOpenUnblockModal,
     getActiveRoomBlockInfoRealTime,
+    searchMessengerInput,
+    setSearchMessengerInput,
+    findFriendsSearchInput,
+    setFindFriendsSearchInput,
   };
 };
 

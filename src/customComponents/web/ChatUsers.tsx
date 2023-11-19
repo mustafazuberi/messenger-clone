@@ -3,10 +3,9 @@ import { RootState } from "@/store";
 import { STATUSES } from "@/store/intialState";
 import { useSelector } from "react-redux";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import useChat from "@/hooks/useChat";
-import Room from "@/types/types.room";
-import Friend from "@/types/type.friend";
+import Friend, { ChatUser } from "@/types/type.friend";
 import { MdInsertPhoto } from "react-icons/md";
 import Message from "@/types/types.message";
 import { FaUserFriends } from "react-icons/fa";
@@ -15,30 +14,40 @@ import { useTheme } from "next-themes";
 import UserImageAvatar from "./UserImageAvatar";
 import { ChatUserProps } from "@/types/types.miscellaneous";
 
-const ChatUsers = () => {
+type props = {
+  searchMessengerInput: string;
+};
+
+const ChatUsers: React.FC<props> = ({ searchMessengerInput }) => {
   const friends = useSelector((state: RootState) => state.friends);
   const rooms = useSelector((state: RootState) => state.rooms);
-  const {
-    getFriendFromRoomUsers,
-    getRoomsUnseenMessages,
-    roomsUnseenMessages,
-  } = useChat();
+  const { getChatUsers, getRoomsUnseenMessages, roomsUnseenMessages } =
+    useChat();
+  const chatUsers: ChatUser[] = useMemo(() => getChatUsers(rooms), [rooms]);
 
   useEffect(() => {
     if (rooms.length) getRoomsUnseenMessages();
   }, [rooms.length]);
 
+  const [filteredChatUsers, setFilteredChatUsers] = useState<ChatUser[]>([]);
+  useEffect(() => {
+    const filtered = chatUsers.filter((chatUser: ChatUser) =>
+      chatUser.displayName
+        .toLowerCase()
+        .includes(searchMessengerInput.toLowerCase())
+    );
+    setFilteredChatUsers(filtered);
+  }, [searchMessengerInput, chatUsers]);
+
   return (
     <section className="min-w-full flex flex-col items-center flex-1 max-h-full overflow-y-auto scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-w-3 scrollbar-track-inherit">
-      {rooms?.length && friends.status === STATUSES.IDLE ? (
-        rooms?.map((room: Room) => {
-          const friend: Friend | null = getFriendFromRoomUsers(room);
-          if (!friend) return null;
+      {filteredChatUsers?.length && friends.status === STATUSES.IDLE ? (
+        filteredChatUsers?.map((chatUser: ChatUser) => {
           return (
-            <section key={room.id} className="min-w-full">
+            <section key={chatUser.uid} className="min-w-full">
               <ChatUser
-                friend={friend}
-                room={room}
+                friend={chatUser}
+                room={chatUser.fromRoom}
                 roomsUnseenMessages={roomsUnseenMessages}
               />
             </section>
@@ -54,16 +63,25 @@ const ChatUsers = () => {
 export default ChatUsers;
 
 const NoFriendsToChat = React.memo(() => {
+  const friends = useSelector((state: RootState) => state.friends);
   return (
-    <section className="flex flex-col justify-center gap-y-2 items-center mt-4 px-4">
-      <h1 className="text-[19px] font-light">
-        You have no friends to chat with.
-      </h1>
-      <Link href={`?tab=findFriends`}>
-        <span className="text-[17px] bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400">
-          <Button>Find Friends</Button>
-        </span>
-      </Link>
+    <section>
+      {friends.data.length ? (
+        <section className="flex flex-col justify-center gap-y-2 items-center mt-4 px-4">
+          <h1 className="text-[25px] font-bold">No chats found.</h1>
+        </section>
+      ) : (
+        <section className="flex flex-col justify-center gap-y-2 items-center mt-4 px-4">
+          <h1 className="text-[19px] font-light">
+            You have no friends to chat with.
+          </h1>
+          <Link href={`?tab=findFriends`}>
+            <span className="text-[17px] bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400">
+              <Button>Find Friends</Button>
+            </span>
+          </Link>
+        </section>
+      )}
     </section>
   );
 });

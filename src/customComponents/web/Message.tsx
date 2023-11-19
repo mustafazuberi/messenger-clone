@@ -5,7 +5,7 @@ import Message from "@/types/types.message";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import useSendMessage from "@/hooks/useSendMessage";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import ForwardMessageModal from "./ForwardMessageModal";
 import MessageDropDown from "./MessageDropdown";
 import Friend from "@/types/type.friend";
@@ -89,7 +89,6 @@ const Message: React.FC<{ msg: Message }> = React.memo(({ msg }) => {
                 </section>
                 {byMe && (
                   <section className="text-[9px]">
-                    {/* <TwoCheck seen={} /> */}
                     {msg.seen ? "seen" : "sent"}
                   </section>
                 )}
@@ -113,16 +112,18 @@ const Message: React.FC<{ msg: Message }> = React.memo(({ msg }) => {
         </DialogContent>
       </Dialog>
       {/* Forward Message Modal */}
-      <Dialog
-        open={openForwardMessageModal.open}
-        onOpenChange={() =>
-          setOpenForwardMessageModal({ open: false, message: null })
-        }
-      >
-        <DialogContent>
-          <ForwardMessageModal message={openForwardMessageModal.message} />
-        </DialogContent>
-      </Dialog>
+      {openForwardMessageModal.open && (
+        <Dialog
+          open={openForwardMessageModal.open}
+          onOpenChange={() =>
+            setOpenForwardMessageModal({ open: false, message: null })
+          }
+        >
+          <DialogContent>
+            <ForwardMessageModal message={openForwardMessageModal.message} />
+          </DialogContent>
+        </Dialog>
+      )}
     </section>
   );
 });

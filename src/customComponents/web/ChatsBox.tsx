@@ -31,7 +31,13 @@ const ChatsBox = () => {
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const { handleAuthStateChange, getAllUsers, getMyFriends } = useHome();
   const { getChatRequests, getSentRequests, getReceivedRequests } = useReq();
-  const { getMyRooms } = useChat();
+  const {
+    getMyRooms,
+    searchMessengerInput,
+    setSearchMessengerInput,
+    findFriendsSearchInput,
+    setFindFriendsSearchInput,
+  } = useChat();
   const { detectingConnectionState, handleOnDisconnectAndConnect } =
     useActive();
 
@@ -70,9 +76,12 @@ const ChatsBox = () => {
     <main className="min-h-full max-h-full min-w-full border-r">
       {isFindFriendsTab ? (
         <section className="flex flex-col min-w-full max-h-full min-h-full">
-          <FindFriendsNav />
+          <FindFriendsNav
+            findFriendsSearchInput={findFriendsSearchInput}
+            setFindFriendsSearchInput={setFindFriendsSearchInput}
+          />
           <Suspense fallback={<SuspenseSkeleton />}>
-            <FindFriends />
+            <FindFriends findFriendsSearchInput={findFriendsSearchInput} />
           </Suspense>
         </section>
       ) : isRequestsTab ? (
@@ -91,9 +100,12 @@ const ChatsBox = () => {
         </section>
       ) : (
         <section className="flex flex-col min-w-full max-h-full min-h-full">
-          <ChatsBoxNav />
+          <ChatsBoxNav
+            searchMessengerInput={searchMessengerInput}
+            setSearchMessengerInput={setSearchMessengerInput}
+          />
           <Suspense fallback={<SuspenseSkeleton />}>
-            <ChatUsers />
+            <ChatUsers searchMessengerInput={searchMessengerInput} />
           </Suspense>
         </section>
       )}

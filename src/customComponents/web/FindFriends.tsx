@@ -14,7 +14,11 @@ import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import UserImageAvatar from "./UserImageAvatar";
 
-const FindFriends = () => {
+type FindFriendsProps = {
+  findFriendsSearchInput: string;
+};
+
+const FindFriends: React.FC<FindFriendsProps> = ({ findFriendsSearchInput }) => {
   const [unknownUsers, setUnknownUsers] = useState<User[]>([]);
   const { receivedRequests, sentRequests }: ChatRequestsState = useSelector(
     (state: RootState) => state.chatRequests
@@ -31,19 +35,30 @@ const FindFriends = () => {
       receivedReqs: receivedRequests.data,
       sentReqs: sentRequests.data,
     });
-    setUnknownUsers(unknowns);
-  }, [myFriends.data, sentRequests.data, receivedRequests.data]);
+    const filtered = unknowns.filter((user: User) =>
+      user.displayName
+        .toLowerCase()
+        .includes(findFriendsSearchInput.toLowerCase())
+    );
+    setUnknownUsers(filtered);
+  }, [
+    myFriends.data,
+    sentRequests.data,
+    receivedRequests.data,
+    findFriendsSearchInput,
+  ]);
 
   return (
     <section className="min-w-full flex flex-col items-center flex-1 max-h-full overflow-y-auto scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-w-3 scrollbar-track-inherit">
-      {allUsers.status === STATUSES.IDLE ? (
+      {allUsers.status === STATUSES.IDLE && unknownUsers.length ? (
         unknownUsers?.map((user) => {
           return <UnknownUser unknownUser={user} key={user.uid} />;
         })
       ) : (
         <section className="flex flex-col justify-center gap-y-2 items-center mt-4 px-4">
           <h1 className="text-[19px] font-light">
-            No users are available on the website
+            No {myFriends.data.length ? "more" : ""} users are available on the
+            website.
           </h1>
         </section>
       )}
@@ -53,7 +68,15 @@ const FindFriends = () => {
 
 export default FindFriends;
 
-export const FindFriendsNav = () => {
+type FindFriendsNavProps = {
+  findFriendsSearchInput: string;
+  setFindFriendsSearchInput: (val: string) => void;
+};
+
+export const FindFriendsNav: React.FC<FindFriendsNavProps> = ({
+  findFriendsSearchInput,
+  setFindFriendsSearchInput,
+}) => {
   const router = useRouter();
   return (
     <main className="flex flex-col gap-y-3 mt-2 p-2">
@@ -76,7 +99,12 @@ export const FindFriendsNav = () => {
         </section>
       </section>
       <section>
-        <Input placeholder="Find Friends..." type="search" />
+        <Input
+          placeholder="Find Friends..."
+          type="search"
+          value={findFriendsSearchInput}
+          onChange={(e) => setFindFriendsSearchInput(e.target.value)}
+        />
       </section>
     </main>
   );

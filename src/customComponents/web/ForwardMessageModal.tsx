@@ -28,8 +28,12 @@ const ForwardMessageModal: React.FC<{ message: Message | null }> = ({
 
   return (
     <section className="mt-5 min-h-[300px]">
+      <h1 className="text-gray-700 dark:text-gray-300 font-extrabold tracking-tight text-2xl">
+        Forward Message To
+      </h1>
       <Input
         placeholder="Find Friends"
+        className="mt-3"
         value={findFriendInp}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setFindFriendInp(e.target.value)
