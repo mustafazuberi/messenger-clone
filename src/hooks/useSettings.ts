@@ -100,6 +100,26 @@ const useSettings = () => {
     await reqBatch.commit();
   };
 
+  const updateChatRoomsBatch = async (key: string, value: string | Date) => {
+    const querySnapshotRooms = await getDocs(collectionGroup(db, "chatrooms"));
+    const roomBatch = writeBatch(db);
+    querySnapshotRooms.forEach((doc) => {
+      if (doc.data().userDetails[currentUser.uid]) {
+        const docRef = doc.ref;
+        roomBatch.update(docRef, {
+          userDetails: {
+            ...doc.data().userDetails,
+            [doc.data().userDetails[currentUser.uid].uid]: {
+              ...doc.data().userDetails[currentUser.uid],
+              [key]: value,
+            },
+          },
+        });
+      }
+    });
+    await roomBatch.commit();
+  };
+
   const onSubmitFullname = async (values: z.infer<typeof FullNameSchema>) => {
     setUpdating(true);
     try {
@@ -112,8 +132,8 @@ const useSettings = () => {
       });
 
       await updateFriendsBatch("displayName", values.fullName);
-
       await updateRequestsBatch("displayName", values.fullName);
+      await updateChatRoomsBatch("displayName", values.fullName);
       // dispatch in redux
       dispatch(
         updateUserDetails({ ...currentUser, displayName: values.fullName })
@@ -142,6 +162,7 @@ const useSettings = () => {
       });
 
       await updateFriendsBatch("DOB", values.dob);
+      await updateChatRoomsBatch("DOB", values.dob);
       // dispatch in redux
       dispatch(
         updateUserDetails({
@@ -173,6 +194,7 @@ const useSettings = () => {
       });
 
       await updateFriendsBatch("gender", values.gender);
+      await updateChatRoomsBatch("gender", values.gender);
       // dispatch in redux
       dispatch(
         updateUserDetails({
@@ -214,6 +236,7 @@ const useSettings = () => {
       await updateFriendsBatch("photoUrl", photoURL);
       // updating in requests which are sent
       await updateRequestsBatch("photoUrl", photoURL);
+      await updateChatRoomsBatch("photoUrl", photoURL);
 
       // dispatch in redux
       dispatch(updateUserDetails({ ...currentUser, photoUrl: photoURL }));
@@ -242,6 +265,7 @@ const useSettings = () => {
       });
 
       await updateFriendsBatch("bio", values.bio);
+      await updateChatRoomsBatch("bio", values.bio);
       // updating current user in redux
       dispatch(
         updateUserDetails({

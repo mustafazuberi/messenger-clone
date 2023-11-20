@@ -8,6 +8,20 @@ import { LastActive } from "./ChatUsers";
 import { IoIosArrowBack } from "react-icons/io";
 import { clearActiveRoom } from "@/store/slice/activeRoomSlice";
 import { useMemo } from "react";
+import useWebRTC from "@/hooks/useWebRTC";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import CallDialog from "./CallDialog";
 
 const ChatRoomNav = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
@@ -32,8 +46,7 @@ const ChatRoomNav = () => {
         </section>
       </section>
       <section className="flex flex-row gap-x-4 items-center justify-center">
-        <IoCallSharp className="text-2xl cursor-pointer text-gray-700 dark:text-gray-300" />
-        <BsFillCameraVideoFill className="text-2xl cursor-pointer text-gray-700 dark:text-gray-300" />
+        <AudioCallAndVideoCall />
         {user && <ChatRoomFriendInfo chatWith={user} />}
       </section>
     </main>
@@ -41,3 +54,68 @@ const ChatRoomNav = () => {
 };
 
 export default ChatRoomNav;
+
+const AudioCallAndVideoCall = () => {
+  const activeRoom = useSelector((state: RootState) => state.activeRoom);
+  const chatWith = useMemo(() => activeRoom.chatWith, [activeRoom.chatWith]);
+  const { handleOnVideoCall, handleOnAudioCall, callDialog } = useWebRTC();
+  return (
+    <main>
+      <section className="flex flex-row gap-x-3">
+        <AlertDialog>
+          <AlertDialogTrigger>
+            <IoCallSharp className="text-2xl cursor-pointer text-gray-700 dark:text-gray-300" />
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                Connect with {chatWith?.displayName} via call?
+              </AlertDialogTitle>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleOnAudioCall}
+                className="flex flex-row gap-x-2"
+              >
+                <IoCallSharp className="text-xl" />
+                <span>Connect</span>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+        {/* Audio Call */}
+        <AlertDialog>
+          <AlertDialogTrigger>
+            <BsFillCameraVideoFill className="text-2xl cursor-pointer text-gray-700 dark:text-gray-300" />
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                Connect with {chatWith?.displayName} via video call?
+              </AlertDialogTitle>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <Button
+                onClick={handleOnVideoCall}
+                className="flex flex-row gap-x-2 "
+              >
+                <BsFillCameraVideoFill className="text-xl" />
+                <span>Connect</span>
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </section>
+
+      {callDialog ? (
+        <Dialog open={callDialog?.open}>
+          <DialogContent hideCrossBtn={true}>
+            <CallDialog callDialogProps={callDialog} />
+          </DialogContent>
+        </Dialog>
+      ) : null}
+    </main>
+  );
+};

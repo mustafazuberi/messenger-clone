@@ -18,7 +18,9 @@ type FindFriendsProps = {
   findFriendsSearchInput: string;
 };
 
-const FindFriends: React.FC<FindFriendsProps> = ({ findFriendsSearchInput }) => {
+const FindFriends: React.FC<FindFriendsProps> = ({
+  findFriendsSearchInput,
+}) => {
   const [unknownUsers, setUnknownUsers] = useState<User[]>([]);
   const { receivedRequests, sentRequests }: ChatRequestsState = useSelector(
     (state: RootState) => state.chatRequests

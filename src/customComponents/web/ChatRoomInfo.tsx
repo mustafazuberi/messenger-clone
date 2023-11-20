@@ -49,7 +49,10 @@ export default ChatRoomFriendInfo;
 
 const ChatRoomFriendBasicInfo = ({ chatWith }: { chatWith: Friend }) => {
   const photoUrl = useMemo(() => chatWith.photoUrl, [chatWith.photoUrl]);
-  const displayName = useMemo(() => chatWith.displayName, [chatWith.displayName]);
+  const displayName = useMemo(
+    () => chatWith.displayName,
+    [chatWith.displayName]
+  );
   const email = useMemo(() => chatWith.email, [chatWith.email]);
 
   return (
@@ -67,7 +70,7 @@ const ChatRoomFriendBasicInfo = ({ chatWith }: { chatWith: Friend }) => {
           <div
             className={`w-40 h-40 rounded-full flex justify-center items-center border text-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400`}
           >
-            {}
+            {chatWith?.displayName[0]}
           </div>
         )}
       </section>
