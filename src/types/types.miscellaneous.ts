@@ -54,6 +54,6 @@ export type CallDialogProps = {
   callTo: User;
   calledBy: User;
   room: Room;
-  callStatus: "connecting" | "connected";
+  callStatus: "connecting" | "connected" | "none";
   open: boolean;
 };

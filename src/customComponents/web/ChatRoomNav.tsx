@@ -8,7 +8,7 @@ import { LastActive } from "./ChatUsers";
 import { IoIosArrowBack } from "react-icons/io";
 import { clearActiveRoom } from "@/store/slice/activeRoomSlice";
 import { useMemo } from "react";
-import useWebRTC from "@/hooks/useWebRTC";
+import useAudioCall from "@/hooks/useAudioCall";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -58,7 +58,8 @@ export default ChatRoomNav;
 const AudioCallAndVideoCall = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const chatWith = useMemo(() => activeRoom.chatWith, [activeRoom.chatWith]);
-  const { handleOnVideoCall, handleOnAudioCall, callDialog } = useWebRTC();
+  const { handleOnVideoCall, handleOnAudioCall, callDialog, setCallDialog } =
+    useAudioCall();
   return (
     <main>
       <section className="flex flex-row gap-x-3">
@@ -112,7 +113,10 @@ const AudioCallAndVideoCall = () => {
       {callDialog ? (
         <Dialog open={callDialog?.open}>
           <DialogContent hideCrossBtn={true}>
-            <CallDialog callDialogProps={callDialog} />
+            <CallDialog
+              callDialogProps={callDialog}
+              setCallDialog={setCallDialog}
+            />
           </DialogContent>
         </Dialog>
       ) : null}
