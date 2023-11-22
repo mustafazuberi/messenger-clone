@@ -7,6 +7,7 @@ import TailwindSpinner from "./TailwindSpinner";
 import { usePageVisibility } from "react-page-visibility";
 import { RootState } from "@/store";
 import { useSelector } from "react-redux";
+import useCall from "@/hooks/useWebRTC";
 
 const ChatRoom = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);

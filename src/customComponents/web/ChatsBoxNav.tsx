@@ -2,6 +2,7 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { FaUserFriends } from "react-icons/fa";
+import { IoMdCall } from "react-icons/io";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -30,6 +31,12 @@ const ChatsBoxNav: React.FC<props> = ({
           >
             Find Friends
           </span>
+          <Link
+            href={`/messages/?tab=calls`}
+            className="p-2 text-2xl border rounded-full hover:opacity-60"
+          >
+            <IoMdCall className="text-2xl" />
+          </Link>
           <Link
             href={`/messages/?tab=requests`}
             className="p-2 text-2xl border rounded-full hover:opacity-60"

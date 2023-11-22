@@ -11,6 +11,7 @@ import notificationsReducer from "@/store/slice/notificationsSlice";
 import roomsReducer from "@/store/slice/roomsSlice";
 import activeRoomReducer from "@/store/slice/activeRoomSlice";
 import activeUsersReducer from "@/store/slice/activeUsersSlice";
+import callsReducer from "@/store/slice/callSlice";
 
 const rootReducer = combineReducers({
   currentUser: userReducer,
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   rooms: roomsReducer,
   activeRoom: activeRoomReducer,
   activeUsers: activeUsersReducer,
+  calls: callsReducer,
 });
 
 const persistConfig = {

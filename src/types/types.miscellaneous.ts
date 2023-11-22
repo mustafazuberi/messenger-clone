@@ -48,19 +48,3 @@ export type ChatUserProps = {
   room: Room;
   roomsUnseenMessages: { [x: string]: Message[] };
 };
-
-export type AudioCall = {
-  callTo: User;
-  calledBy: User;
-  room: Room;
-  callStatus: "connecting" | "connected" | "none";
-  open: boolean;
-};
-
-export type VideoCall = {
-  callTo: User;
-  calledBy: User;
-  room: Room;
-  callStatus: "connecting" | "connected" | "none";
-  open: boolean;
-};

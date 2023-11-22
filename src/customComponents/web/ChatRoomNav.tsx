@@ -5,7 +5,7 @@ import { RootState } from "@/store";
 import { LastActive } from "./ChatUsers";
 import { IoIosArrowBack } from "react-icons/io";
 import { clearActiveRoom } from "@/store/slice/activeRoomSlice";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import AudioCall from "./AudioCall";
 import VideoCall from "./VideoCall";
 

@@ -1,9 +1,6 @@
 import { RootState } from "@/store";
-import Image from "next/image";
-import { useMemo } from "react";
-import { ImPhoneHangUp } from "react-icons/im";
-import { useSelector } from "react-redux";
-import useAudioCall from "@/hooks/useAudioCall";
+import { useCallback, useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,15 +11,34 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { IoCallSharp } from "react-icons/io5";
+import { setActiveCall } from "@/store/slice/callSlice";
+import useWebRTC from "@/hooks/useWebRTC";
+import { CALL_STATUS, CALL_TYPE, Call } from "@/types/types.call";
 
 const AudioCall = () => {
+  const dispatch = useDispatch();
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
+  const currentUser = useSelector((state: RootState) => state.currentUser);
   const chatWith = useMemo(() => activeRoom.chatWith, [activeRoom.chatWith]);
-  const { handleOnAudioCall, audioCallDialog, handleAudioCallHangup } =
-    useAudioCall();
+  const { doOffer } = useWebRTC();
+
+  const handleOnConnectAudioCall = useCallback(async () => {
+    const call: Call = {
+      to: chatWith?.uid!,
+      from: currentUser.uid,
+      toUser: { ...chatWith! },
+      fromUser: { ...currentUser },
+      callStatus: CALL_STATUS.CALLING,
+      type: CALL_TYPE.AUDIO,
+      answered: false,
+      isActive: true,
+      createdAt: Date.now(),
+    };
+    const callDoc = await doOffer({ ...call }); //this will initialize call in firebase
+    dispatch(setActiveCall({ ...call, id: callDoc?.id })); //dispatching in redux
+  }, [currentUser?.uid, chatWith?.uid, doOffer, dispatch]);
+
   return (
     <main>
       <AlertDialog>
@@ -38,7 +54,7 @@ const AudioCall = () => {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleOnAudioCall}
+              onClick={handleOnConnectAudioCall}
               className="flex flex-row gap-x-2"
             >
               <IoCallSharp className="text-xl" />
@@ -47,58 +63,6 @@ const AudioCall = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {audioCallDialog ? (
-        <Dialog open={audioCallDialog?.open}>
-          <DialogContent hideCrossBtn={true}>
-            <section className="lg:max-w-[475px] md:max-w-[475px] max-w-[260px]">
-              <section className="px-6 flex flex-col justify-between items-center gap-y-4 min-h-[80vh]">
-                <section className="flex flex-col gap-y-3 flex-1 w-full justify-center items-center">
-                  {audioCallDialog.callTo.photoUrl ? (
-                    <Image
-                      src={audioCallDialog.callTo.photoUrl!}
-                      alt="Profile Info Profile Picture"
-                      width={100}
-                      height={100}
-                      className="w-40 h-40 rounded-full"
-                    />
-                  ) : (
-                    <div
-                      className={`w-40 h-40 rounded-full flex justify-center items-center border text-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400`}
-                    >
-                      {audioCallDialog.callTo.displayName[0]}
-                    </div>
-                  )}
-                  <section className="flex flex-col justify-center items-center">
-                    <h3 className="text-gray-700 dark:text-gray-300 text-4xl font-extrabold">
-                      {audioCallDialog.callTo.displayName}
-                    </h3>
-                    {audioCallDialog.callStatus === "connecting" ? (
-                      <h6>Calling...</h6>
-                    ) : (
-                      <h6></h6>
-                    )}
-                  </section>
-                </section>
-                <Button
-                  variant={"destructive"}
-                  className="bg-red-700 py-1 w-full rounded-[2px] flex justify-center items-center cursor-pointer"
-                  onClick={handleAudioCallHangup}
-                >
-                  <ImPhoneHangUp className="text-white text-3xl" />
-                </Button>
-              </section>
-              {audioCallDialog.callStatus === "connecting" && (
-                <audio
-                  src="https://www.soundjay.com/phone/phone-calling-1.mp3"
-                  autoPlay
-                  loop
-                />
-              )}
-            </section>
-          </DialogContent>
-        </Dialog>
-      ) : null}
     </main>
   );
 };
