@@ -25,4 +25,12 @@ export type Call = {
   isActive: boolean;
   createdAt: number;
   callTime?: { started: number; ended: number };
+  offer?: {
+    sdp: string;
+    type: RTCSdpType;
+  };
+  answer?: {
+    sdp: string;
+    type: RTCSdpType;
+  };
 };

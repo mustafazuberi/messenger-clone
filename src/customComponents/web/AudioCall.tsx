@@ -1,6 +1,6 @@
 import { RootState } from "@/store";
-import { useCallback, useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,32 +12,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { IoCallSharp } from "react-icons/io5";
-import { setActiveCall } from "@/store/slice/callSlice";
-import useWebRTC from "@/hooks/useWebRTC";
-import { CALL_STATUS, CALL_TYPE, Call } from "@/types/types.call";
+import useAudioCall from "@/hooks/useAudioCall";
 
 const AudioCall = () => {
-  const dispatch = useDispatch();
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
-  const currentUser = useSelector((state: RootState) => state.currentUser);
   const chatWith = useMemo(() => activeRoom.chatWith, [activeRoom.chatWith]);
-  const { doOffer } = useWebRTC();
-
-  const handleOnConnectAudioCall = useCallback(async () => {
-    const call: Call = {
-      to: chatWith?.uid!,
-      from: currentUser.uid,
-      toUser: { ...chatWith! },
-      fromUser: { ...currentUser },
-      callStatus: CALL_STATUS.CALLING,
-      type: CALL_TYPE.AUDIO,
-      answered: false,
-      isActive: true,
-      createdAt: Date.now(),
-    };
-    const callDoc = await doOffer({ ...call }); //this will initialize call in firebase
-    dispatch(setActiveCall({ ...call, id: callDoc?.id })); //dispatching in redux
-  }, [currentUser?.uid, chatWith?.uid, doOffer, dispatch]);
+  const { handleIntiateCall } = useAudioCall();
 
   return (
     <main>
@@ -54,7 +34,7 @@ const AudioCall = () => {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleOnConnectAudioCall}
+              onClick={handleIntiateCall}
               className="flex flex-row gap-x-2"
             >
               <IoCallSharp className="text-xl" />

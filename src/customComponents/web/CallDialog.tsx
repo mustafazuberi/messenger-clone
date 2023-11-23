@@ -1,18 +1,16 @@
-import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import useAudioCall from "@/hooks/useAudioCall";
 import { RootState } from "@/store";
 import { CALL_STATUS } from "@/types/types.call";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { ImPhoneHangUp } from "react-icons/im";
-import { IoCloseCircleSharp } from "react-icons/io5";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import AudioCallButtons from "./CallDialogButtons";
+import AudioCalTimer from "./AudioCalTimer";
 
 const CallDialog = () => {
-  const { activeCall } = useSelector((state: RootState) => state.calls);
+  const activeCall = useSelector((state: RootState) => state.calls.activeCall);
   const currentUser = useSelector((state: RootState) => state.currentUser);
-
   const { handleAudioCall, handleMissedCall } = useAudioCall();
 
   // This useEffect will for peer conection and audio call of two users will run when status updated to ongoing
@@ -58,7 +56,7 @@ const CallDialog = () => {
     if (activeCall?.callStatus === CALL_STATUS.ONGOING) {
       return (
         activeCall.callTime?.started && (
-          <Timer startTime={activeCall.callTime.started} />
+          <AudioCalTimer startTime={activeCall.callTime.started} />
         )
       );
     } else {
@@ -117,123 +115,3 @@ const CallDialog = () => {
 };
 
 export default CallDialog;
-
-export const Timer: React.FC<{ startTime: number }> = ({ startTime }) => {
-  const calculateTimeDifference = () => {
-    const currentTime = Date.now();
-    const timeDifference = currentTime - startTime;
-
-    if (timeDifference >= 0) {
-      // Calculate the elapsed time since the start time
-      const elapsedSeconds = Math.floor(timeDifference / 1000);
-      const elapsedMinutes = Math.floor(elapsedSeconds / 60);
-      const elapsedHours = Math.floor(elapsedMinutes / 60);
-      const elapsedDays = Math.floor(elapsedHours / 24);
-
-      setDays(elapsedDays);
-      setHours(elapsedHours % 24);
-      setMinutes(elapsedMinutes % 60);
-      setSeconds(elapsedSeconds % 60);
-    } else {
-      // Timer hasn't started yet, calculate time until start
-      const remainingTime = Math.abs(timeDifference);
-      const remainingSeconds = Math.floor(remainingTime / 1000);
-      const remainingMinutes = Math.floor(remainingSeconds / 60);
-      const remainingHours = Math.floor(remainingMinutes / 60);
-      const remainingDays = Math.floor(remainingHours / 24);
-
-      setDays(remainingDays);
-      setHours(remainingHours % 24);
-      setMinutes(remainingMinutes % 60);
-      setSeconds(remainingSeconds % 60);
-    }
-  };
-
-  const [days, setDays] = useState(0);
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => calculateTimeDifference(), 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <h6>
-      {days} : {hours} : {minutes} : {seconds}
-    </h6>
-  );
-};
-
-const AudioCallButtons = () => {
-  const { activeCall } = useSelector((state: RootState) => state.calls);
-  const currentUser = useSelector((state: RootState) => state.currentUser);
-  const { handleOnRejectCall, handleOnCancelCall } = useAudioCall();
-
-  const closeButton = (
-    <Button
-      variant={"destructive"}
-      className="bg-red-700 animate-pulse w-[65px] h-[65px] rounded-full flex justify-center items-center cursor-pointer"
-      onClick={handleOnRejectCall}
-    >
-      <IoCloseCircleSharp className="text-white text-3xl" />
-    </Button>
-  );
-
-  const rejectButton = (
-    <Button
-      variant={"destructive"}
-      className="bg-red-700 animate-pulse w-[65px] h-[65px] rounded-full flex justify-center items-center cursor-pointer"
-      onClick={handleOnRejectCall}
-    >
-      <ImPhoneHangUp className="text-white text-3xl" />
-    </Button>
-  );
-
-  const cancelButton = (
-    <Button
-      variant={"destructive"}
-      className="bg-red-700 animate-pulse w-[65px] h-[65px] rounded-full flex justify-center items-center cursor-pointer"
-      onClick={handleOnCancelCall}
-    >
-      <ImPhoneHangUp className="text-white text-3xl" />
-    </Button>
-  );
-
-  const acceptButton = (
-    <Button
-      variant={"destructive"}
-      className="bg-green-900 hover:bg-green-950 animate-pulse w-[65px] h-[65px] rounded-full flex justify-center items-center cursor-pointer"
-    >
-      <ImPhoneHangUp className="text-white text-3xl" />
-    </Button>
-  );
-
-  const callAgainButton = (
-    <Button
-      variant={"destructive"}
-      className="bg-green-900 hover:bg-green-950 animate-pulse w-[65px] h-[65px] rounded-full flex justify-center items-center cursor-pointer"
-    >
-      <ImPhoneHangUp className="text-white text-3xl" />
-    </Button>
-  );
-
-  return (
-    <section>
-      {/* If current user is calling cancel call button */}
-      {activeCall?.from === currentUser.uid &&
-        activeCall.callStatus === CALL_STATUS.CALLING &&
-        cancelButton}
-
-      {/* If current user is receiveng Reject and accept button */}
-      {activeCall?.callStatus === CALL_STATUS.CALLING &&
-        !(activeCall?.from === currentUser.uid) && (
-          <section className="flex flex-row w-full justify-center gap-x-3">
-            {rejectButton}
-            {acceptButton}
-          </section>
-        )}
-    </section>
-  );
-};

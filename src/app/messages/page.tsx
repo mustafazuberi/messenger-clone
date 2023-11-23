@@ -1,7 +1,6 @@
 "use client";
 import ChatRoom from "@/customComponents/web/ChatRoom";
 import useAudioCall from "@/hooks/useAudioCall";
-import useWebRTC from "@/hooks/useWebRTC";
 import { RootState } from "@/store";
 import { CALL_STATUS, CALL_TYPE } from "@/types/types.call";
 import { useEffect } from "react";
@@ -10,8 +9,7 @@ import { useSelector } from "react-redux";
 const page = () => {
   const { activeCall } = useSelector((state: RootState) => state.calls);
   const currentUser = useSelector((state: RootState) => state.currentUser);
-  const { getCurrentUserCalls } = useWebRTC();
-  const { handleAudioCall } = useAudioCall();
+  const { handleAudioCall, getCurrentUserCalls } = useAudioCall();
 
   useEffect(() => {
     (async () => {
