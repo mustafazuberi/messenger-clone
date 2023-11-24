@@ -13,17 +13,8 @@ const AudioCallButtons = () => {
     handleOnRejectCall,
     handleOnCancelCall,
     handleOnReceiveCall,
+    handleOnEndConversation,
   } = useAudioCall();
-
-  const closeButton = (
-    <Button
-      variant={"destructive"}
-      className="bg-red-700 animate-pulse w-[65px] h-[65px] rounded-full flex justify-center items-center cursor-pointer"
-      onClick={handleOnRejectCall}
-    >
-      <IoCloseCircleSharp className="text-white text-3xl" />
-    </Button>
-  );
 
   const rejectButton = (
     <Button
@@ -55,10 +46,11 @@ const AudioCallButtons = () => {
     </Button>
   );
 
-  const callAgainButton = (
+  const endConversationBtn = (
     <Button
       variant={"destructive"}
-      className="bg-green-900 hover:bg-green-950 animate-pulse w-[65px] h-[65px] rounded-full flex justify-center items-center cursor-pointer"
+      className="bg-red-700 animate-pulse w-[65px] h-[65px] rounded-full flex justify-center items-center cursor-pointer"
+      onClick={handleOnEndConversation}
     >
       <ImPhoneHangUp className="text-white text-3xl" />
     </Button>
@@ -79,6 +71,8 @@ const AudioCallButtons = () => {
             {acceptButton}
           </section>
         )}
+
+      {activeCall?.callStatus === CALL_STATUS.ONGOING && endConversationBtn}
     </section>
   );
 };

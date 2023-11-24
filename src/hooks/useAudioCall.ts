@@ -159,16 +159,24 @@ const useAudioCall = () => {
   }, [currentUser?.uid, activeRoom.chatWith?.uid, doOffer, dispatch]);
 
   const handleOnReceiveCall = async () => {
-    console.log("here in handleOnReceiveCall function");
     if (!activeCall?.id!) return;
     await getAudioPermission();
     await doAnswer(activeCall?.id!, CALL_STATUS.ONGOING);
   };
 
   const handleAudioCall = async () => {
-    console.log("here in handleAudioCall function");
     if (activeCall?.callStatus !== CALL_STATUS.ONGOING) return;
-    console.log(activeCall.id!);
+  };
+
+  const handleOnEndConversation = async () => {
+    if (!activeCall?.id!) return;
+    closeWebRtcConnection(); // this will end peer connection
+    const callId = activeCall?.id;
+    await doAnswer(callId, CALL_STATUS.DONE); // updating call status to DONE
+    const ref = doc(db, "calls", callId);
+    await updateDoc(ref, {
+      answered: true,
+    }); // updated answered to true in firebase
   };
 
   return {
@@ -180,6 +188,7 @@ const useAudioCall = () => {
     getCurrentUserCalls,
     handleIntiateCall,
     handleOnReceiveCall,
+    handleOnEndConversation,
   };
 };
 
