@@ -9,18 +9,7 @@ import { useSelector } from "react-redux";
 const page = () => {
   const { activeCall } = useSelector((state: RootState) => state.calls);
   const currentUser = useSelector((state: RootState) => state.currentUser);
-  const { handleAudioCall, getCurrentUserCalls } = useAudioCall();
-
-  useEffect(() => {
-    (async () => {
-      if (
-        activeCall?.type === CALL_TYPE.AUDIO &&
-        activeCall.callStatus === CALL_STATUS.ONGOING
-      ) {
-        await handleAudioCall();
-      }
-    })();
-  }, [activeCall]);
+  const { getCurrentUserCalls } = useAudioCall();
 
   useEffect(() => {
     getCurrentUserCalls();

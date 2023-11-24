@@ -12,6 +12,7 @@ import {
   addDoc,
   collection,
   doc,
+  getDoc,
   onSnapshot,
   query,
   updateDoc,
@@ -24,6 +25,10 @@ const useAudioCall = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const activeCall = useSelector((state: RootState) => state.calls.activeCall);
   const currentUser = useSelector((state: RootState) => state.currentUser);
+
+  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  const [cachedLocalPC, setCachedLocalPC] = useState();
 
   const pc = useMemo(
     () =>
@@ -41,18 +46,13 @@ const useAudioCall = () => {
   );
 
   const getAudioPermission = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-    });
-  };
-
-  const doOffer = async (call: Call) => {
     try {
-      const callDoc = await addDoc(collection(db, "calls"), call);
-      return callDoc;
+      await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
+      // Handle the stream, setLocalStream, etc.
     } catch (error) {
-      console.log("error in do Offer :", error);
-      return null;
+      console.error("Error getting audio permission:", error);
     }
   };
 
@@ -142,6 +142,14 @@ const useAudioCall = () => {
 
   const handleIntiateCall = useCallback(async () => {
     await getAudioPermission();
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    // Convert RTCSessionDescription to serializable format
+    const offerData = {
+      type: offer.type!,
+      sdp: offer.sdp!,
+    };
+
     const call: Call = {
       to: activeRoom.chatWith?.uid!,
       from: currentUser.uid,
@@ -152,20 +160,98 @@ const useAudioCall = () => {
       answered: false,
       isActive: true,
       createdAt: Date.now(),
+      offer: offerData,
     };
-    const callDoc = await doOffer({ ...call }); //this will initialize call in firebase
+
+    const callDoc = await addDoc(collection(db, "calls"), call); //this will initialize call in firebase
     if (!callDoc) return;
     dispatch(setActiveCall({ ...call, id: callDoc?.id })); //dispatching in redux
-  }, [currentUser?.uid, activeRoom.chatWith?.uid, doOffer, dispatch]);
+
+    // Web Rtc
+    const callId = callDoc?.id;
+    pc.onicecandidate = async (event) => {
+      if (!event.candidate) {
+        console.log("Got final candidate!");
+        return;
+      }
+      console.log("found candidate", event.candidate);
+      const candidateData = event.candidate.toJSON();
+      await addDoc(
+        collection(db, "calls", callId, "calleeCandidates"),
+        candidateData
+      );
+    };
+
+    //
+    pc.ontrack = (event) => {
+      if (
+        event.streams &&
+        event.streams[0] &&
+        remoteStream !== event.streams[0]
+      ) {
+        console.log("RemotePC received the stream join", event.streams[0]);
+        setRemoteStream(event.streams[0]);
+      }
+    };
+
+    const roomRef = doc(db, "calls", callId);
+    //
+    onSnapshot(roomRef, async (querySnapshot) => {
+      const data = querySnapshot.data();
+      if (!pc.currentRemoteDescription && data?.answer) {
+        const rtcSessionDescription = new RTCSessionDescription(data.answer);
+        await pc.setRemoteDescription(rtcSessionDescription);
+      }
+    });
+
+    onSnapshot(
+      query(collection(db, "calls", callId, "calleeCandidates")),
+      (querySnapshot) => {
+        querySnapshot.docChanges().forEach(async (change) => {
+          if (change.type === "added") {
+            const data = change.doc.data();
+            await pc.addIceCandidate(new RTCIceCandidate(data));
+          }
+        });
+      }
+    );
+  }, [currentUser?.uid, activeRoom.chatWith?.uid, dispatch]);
 
   const handleOnReceiveCall = async () => {
     if (!activeCall?.id!) return;
     await getAudioPermission();
     await doAnswer(activeCall?.id!, CALL_STATUS.ONGOING);
-  };
 
-  const handleAudioCall = async () => {
-    if (activeCall?.callStatus !== CALL_STATUS.ONGOING) return;
+    // Web Rtc
+    const callId = activeCall!.id!;
+    if (!activeCall.offer) return;
+
+    const offer = activeCall.offer!;
+    await pc.setRemoteDescription(new RTCSessionDescription(offer));
+
+    const answer = await pc.createAnswer();
+    const answerData = {
+      sdp: answer.sdp,
+      type: answer.type,
+    };
+    await pc.setLocalDescription(answer);
+
+    const ref = doc(db, "calls", callId);
+    await updateDoc(ref, { answerData });
+
+    //
+    const unsubscribe = onSnapshot(
+      query(collection(db, "calls", activeCall.id!, "callerCandidates")),
+      (querySnapshot) => {
+        querySnapshot.docChanges().forEach(async (change) => {
+          if (change.type === "added") {
+            const data = change.doc.data();
+            await pc.addIceCandidate(new RTCIceCandidate(data));
+          }
+        });
+      }
+    );
+    return unsubscribe;
   };
 
   const handleOnEndConversation = async () => {
@@ -176,11 +262,11 @@ const useAudioCall = () => {
     const ref = doc(db, "calls", callId);
     await updateDoc(ref, {
       answered: true,
+      isActive: false,
     }); // updated answered to true in firebase
   };
 
   return {
-    handleAudioCall,
     handleOnRejectCall,
     handleOnCancelCall,
     closeWebRtcConnection,
@@ -189,6 +275,9 @@ const useAudioCall = () => {
     handleIntiateCall,
     handleOnReceiveCall,
     handleOnEndConversation,
+    pc,
+    localStream,
+    remoteStream,
   };
 };
 
