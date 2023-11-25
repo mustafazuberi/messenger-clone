@@ -3,7 +3,7 @@ import useAudioCall from "@/hooks/useAudioCall";
 import { RootState } from "@/store";
 import { CALL_STATUS } from "@/types/types.call";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
 import AudioCallButtons from "./CallDialogButtons";
 import AudioCalTimer from "./AudioCalTimer";
@@ -16,7 +16,15 @@ const CallDialog = () => {
       ? activeCall.toUser
       : activeCall?.fromUser;
 
-  const { handleMissedCall, pc, localRef, remoteRef } = useAudioCall();
+  const {
+    handleMissedCall,
+    pc,
+    localRef,
+    remoteRef,
+    myStream,
+    remoteStream,
+    setRemoteStream,
+  } = useAudioCall();
 
   // This use Effect will set Active call to missed in firebase after 10 seconds of calling and update active call to null
   useEffect(() => {
@@ -29,6 +37,22 @@ const CallDialog = () => {
       clearTimeout(timeoutId);
     };
   }, [activeCall?.callStatus, handleMissedCall]);
+
+  // For Web rtc stream
+  useEffect(() => {
+    if (localRef.current && myStream) {
+      localRef.current.srcObject = myStream;
+      console.log(myStream);
+    }
+  }, [myStream]);
+
+  useEffect(() => {
+    if (remoteRef.current && remoteStream) {
+      remoteRef.current.srcObject = remoteStream;
+    }
+  }, [remoteStream]);
+
+  //
 
   const renderProfilePicture = () => {
     if (activeCall?.toUser.photoUrl) {
@@ -102,14 +126,15 @@ const CallDialog = () => {
                     ref={localRef}
                     autoPlay
                     playsInline
-                    className="local"
-                    muted
+                    controls
+                    className="w-[180px] h-[200px]"
                   />
                   <video
                     ref={remoteRef}
                     autoPlay
                     playsInline
-                    className="remote w-[100px] "
+                    controls
+                    className="w-[150px] h-[200px]"
                   />
                 </section>
                 {/*  */}

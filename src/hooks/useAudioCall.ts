@@ -44,6 +44,8 @@ const useAudioCall = () => {
 
   const localRef = useRef<HTMLVideoElement>(null);
   const remoteRef = useRef<HTMLVideoElement>(null);
+  const [myStream, setMyStream] = useState<null | MediaStream>(null);
+  const [remoteStream, setRemoteStream] = useState<null | MediaStream>(null);
   const [webcamActive, setWebcamActive] = useState<boolean>(false);
 
   const setupSources = async (mode: string) => {
@@ -53,11 +55,15 @@ const useAudioCall = () => {
     });
     const remoteStream = new MediaStream();
 
+    setMyStream(localStream);
     localStream.getTracks().forEach((track) => {
       pc.addTrack(track, localStream);
     });
 
     pc.ontrack = (event) => {
+      const streams = event.streams[0];
+      console.log("sending Streams");
+      setRemoteStream(streams);
       event.streams[0].getTracks().forEach((track) => {
         remoteStream.addTrack(track);
       });
@@ -282,6 +288,10 @@ const useAudioCall = () => {
     handleOnRecieveCall,
     localRef,
     remoteRef,
+    myStream,
+    remoteStream,
+    setMyStream,
+    setRemoteStream,
   };
 };
 
