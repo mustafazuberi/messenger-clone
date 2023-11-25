@@ -23,7 +23,11 @@ const AlreadyHaveAnAccount = () => {
     <main>
       <p className="text-center text-gray-700 dark:text-gray-300">
         Already have an account?{" "}
-        <Link prefetch href={"/auth/signin"} className="font-normal text-blue-600">
+        <Link
+          prefetch
+          href={"/auth/signin"}
+          className="font-normal text-blue-600"
+        >
           Login
         </Link>
       </p>

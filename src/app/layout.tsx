@@ -20,11 +20,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <StoreProvider>
-          <main className="flex flex-col min-h-screen max-h-screen min-w-full overflow-y-hidden">
+          <main className="flex flex-col min-w-full">
             <section className="min-w-full">
               <Navbar />
             </section>
-            <section className="max-h-[89vh]">{children}</section>
+            <section className="max-h-[89vh] min-h-[89vh]">{children}</section>
           </main>
           <Toaster />
         </StoreProvider>

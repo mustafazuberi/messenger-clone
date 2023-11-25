@@ -9,8 +9,12 @@ import TailwindSpinner from "./TailwindSpinner";
 import { RiSendPlane2Fill } from "react-icons/ri";
 
 const ShareFriendWithModal = () => {
-  const { shareWithInp, setShareWithInp, sharingWith, handleOnShareFriend } =
-    useSendMessage();
+  const {
+    shareWithInp,
+    setShareWithInp,
+    sharingWith,
+    handleOnShareFriend,
+  } = useSendMessage();
   const friends = useSelector((state: RootState) => state.friends);
   const [filteredFriends, setFilteredFriends] = useState<Friend[]>([]);
 
