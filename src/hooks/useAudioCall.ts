@@ -3,12 +3,11 @@ import {
   setActiveCall,
   setCalls,
 } from "@/store/slice/callSlice";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { CALL_STATUS, CALL_TYPE, Call } from "@/types/types.call";
 import {
-  DocumentReference,
   addDoc,
   collection,
   doc,
@@ -48,7 +47,7 @@ const useAudioCall = () => {
   const [remoteStream, setRemoteStream] = useState<null | MediaStream>(null);
   const [webcamActive, setWebcamActive] = useState<boolean>(false);
 
-  const setupSources = async (mode: string) => {
+  const setupSources = useCallback(async (mode: string) => {
     const localStream = await navigator.mediaDevices.getUserMedia({
       video: true,
       audio: true,
@@ -62,7 +61,6 @@ const useAudioCall = () => {
 
     pc.ontrack = (event) => {
       const streams = event.streams[0];
-      console.log("sending Streams");
       setRemoteStream(streams);
       event.streams[0].getTracks().forEach((track) => {
         remoteStream.addTrack(track);
@@ -70,11 +68,9 @@ const useAudioCall = () => {
     };
 
     if (localRef.current) {
-      console.log("settting local ref  creating");
       localRef.current.srcObject = localStream;
     }
     if (remoteRef.current) {
-      console.log("settting remote ref  creating");
       remoteRef.current.srcObject = remoteStream;
     }
     setWebcamActive(true);
@@ -82,13 +78,10 @@ const useAudioCall = () => {
     if (mode === "create") {
       // Create a document without data to obtain the reference
       const callDocRef = await addDoc(collection(db, "calls"), {});
-
       // Now use the obtained reference to create subcollections
       const callDoc = doc(db, "calls", callDocRef.id);
       const offerCandidates = collection(callDoc, "offerCandidates");
       const answerCandidates = collection(callDoc, "answerCandidates");
-
-      // Call your custom function (doAnswer) passing the document ID and status
 
       pc.onicecandidate = (event) => {
         event.candidate && addDoc(offerCandidates, event.candidate.toJSON());
@@ -102,7 +95,6 @@ const useAudioCall = () => {
         type: offerDescription.type!,
       };
 
-      // Update the document with the offer data
       const call: Call = {
         to: activeRoom.chatWith?.uid!,
         from: currentUser.uid,
@@ -134,9 +126,7 @@ const useAudioCall = () => {
         });
       });
     } else if (mode === "join") {
-      console.log("here in receive call function");
       const callDoc = doc(collection(db, "calls"), callId);
-      console.log("in receive call call Id is", callId);
       const answerCandidates = collection(callDoc, "answerCandidates");
       const offerCandidates = collection(callDoc, "offerCandidates");
 
@@ -145,7 +135,6 @@ const useAudioCall = () => {
       };
 
       const callData = (await getDoc(callDoc)).data();
-      console.log("receive call data", callData);
       const offerDescription = callData?.offer;
       await pc.setRemoteDescription(
         new RTCSessionDescription(offerDescription)
@@ -172,30 +161,29 @@ const useAudioCall = () => {
     }
 
     pc.onconnectionstatechange = (event) => {
-      console.log("pc.connectionState", pc.connectionState);
       if (pc.connectionState === "disconnected") {
-        pc.close();
+        closePeerConnection();
       }
     };
-  };
+  }, []);
 
-  const handleIntiateCall = async () => {
+  const handleIntiateCall = useCallback(async () => {
     await setupSources("create");
-  };
+  }, [setupSources]);
 
-  const handleOnRecieveCall = async () => {
+  const handleOnRecieveCall = useCallback(async () => {
     await setupSources("join");
     await doAnswer(callId, CALL_STATUS.ONGOING);
-  };
+  }, [callId, setupSources]);
 
-  const doAnswer = async (callId: string, ans: string) => {
+  const doAnswer = useCallback(async (callId: string, ans: string) => {
     const ref = doc(db, "calls", callId);
     await updateDoc(ref, {
       callStatus: ans,
     });
-  };
+  }, []);
 
-  const updateIsActiveFalse = async (callId: string) => {
+  const updateIsActiveFalse = useCallback(async (callId: string) => {
     try {
       if (!callId) return;
       const ref = doc(db, "calls", callId);
@@ -205,9 +193,9 @@ const useAudioCall = () => {
     } catch (error) {
       console.log("error in updateIsActiveFalse:", updateIsActiveFalse);
     }
-  };
+  }, []);
 
-  const getCurrentUserCalls = (): Unsubscribe => {
+  const getCurrentUserCalls = useCallback((): Unsubscribe => {
     const unsubscribe = onSnapshot(
       query(collection(db, "calls")),
       (querySnapshot) => {
@@ -230,31 +218,31 @@ const useAudioCall = () => {
       }
     );
     return unsubscribe;
-  };
+  }, [currentUser, dispatch]);
 
-  const handleOnCancelCall = async () => {
+  const handleOnCancelCall = useCallback(async () => {
     const callId = activeCall?.id!;
     try {
       await doAnswer(callId, CALL_STATUS.CANCELLED);
       await updateIsActiveFalse(callId);
-      pc.close();
+      closePeerConnection();
     } catch (error) {
       console.log("Error in handleOnCancelCall", error);
     }
-  };
+  }, [activeCall?.id, doAnswer, updateIsActiveFalse, pc]);
 
-  const handleOnRejectCall = async () => {
+  const handleOnRejectCall = useCallback(async () => {
     const callId = activeCall?.id!;
     try {
       await doAnswer(callId, CALL_STATUS.DONE);
       await updateIsActiveFalse(callId);
-      pc.close();
+      closePeerConnection();
     } catch (error) {
       console.log("error in handleOnRejectCall", error);
     }
-  };
+  }, [activeCall?.id, doAnswer, updateIsActiveFalse, pc]);
 
-  const handleMissedCall = async () => {
+  const handleMissedCall = useCallback(async () => {
     const callId = activeCall?.id!;
     try {
       await doAnswer(callId, CALL_STATUS.MISSED);
@@ -263,11 +251,11 @@ const useAudioCall = () => {
     } catch (error) {
       console.log("error in handleMissedCall", error);
     }
-  };
+  }, [activeCall?.id, doAnswer, updateIsActiveFalse, pc]);
 
-  const handleOnEndConversation = async () => {
+  const handleOnEndConversation = useCallback(async () => {
     if (!activeCall?.id!) return;
-    pc.close();
+    closePeerConnection;
     const callId = activeCall?.id;
     await doAnswer(callId, CALL_STATUS.DONE); // updating call status to DONE
     const ref = doc(db, "calls", callId);
@@ -275,6 +263,16 @@ const useAudioCall = () => {
       answered: true,
       isActive: false,
     }); // updated answered to true in firebase
+  }, [activeCall, doAnswer, updateDoc, pc]);
+
+  const closePeerConnection = async () => {
+    myStream?.getTracks().forEach((track) => track.stop());
+    remoteStream?.getTracks().forEach((track) => track.stop());
+    await navigator.mediaDevices.getUserMedia({
+      video: false,
+      audio: false,
+    });
+    pc.close();
   };
 
   return {

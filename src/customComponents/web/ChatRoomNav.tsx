@@ -32,8 +32,8 @@ const ChatRoomNav = () => {
         </section>
       </section>
       <section className="flex flex-row gap-x-4 items-center justify-center">
-        <AudioCall />
-        <VideoCall />
+        {/* <AudioCall />
+        <VideoCall /> */}
         {user && <ChatRoomFriendInfo chatWith={user} />}
       </section>
     </main>

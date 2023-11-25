@@ -22,7 +22,7 @@ const Navbar = () => {
         <MessengerTextAndLogo />
         <ThemeAndProfileImage />
       </main>
-      <CallDialog />
+      {/* <CallDialog /> */}
     </>
   );
 };
