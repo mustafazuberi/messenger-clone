@@ -22,7 +22,9 @@ export default function NotFound() {
         </CardHeader>
         <CardFooter className="flex justify-center">
           <Button asChild>
-            <Link href="/messages">Go To Chat</Link>
+            <Link href="/messages" prefetch>
+              Go To Chat
+            </Link>
           </Button>
         </CardFooter>
       </Card>

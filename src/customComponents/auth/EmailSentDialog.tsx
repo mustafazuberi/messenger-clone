@@ -27,7 +27,7 @@ const EmailSentDialog = ({ email }: { email: string }) => {
             email follow the link provided to complete your registration.
           </p>
           <section className="flex justify-center items-center mt-3">
-            <Link href={"/auth/signin"}>
+            <Link href={"/auth/signin"} prefetch>
               <Button>Sign In</Button>
             </Link>
           </section>

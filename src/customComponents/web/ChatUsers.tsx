@@ -21,8 +21,11 @@ type props = {
 const ChatUsers: React.FC<props> = ({ searchMessengerInput }) => {
   const friends = useSelector((state: RootState) => state.friends);
   const rooms = useSelector((state: RootState) => state.rooms);
-  const { getChatUsers, getRoomsUnseenMessages, roomsUnseenMessages } =
-    useChat();
+  const {
+    getChatUsers,
+    getRoomsUnseenMessages,
+    roomsUnseenMessages,
+  } = useChat();
   const chatUsers: ChatUser[] = useMemo(() => getChatUsers(rooms), [rooms]);
 
   useEffect(() => {
@@ -75,7 +78,7 @@ const NoFriendsToChat = React.memo(() => {
           <h1 className="text-[19px] font-light">
             You have no friends to chat with.
           </h1>
-          <Link href={`?tab=findFriends`}>
+          <Link prefetch href={`?tab=findFriends`}>
             <span className="text-[17px] bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-400">
               <Button>Find Friends</Button>
             </span>

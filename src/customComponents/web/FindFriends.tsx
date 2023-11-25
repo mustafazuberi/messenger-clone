@@ -83,7 +83,7 @@ export const FindFriendsNav: React.FC<FindFriendsNavProps> = ({
   return (
     <main className="flex flex-col gap-y-3 mt-2 p-2">
       <section className="flex flex-row gap-x-2 items-center w-full">
-        <Link href={"/messages"}>
+        <Link prefetch href={"/messages"}>
           <BiArrowBack className="cursor-pointer text-2xl text-gray-700 dark:text-gray-300" />
         </Link>
         <section className="flex flex-row justify-between w-full">

@@ -24,7 +24,11 @@ const DontHaveAnAccount = () => {
       <section className="w-full flex flex-col gap-y-3">
         <p className="text-center">
           Don't have an account?{" "}
-          <Link href={"/auth/signup"} className="font-normal text-blue-600">
+          <Link
+            prefetch
+            href={"/auth/signup"}
+            className="font-normal text-blue-600"
+          >
             Create Account
           </Link>
         </p>

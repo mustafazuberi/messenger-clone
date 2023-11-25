@@ -13,9 +13,9 @@ import { RootState } from "@/store";
 import { CiLogout, CiSettings } from "react-icons/ci";
 import useHome from "@/hooks/useHome";
 import UserImageAvatar from "./UserImageAvatar";
+import Link from "next/link";
 
 function ProfileDropDown() {
-  const router = useRouter();
   const { handleSignOut } = useHome();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   return (
@@ -28,12 +28,12 @@ function ProfileDropDown() {
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>{currentUser.displayName}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuCheckboxItem
-          className="flex flex-row gap-x-3 py-3 cursor-pointer"
-          onClick={() => router.push("/profile/settings")}
-        >
-          <CiSettings className="text-[20px]" /> Settings
-        </DropdownMenuCheckboxItem>
+        <Link prefetch href={"/profile/settings"}>
+          <DropdownMenuCheckboxItem className="flex flex-row gap-x-3 py-3 cursor-pointer">
+            <CiSettings className="text-[20px]" /> Settings
+          </DropdownMenuCheckboxItem>
+        </Link>
+
         <DropdownMenuCheckboxItem
           className="flex flex-row gap-x-3 py-3 cursor-pointer"
           onClick={handleSignOut}

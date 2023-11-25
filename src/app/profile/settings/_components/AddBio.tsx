@@ -29,7 +29,9 @@ const AddBio = () => {
             name="bio"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel className="text-gray-700 dark:text-gray-300">Bio</FormLabel>
+                <FormLabel className="text-gray-700 dark:text-gray-300">
+                  Bio
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="Bio" {...field} />
                 </FormControl>

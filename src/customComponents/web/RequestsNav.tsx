@@ -19,7 +19,7 @@ const RequestsNav = ({ activeTab, setActiveTab }: props) => {
     <section className="flex flex-row justify-between items-center w-full mt-2 p-2">
       <section className="flex flex-row gap-x-2 items-center">
         <section>
-          <Link href={"/messages"}>
+          <Link prefetch href={"/messages"}>
             <BiArrowBack className="cursor-pointer text-2xl text-gray-700 dark:text-gray-300" />
           </Link>
         </section>

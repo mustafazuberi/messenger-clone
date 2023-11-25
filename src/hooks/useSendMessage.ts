@@ -15,6 +15,7 @@ import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useSelector } from "react-redux";
+import useChat from "./useChat";
 
 const openImageModalInitialState: OpenImageModal = {
   img: "",
@@ -28,6 +29,7 @@ const forwardingInitialState: Forwarding = {
 
 const useSendMessage = () => {
   const { toast } = useToast();
+  const { handleOnChatUser } = useChat();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const rooms = useSelector((state: RootState) => state.rooms);
@@ -164,6 +166,7 @@ const useSendMessage = () => {
           }`,
         });
         setForwarding(forwardingInitialState);
+        handleOnChatUser(forwardTo);
       } catch (error) {
         console.log(error);
         setForwarding(forwardingInitialState);
