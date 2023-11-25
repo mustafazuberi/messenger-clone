@@ -12,7 +12,7 @@ const AudioCallButtons = () => {
   const {
     handleOnRejectCall,
     handleOnCancelCall,
-    handleOnReceiveCall,
+    handleOnRecieveCall,
     handleOnEndConversation,
   } = useAudioCall();
 
@@ -39,7 +39,7 @@ const AudioCallButtons = () => {
   const acceptButton = (
     <Button
       variant={"destructive"}
-      onClick={handleOnReceiveCall}
+      onClick={handleOnRecieveCall}
       className="bg-green-900 hover:bg-green-950 animate-pulse w-[65px] h-[65px] rounded-full flex justify-center items-center cursor-pointer"
     >
       <ImPhoneHangUp className="text-white text-3xl" />

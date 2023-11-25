@@ -3,7 +3,7 @@ import {
   setActiveCall,
   setCalls,
 } from "@/store/slice/callSlice";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { CALL_STATUS, CALL_TYPE, Call } from "@/types/types.call";
@@ -15,45 +15,171 @@ import {
   getDoc,
   onSnapshot,
   query,
+  setDoc,
   updateDoc,
 } from "firebase/firestore";
 import { db } from "@/db/firebase.config";
 import { Unsubscribe } from "firebase/auth";
 
 const useAudioCall = () => {
+  // Initialize WebRTC
+  const servers = {
+    iceServers: [
+      {
+        urls: [
+          "stun:stun1.l.google.com:19302",
+          "stun:stun2.l.google.com:19302",
+        ],
+      },
+    ],
+    iceCandidatePoolSize: 10,
+  };
+  const pc = new RTCPeerConnection(servers);
+
   const dispatch = useDispatch();
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const activeCall = useSelector((state: RootState) => state.calls.activeCall);
+  const callId = activeCall?.id!;
   const currentUser = useSelector((state: RootState) => state.currentUser);
 
-  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
-  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
-  const [cachedLocalPC, setCachedLocalPC] = useState();
+  const localRef = useRef<HTMLVideoElement>(null);
+  const remoteRef = useRef<HTMLVideoElement>(null);
+  const [webcamActive, setWebcamActive] = useState<boolean>(false);
 
-  const pc = useMemo(
-    () =>
-      new RTCPeerConnection({
-        iceServers: [
-          {
-            urls: [
-              "stun:stun.l.google.com:19302",
-              "stun:global.stun.twilio.com:3478",
-            ],
-          },
-        ],
-      }),
-    []
-  );
+  const setupSources = async (mode: string) => {
+    const localStream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
+    });
+    const remoteStream = new MediaStream();
 
-  const getAudioPermission = async () => {
-    try {
-      await navigator.mediaDevices.getUserMedia({
-        audio: true,
+    localStream.getTracks().forEach((track) => {
+      pc.addTrack(track, localStream);
+    });
+
+    pc.ontrack = (event) => {
+      event.streams[0].getTracks().forEach((track) => {
+        remoteStream.addTrack(track);
       });
-      // Handle the stream, setLocalStream, etc.
-    } catch (error) {
-      console.error("Error getting audio permission:", error);
+    };
+
+    if (localRef.current) {
+      console.log("settting local ref  creating");
+      localRef.current.srcObject = localStream;
     }
+    if (remoteRef.current) {
+      console.log("settting remote ref  creating");
+      remoteRef.current.srcObject = remoteStream;
+    }
+    setWebcamActive(true);
+
+    if (mode === "create") {
+      // Create a document without data to obtain the reference
+      const callDocRef = await addDoc(collection(db, "calls"), {});
+
+      // Now use the obtained reference to create subcollections
+      const callDoc = doc(db, "calls", callDocRef.id);
+      const offerCandidates = collection(callDoc, "offerCandidates");
+      const answerCandidates = collection(callDoc, "answerCandidates");
+
+      // Call your custom function (doAnswer) passing the document ID and status
+
+      pc.onicecandidate = (event) => {
+        event.candidate && addDoc(offerCandidates, event.candidate.toJSON());
+      };
+
+      const offerDescription = await pc.createOffer();
+      await pc.setLocalDescription(offerDescription);
+
+      const offer = {
+        sdp: offerDescription.sdp!,
+        type: offerDescription.type!,
+      };
+
+      // Update the document with the offer data
+      const call: Call = {
+        to: activeRoom.chatWith?.uid!,
+        from: currentUser.uid,
+        toUser: { ...activeRoom.chatWith! },
+        fromUser: { ...currentUser },
+        callStatus: CALL_STATUS.CALLING,
+        type: CALL_TYPE.AUDIO,
+        answered: false,
+        isActive: true,
+        createdAt: Date.now(),
+        offer: offer,
+      };
+      await setDoc(callDoc, { ...call });
+
+      onSnapshot(callDoc, (snapshot) => {
+        const data = snapshot.data();
+        if (!pc.currentRemoteDescription && data?.answer) {
+          const answerDescription = new RTCSessionDescription(data.answer);
+          pc.setRemoteDescription(answerDescription);
+        }
+      });
+
+      onSnapshot(answerCandidates, (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === "added") {
+            const candidate = new RTCIceCandidate(change.doc.data());
+            pc.addIceCandidate(candidate);
+          }
+        });
+      });
+    } else if (mode === "join") {
+      console.log("here in receive call function");
+      const callDoc = doc(collection(db, "calls"), callId);
+      console.log("in receive call call Id is", callId);
+      const answerCandidates = collection(callDoc, "answerCandidates");
+      const offerCandidates = collection(callDoc, "offerCandidates");
+
+      pc.onicecandidate = (event) => {
+        event.candidate && addDoc(answerCandidates, event.candidate.toJSON());
+      };
+
+      const callData = (await getDoc(callDoc)).data();
+      console.log("receive call data", callData);
+      const offerDescription = callData?.offer;
+      await pc.setRemoteDescription(
+        new RTCSessionDescription(offerDescription)
+      );
+
+      const answerDescription = await pc.createAnswer();
+      await pc.setLocalDescription(answerDescription);
+
+      const answer = {
+        type: answerDescription.type,
+        sdp: answerDescription.sdp,
+      };
+
+      await updateDoc(callDoc, { answer });
+
+      onSnapshot(offerCandidates, (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === "added") {
+            let data = change.doc.data();
+            pc.addIceCandidate(new RTCIceCandidate(data));
+          }
+        });
+      });
+    }
+
+    pc.onconnectionstatechange = (event) => {
+      console.log("pc.connectionState", pc.connectionState);
+      if (pc.connectionState === "disconnected") {
+        pc.close();
+      }
+    };
+  };
+
+  const handleIntiateCall = async () => {
+    await setupSources("create");
+  };
+
+  const handleOnRecieveCall = async () => {
+    await setupSources("join");
+    await doAnswer(callId, CALL_STATUS.ONGOING);
   };
 
   const doAnswer = async (callId: string, ans: string) => {
@@ -105,7 +231,7 @@ const useAudioCall = () => {
     try {
       await doAnswer(callId, CALL_STATUS.CANCELLED);
       await updateIsActiveFalse(callId);
-      closeWebRtcConnection();
+      pc.close();
     } catch (error) {
       console.log("Error in handleOnCancelCall", error);
     }
@@ -116,7 +242,7 @@ const useAudioCall = () => {
     try {
       await doAnswer(callId, CALL_STATUS.DONE);
       await updateIsActiveFalse(callId);
-      closeWebRtcConnection();
+      pc.close();
     } catch (error) {
       console.log("error in handleOnRejectCall", error);
     }
@@ -127,136 +253,15 @@ const useAudioCall = () => {
     try {
       await doAnswer(callId, CALL_STATUS.MISSED);
       await updateIsActiveFalse(callId);
-      closeWebRtcConnection();
+      pc.close();
     } catch (error) {
       console.log("error in handleMissedCall", error);
     }
   };
 
-  const closeWebRtcConnection = useCallback(() => {
-    pc.close();
-    // setLocalStream(null);
-    // setRemoteStream(null);
-    dispatch(clearActiveCall());
-  }, [pc, dispatch]);
-
-  const handleIntiateCall = useCallback(async () => {
-    await getAudioPermission();
-    const offer = await pc.createOffer();
-    await pc.setLocalDescription(offer);
-    // Convert RTCSessionDescription to serializable format
-    const offerData = {
-      type: offer.type!,
-      sdp: offer.sdp!,
-    };
-
-    const call: Call = {
-      to: activeRoom.chatWith?.uid!,
-      from: currentUser.uid,
-      toUser: { ...activeRoom.chatWith! },
-      fromUser: { ...currentUser },
-      callStatus: CALL_STATUS.CALLING,
-      type: CALL_TYPE.AUDIO,
-      answered: false,
-      isActive: true,
-      createdAt: Date.now(),
-      offer: offerData,
-    };
-
-    const callDoc = await addDoc(collection(db, "calls"), call); //this will initialize call in firebase
-    if (!callDoc) return;
-    dispatch(setActiveCall({ ...call, id: callDoc?.id })); //dispatching in redux
-
-    // Web Rtc
-    const callId = callDoc?.id;
-    pc.onicecandidate = async (event) => {
-      if (!event.candidate) {
-        console.log("Got final candidate!");
-        return;
-      }
-      console.log("found candidate", event.candidate);
-      const candidateData = event.candidate.toJSON();
-      await addDoc(
-        collection(db, "calls", callId, "calleeCandidates"),
-        candidateData
-      );
-    };
-
-    //
-    pc.ontrack = (event) => {
-      if (
-        event.streams &&
-        event.streams[0] &&
-        remoteStream !== event.streams[0]
-      ) {
-        console.log("RemotePC received the stream join", event.streams[0]);
-        setRemoteStream(event.streams[0]);
-      }
-    };
-
-    const roomRef = doc(db, "calls", callId);
-    //
-    onSnapshot(roomRef, async (querySnapshot) => {
-      const data = querySnapshot.data();
-      if (!pc.currentRemoteDescription && data?.answer) {
-        const rtcSessionDescription = new RTCSessionDescription(data.answer);
-        await pc.setRemoteDescription(rtcSessionDescription);
-      }
-    });
-
-    onSnapshot(
-      query(collection(db, "calls", callId, "calleeCandidates")),
-      (querySnapshot) => {
-        querySnapshot.docChanges().forEach(async (change) => {
-          if (change.type === "added") {
-            const data = change.doc.data();
-            await pc.addIceCandidate(new RTCIceCandidate(data));
-          }
-        });
-      }
-    );
-  }, [currentUser?.uid, activeRoom.chatWith?.uid, dispatch]);
-
-  const handleOnReceiveCall = async () => {
-    if (!activeCall?.id!) return;
-    await getAudioPermission();
-    await doAnswer(activeCall?.id!, CALL_STATUS.ONGOING);
-
-    // Web Rtc
-    const callId = activeCall!.id!;
-    if (!activeCall.offer) return;
-
-    const offer = activeCall.offer!;
-    await pc.setRemoteDescription(new RTCSessionDescription(offer));
-
-    const answer = await pc.createAnswer();
-    const answerData = {
-      sdp: answer.sdp,
-      type: answer.type,
-    };
-    await pc.setLocalDescription(answer);
-
-    const ref = doc(db, "calls", callId);
-    await updateDoc(ref, { answerData });
-
-    //
-    const unsubscribe = onSnapshot(
-      query(collection(db, "calls", activeCall.id!, "callerCandidates")),
-      (querySnapshot) => {
-        querySnapshot.docChanges().forEach(async (change) => {
-          if (change.type === "added") {
-            const data = change.doc.data();
-            await pc.addIceCandidate(new RTCIceCandidate(data));
-          }
-        });
-      }
-    );
-    return unsubscribe;
-  };
-
   const handleOnEndConversation = async () => {
     if (!activeCall?.id!) return;
-    closeWebRtcConnection(); // this will end peer connection
+    pc.close();
     const callId = activeCall?.id;
     await doAnswer(callId, CALL_STATUS.DONE); // updating call status to DONE
     const ref = doc(db, "calls", callId);
@@ -269,15 +274,14 @@ const useAudioCall = () => {
   return {
     handleOnRejectCall,
     handleOnCancelCall,
-    closeWebRtcConnection,
     handleMissedCall,
     getCurrentUserCalls,
     handleIntiateCall,
-    handleOnReceiveCall,
     handleOnEndConversation,
     pc,
-    localStream,
-    remoteStream,
+    handleOnRecieveCall,
+    localRef,
+    remoteRef,
   };
 };
 

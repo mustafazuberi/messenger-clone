@@ -7,7 +7,6 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import AudioCallButtons from "./CallDialogButtons";
 import AudioCalTimer from "./AudioCalTimer";
-import { current } from "@reduxjs/toolkit";
 
 const CallDialog = () => {
   const activeCall = useSelector((state: RootState) => state.calls.activeCall);
@@ -17,11 +16,7 @@ const CallDialog = () => {
       ? activeCall.toUser
       : activeCall?.fromUser;
 
-  const { handleMissedCall, pc, localStream, remoteStream } = useAudioCall();
-
-  console.log("remote stream", remoteStream);
-  console.log("local stream", localStream);
-  console.log("connection status ---", pc.connectionState);
+  const { handleMissedCall, pc, localRef, remoteRef } = useAudioCall();
 
   // This use Effect will set Active call to missed in firebase after 10 seconds of calling and update active call to null
   useEffect(() => {
@@ -101,6 +96,23 @@ const CallDialog = () => {
                     {renderCallStatus()}
                   </section>
                 </section>
+                {/* Call */}
+                <section className="flex flex-row">
+                  <video
+                    ref={localRef}
+                    autoPlay
+                    playsInline
+                    className="local"
+                    muted
+                  />
+                  <video
+                    ref={remoteRef}
+                    autoPlay
+                    playsInline
+                    className="remote w-[100px] "
+                  />
+                </section>
+                {/*  */}
                 <AudioCallButtons />
               </section>
 
