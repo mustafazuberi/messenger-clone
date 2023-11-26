@@ -8,15 +8,17 @@ import { useEffect } from "react";
 import { Call } from "@/types/types.call";
 import { clearActiveCall, setActiveCall } from "@/store/slice/callSlice";
 import { usePageVisibility } from "react-page-visibility";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
+  const path = usePathname();
   const { roomDetails } = useSelector((state: RootState) => state.activeRoom);
-
+  const hideNavbar = path.includes("messages") && roomDetails?.id;
   return (
     <>
       <main
         className={`h-[11vh] px-3 ${
-          roomDetails?.id ? "lg:flex md:flex hidden" : "flex"
+          hideNavbar ? "lg:flex md:flex hidden" : "flex"
         } flex-row justify-between items-center border-b`}
       >
         <MessengerTextAndLogo />

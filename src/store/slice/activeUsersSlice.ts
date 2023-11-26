@@ -13,9 +13,13 @@ const activeUsersSlice = createSlice({
       state = { ...action.payload };
       return state;
     },
-    clearActiveUsers: () => ACTIVE_USERS_INITIAL_STATE,
+    clearCurrentUserActiveStatus: (state, action: { payload: string }) => {
+      state = { [action.payload]: { isActive: false, lastActive: Date.now() } };
+      return state;
+    },
   },
 });
 
-export const { setActiveUsers, clearActiveUsers } = activeUsersSlice.actions;
+export const { setActiveUsers, clearCurrentUserActiveStatus } =
+  activeUsersSlice.actions;
 export default activeUsersSlice.reducer;

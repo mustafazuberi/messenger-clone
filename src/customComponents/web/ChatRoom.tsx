@@ -59,7 +59,7 @@ const ChatRoom = () => {
         >
           {activeRoom.roomDetails ? (
             <section className="flex justify-center">
-              <span className="px-4 py-1 bg-gray-300 dark:bg-gray-700 rounded-lg">
+              <span className="px-4 py-1 bg-gray-300 dark:bg-gray-700 ">
                 {createdAt}
               </span>
             </section>

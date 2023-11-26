@@ -25,7 +25,9 @@ const NotificationCard = (notificationCardProps: NotificationCardProps) => {
     <section>
       <Card className={cn("sm:w-[350px] w-[250px] mr-4 mt-1")}>
         <CardHeader>
-          <CardTitle className="text-gray-700 dark:text-gray-300">Notifications</CardTitle>
+          <CardTitle className="text-gray-700 dark:text-gray-300">
+            Notifications
+          </CardTitle>
           {unReadNotifications.length ? (
             <CardDescription className="text-gray-700 dark:text-gray-300">
               You have {unReadNotifications.length} unread notification

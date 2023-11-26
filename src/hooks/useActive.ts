@@ -19,6 +19,7 @@ const useActive = () => {
   );
 
   const handleOnDisconnectAndConnect = () => {
+    if (!currentUser.uid) return;
     const userIsActiveRef = ref(database, `users/${currentUser.uid}`);
     update(userIsActiveRef, {
       isActive: true,

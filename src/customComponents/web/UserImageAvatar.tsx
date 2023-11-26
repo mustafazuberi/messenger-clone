@@ -1,8 +1,8 @@
 import User from "@/types/types.user";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { auth } from "@/db/firebase.config";
 import { Skeleton } from "@/components/ui/skeleton";
+import Image from "next/image";
 
 type Props = { user: User; size?: number };
 
@@ -17,31 +17,21 @@ const UserImageAvatar = ({ user, size }: Props) => {
 
   return (
     <Avatar>
-      {user.photoUrl ? (
+      {user.photoUrl && (
         <>
           {imageLoading && (
             <Skeleton className={`rounded-full ${sizeW} ${sizeH}`} />
           )}
-          <AvatarImage
+          <Image
             src={user.photoUrl}
             className={`rounded-full ${sizeW} ${sizeH}`}
-            alt="@shadcn"
+            alt="User Profile Photo"
             onLoad={handleImageLoad}
+            width={40}
+            height={40}
           />
         </>
-      ) : auth.currentUser?.photoURL ? (
-        <>
-          {imageLoading && (
-            <Skeleton className={`rounded-full ${sizeW} ${sizeH}`} />
-          )}
-          <AvatarImage
-            src={auth.currentUser?.photoURL}
-            className={`rounded-full ${sizeW} ${sizeH}`}
-            alt="@shadcn"
-            onLoad={handleImageLoad}
-          />
-        </>
-      ) : null}
+      )}
 
       {!user.photoUrl && (
         <AvatarFallback>

@@ -16,7 +16,7 @@ import { clearRequests } from "@/store/slice/chatRequestsSlice";
 import { clearActiveRoom } from "@/store/slice/activeRoomSlice";
 import { serverTimestamp, set } from "firebase/database";
 import { ref } from "firebase/database";
-import { clearActiveUsers } from "@/store/slice/activeUsersSlice";
+import { clearCurrentUserActiveStatus } from "@/store/slice/activeUsersSlice";
 import { useCallback } from "react";
 
 const useHome = () => {
@@ -56,13 +56,14 @@ const useHome = () => {
   }, [dispatch, currentUser]);
 
   const clearReduxData = useCallback(() => {
+    const userId = currentUser.uid;
     dispatch(clearCurrentUser());
     dispatch(setAuthenticationStatus(false));
     dispatch(clearAllUsers());
     dispatch(clearRequests());
     dispatch(clearFriends());
     dispatch(clearActiveRoom());
-    dispatch(clearActiveUsers());
+    dispatch(clearCurrentUserActiveStatus(userId));
   }, [dispatch]);
 
   const handleSignOut = useCallback(async (): Promise<void> => {
