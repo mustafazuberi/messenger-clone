@@ -54,16 +54,16 @@ const Message: React.FC<{ msg: Message }> = React.memo(({ msg }) => {
                 </section>
               ) : msg.img ? (
                 <section>
-                  <section className="z-0 relative mt-2">
+                  <section className="relative mt-2">
                     <Image
                       src={msg.img}
                       width={100}
                       height={100}
                       alt="Chat room image"
                       loading="eager"
-                      className="w-96 h-96 blur-[2px]"
+                      className="sm:w-96 w-56 sm:h-96 h-56 blur-[2px]"
                     />
-                    <section className="flex justify-center w-full absolute top-40 ">
+                    <section className="flex justify-center w-full absolute top-24 ">
                       <Button
                         className="bg-gray-300 text-black"
                         onClick={() =>
@@ -88,7 +88,7 @@ const Message: React.FC<{ msg: Message }> = React.memo(({ msg }) => {
                   {getFormattedTime(msg.date)}
                 </section>
                 {byMe && (
-                  <section className="text-[9px]">
+                  <section className="text-[12px] font-light">
                     {msg.seen ? "seen" : "sent"}
                   </section>
                 )}

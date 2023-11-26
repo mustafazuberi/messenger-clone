@@ -124,7 +124,7 @@ const UnknownUser = ({ unknownUser }: { unknownUser: User }) => {
     >
       <section className="flex flex-row gap-x-3">
         <section>
-          <UserImageAvatar user={unknownUser} />
+          <UserImageAvatar user={unknownUser} size={10} />
         </section>
         <section className="flex flex-col">
           <h3>{unknownUser.displayName}</h3>

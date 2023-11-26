@@ -42,7 +42,7 @@ const ReceivedReqUser = ({ req }: { req: ChatRequest }) => {
     >
       <section className="flex flex-row gap-x-3">
         <section>
-          <UserImageAvatar user={req.sender} />
+          <UserImageAvatar user={req.sender} size={10} />
         </section>
         <section className="flex flex-col ">
           <h3>{req.sender.displayName}</h3>

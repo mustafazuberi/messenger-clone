@@ -1,4 +1,3 @@
-import { FaInfoCircle } from "react-icons/fa";
 import { PiShareFatFill } from "react-icons/pi";
 import { ImBlocked } from "react-icons/im";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -27,12 +26,13 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import useChat from "@/hooks/useChat";
 import { useMemo, useState } from "react";
+import { MdInfo } from "react-icons/md";
 
 const ChatRoomFriendInfo = ({ chatWith }: { chatWith: Friend }) => {
   return (
     <Sheet>
       <SheetTrigger>
-        <FaInfoCircle className="text-2xl cursor-pointer text-gray-700 dark:text-gray-300" />
+        <MdInfo className="text-2xl cursor-pointer text-gray-700 dark:text-gray-300" />
       </SheetTrigger>
       <SheetContent className="max-w-80 w-full border py-6">
         <section className="flex flex-col gap-y-2">
@@ -49,10 +49,9 @@ export default ChatRoomFriendInfo;
 
 const ChatRoomFriendBasicInfo = ({ chatWith }: { chatWith: Friend }) => {
   const photoUrl = useMemo(() => chatWith.photoUrl, [chatWith.photoUrl]);
-  const displayName = useMemo(
-    () => chatWith.displayName,
-    [chatWith.displayName]
-  );
+  const displayName = useMemo(() => chatWith.displayName, [
+    chatWith.displayName,
+  ]);
   const email = useMemo(() => chatWith.email, [chatWith.email]);
 
   return (
@@ -119,11 +118,11 @@ const ChatRoomInfoOptions = () => {
         <AlertDialog open={isBlockAlertOpen}>
           <AlertDialogTrigger>
             <section
-              className="flex items-center gap-x-4 w-full hover:opacity-70 py-3 px-6 dark:hover:bg-slate-800 hover:bg-gray-300 cursor-pointer duration-300"
+              className="flex items-center gap-x-4 w-full hover:opacity-70 py-3 px-6 dark:hover:bg-slate-900 hover:bg-gray-300 cursor-pointer duration-300"
               onClick={() => setIsBlockAlertOpen(true)}
             >
               <ImBlocked className="text-2xl text-red-500 " />
-              <span className="text-[17px] ">Block {user?.displayName} ? </span>
+              <span className="text-[17px]">Block {user?.displayName} ? </span>
             </section>
           </AlertDialogTrigger>
           <AlertDialogContent>
@@ -135,7 +134,7 @@ const ChatRoomInfoOptions = () => {
       )}
       {/* About (Bio) */}
       {user?.bio && (
-        <section className="w-full px-6 py-3 flex flex-col bg-slate-800">
+        <section className="w-full px-6 py-3 flex flex-col dark:bg-slate-900 bg-slate-200">
           <h6 className="opacity-60">~About</h6>
           <p className="mt-2">{user.bio}</p>
         </section>

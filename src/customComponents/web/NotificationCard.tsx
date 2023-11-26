@@ -23,7 +23,7 @@ const NotificationCard = (notificationCardProps: NotificationCardProps) => {
 
   return (
     <section>
-      <Card className={cn("sm:w-[350px] w-[250px] mr-4 mt-1")}>
+      <Card className={cn("sm:w-[350px] w-[280px] mr-4 mt-1")}>
         <CardHeader>
           <CardTitle className="text-gray-700 dark:text-gray-300">
             Notifications

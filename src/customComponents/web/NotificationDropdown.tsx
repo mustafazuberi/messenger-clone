@@ -36,7 +36,7 @@ const NotificationDropdown = () => {
             </Button>
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent className="relative z-50">
           <NotificationCard
             unReadNotifications={unReadNotifications}
             notifications={notifications}

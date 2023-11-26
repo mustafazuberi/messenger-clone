@@ -71,7 +71,7 @@ const NoFriendsToChat = React.memo(() => {
     <section>
       {friends.data.length ? (
         <section className="flex flex-col justify-center gap-y-2 items-center mt-4 px-4">
-          <h1 className="text-[25px] font-bold">No chats found.</h1>
+          <h1 className="text-[25px] font-extra-light">No chats found.</h1>
         </section>
       ) : (
         <section className="flex flex-col justify-center gap-y-2 items-center mt-4 px-4">

@@ -16,7 +16,7 @@ const EmailVerifiedCard = ({
       </h1>
       <RiVerifiedBadgeFill className="w-16 h-16 text-green-700" />
       <Link prefetch href={"/auth/signin"} >
-        <Button className="px-16" variant={"outline"}>
+        <Button className="px-16" >
           Sign In
         </Button>
       </Link>
