@@ -12,6 +12,7 @@ export type SendNotificationParam = {
   type: "Request Accepted" | "Request Received";
   to: User;
   by: User;
+  requestId: string;
 };
 
 export type OnlineInfo = {

@@ -30,7 +30,7 @@ const ChatsBox = () => {
   const params = useSearchParams();
   const currentUser = useSelector((state: RootState) => state.currentUser);
   const { handleAuthStateChange, getAllUsers, getMyFriends } = useHome();
-  const { getChatRequests, getSentRequests, getReceivedRequests } = useReq();
+  const { getChatRequests } = useReq();
   const {
     getMyRooms,
     searchMessengerInput,
@@ -38,8 +38,10 @@ const ChatsBox = () => {
     findFriendsSearchInput,
     setFindFriendsSearchInput,
   } = useChat();
-  const { detectingConnectionState, handleOnDisconnectAndConnect } =
-    useActive();
+  const {
+    detectingConnectionState,
+    handleOnDisconnectAndConnect,
+  } = useActive();
 
   const memoizedHandleAuthStateChange = useMemo(
     () => handleAuthStateChange,
@@ -54,8 +56,6 @@ const ChatsBox = () => {
       memoizedGetAllUsers();
       memoizedGetMyFriends();
       getChatRequests();
-      getSentRequests();
-      getReceivedRequests();
       getMyRooms();
     }
     detectingConnectionState();

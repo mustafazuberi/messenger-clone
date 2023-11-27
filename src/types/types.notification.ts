@@ -1,13 +1,13 @@
-import User from "./types.user";
-
 type ReqNotification = {
   _id?: string;
   message: string;
   timestamp: number;
   type: "Request Accepted" | "Request Received";
-  notificationBy: User;
+  by: string;
+  to: string;
   isNotificationRead: boolean;
   isRequestRead: boolean;
+  requestId: string;
 };
 
 type UserNotification = ReqNotification;

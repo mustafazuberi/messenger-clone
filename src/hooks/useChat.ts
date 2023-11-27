@@ -151,7 +151,6 @@ const useChat = () => {
         }
         return null; // Return null if no matching friend is found for the room
       });
-
       return chatUsers.filter((cU): cU is ChatUser => cU !== null);
     },
     [friends.data, rooms]

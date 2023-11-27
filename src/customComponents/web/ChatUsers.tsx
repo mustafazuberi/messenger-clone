@@ -42,6 +42,8 @@ const ChatUsers: React.FC<props> = ({ searchMessengerInput }) => {
     setFilteredChatUsers(filtered);
   }, [searchMessengerInput, chatUsers]);
 
+  console.log("chatUsers", chatUsers);
+
   return (
     <section className="min-w-full flex flex-col items-center flex-1 max-h-full overflow-y-auto scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-w-3 scrollbar-track-inherit">
       {filteredChatUsers?.length && friends.status === STATUSES.IDLE ? (
@@ -192,7 +194,9 @@ const ChatUser: React.FC<ChatUserProps> = ({
                   }`}
                 </p>
               </section>
-            ) : null}
+            ) : (
+              <section className="text-[12px] font-extralight">{`You and ${friend.displayName} are friends.`}</section>
+            )}
           </section>
         </section>
       </section>

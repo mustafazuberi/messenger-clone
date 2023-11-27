@@ -5,18 +5,22 @@ import { setNotifications } from "@/store/slice/notificationsSlice";
 import { SendNotificationParam } from "@/types/types.miscellaneous";
 import UserNotification from "@/types/types.notification";
 import {
+  DocumentData,
+  QuerySnapshot,
   addDoc,
   collection,
   doc,
   getDoc,
   onSnapshot,
+  query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import Friend from "@/types/type.friend";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import useChat from "./useChat";
 import { useCallback } from "react";
+import useChat from "./useChat";
 
 const useNotification = () => {
   const router = useRouter();
@@ -31,7 +35,8 @@ const useNotification = () => {
   );
 
   const sendNotification = useCallback(
-    async ({ by, to, type }: SendNotificationParam) => {
+    async ({ by, to, type, requestId }: SendNotificationParam) => {
+      if (!by || !to || !type) return;
       try {
         let message: string = "";
         if (type === "Request Received")
@@ -44,16 +49,14 @@ const useNotification = () => {
           isRequestRead: false,
           timestamp: Date.now(),
           type: type,
-          notificationBy: by,
+          by: by.uid,
+          to: to.uid,
+          requestId,
           message,
         };
-        const notificationDocRef = collection(
-          db,
-          "users",
-          to.uid,
-          "notifications"
-        );
-        await addDoc(notificationDocRef, { ...notificationObj });
+        await addDoc(collection(db, "notifications"), {
+          ...notificationObj,
+        });
       } catch (error) {
         console.log("Error in sendNotification: ", error);
       }
@@ -62,11 +65,15 @@ const useNotification = () => {
   );
 
   const fetchNotifications = useCallback(() => {
+    const myNotificationQuery = query(
+      collection(db, "notifications"),
+      where("to", "==", currentUser.uid)
+    );
     const unsubscribe = onSnapshot(
-      collection(db, "users", currentUser.uid, "notifications"),
-      (querySnapshot) => {
+      myNotificationQuery,
+      (querySnapshot: QuerySnapshot<unknown, DocumentData>) => {
         let notifications: UserNotification[] = [];
-        querySnapshot.forEach((doc) => {
+        querySnapshot.forEach((doc: DocumentData) => {
           const notificationData = doc.data() as UserNotification;
           notifications.push({ ...notificationData, _id: doc.id });
         });
@@ -85,13 +92,7 @@ const useNotification = () => {
       if (!unReadNotifications.length || !opened) return;
       try {
         unReadNotifications.forEach(async (notification: UserNotification) => {
-          const notfRef = doc(
-            db,
-            "users",
-            currentUser.uid,
-            "notifications",
-            notification._id!
-          );
+          const notfRef = doc(db, "notifications", notification._id!);
           const notfDoc = await getDoc(notfRef);
           if (notfDoc.exists()) {
             await updateDoc(notfRef, {
@@ -112,12 +113,12 @@ const useNotification = () => {
   const handleOnNotification = useCallback(
     (notification: UserNotification) => {
       const isFriend = friends.data.find(
-        (friend: Friend) => friend.uid === notification.notificationBy.uid
+        (friend: Friend) => friend.uid === notification.by
       ); //This will give friend obj
 
       if (!isFriend && notification.type === "Request Received")
         router.push("?tab=requests");
-
+        
       if (isFriend) handleOnChatUser(isFriend);
     },
     [handleOnChatUser, friends, router]
