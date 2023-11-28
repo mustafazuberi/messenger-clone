@@ -1,11 +1,11 @@
-import Stranger from "./types.stranger";
+import User from "./types.user";
 
 type ChatRequest = {
   senderId: string;
   receiverId: string;
   isRead: boolean;
-  sender: Stranger;
-  receiver: Stranger;
+  sender: User;
+  receiver: User;
   id?: string;
 };
 

@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { updateUserDetails } from "@/store/slice/userSlice";
 import { useRouter } from "next/navigation";
 import { setAuthenticationStatus } from "@/store/slice/authenticationStatusSlice";
+import cookies from "js-cookie";
 import * as z from "zod";
 import formSchema from "@/schema/schema.signinform";
 import fetchUserByUid from "@/services/fetchUserByUid";
@@ -69,6 +70,12 @@ const useSignin = () => {
 
       dispatch(updateUserDetails({ ...dbUser }));
       dispatch(setAuthenticationStatus(true));
+
+      // Set the authentication status in a cookie
+      cookies.set("authenticationStatus", JSON.stringify(true), {
+        httpOnly: false,
+      });
+
       toast({
         description: `Welcome, ${dbUser.displayName}!`,
       });

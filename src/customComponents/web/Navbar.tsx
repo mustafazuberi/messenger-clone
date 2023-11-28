@@ -3,17 +3,33 @@ import { useDispatch, useSelector } from "react-redux";
 import MessengerTextAndLogo from "./MessengerTextAndLogo";
 import ThemeAndProfileImage from "./ThemeAndProfileImage";
 import { RootState } from "@/store";
-import CallDialog from "./CallDialog";
-import { useEffect } from "react";
-import { Call } from "@/types/types.call";
-import { clearActiveCall, setActiveCall } from "@/store/slice/callSlice";
-import { usePageVisibility } from "react-page-visibility";
+import { useEffect, useLayoutEffect } from "react";
 import { usePathname } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/db/firebase.config";
+import useProtectedRouting from "@/hooks/useProtectedRouting";
+import { setAuthenticationStatus } from "@/store/slice/authenticationStatusSlice";
 
 const Navbar = () => {
+  const dispatch = useDispatch();
   const path = usePathname();
   const { roomDetails } = useSelector((state: RootState) => state.activeRoom);
   const hideNavbar = path.includes("messages") && roomDetails?.id;
+  const { handleProtectedRouting } = useProtectedRouting();
+
+  useLayoutEffect(() => {
+    handleProtectedRouting();
+  }, []);
+
+  // Firebase on auth state change listener
+  useEffect(() => {
+    return onAuthStateChanged(auth, (user) => {
+      user
+        ? dispatch(setAuthenticationStatus(true))
+        : dispatch(setAuthenticationStatus(false));
+    });
+  }, []);
+
   return (
     <>
       <main

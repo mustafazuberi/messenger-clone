@@ -8,6 +8,7 @@ import { clearFriends, setMyFriends } from "@/store/slice/friendsSlice";
 import { clearCurrentUser } from "@/store/slice/userSlice";
 import Friend from "@/types/type.friend";
 import User from "@/types/types.user";
+import cookies from "js-cookie";
 import { Unsubscribe, signOut } from "firebase/auth";
 import { collection, onSnapshot } from "firebase/firestore";
 import { useRouter } from "next/navigation";
@@ -77,6 +78,8 @@ const useHome = () => {
         lastActive: serverTimestamp(),
       });
       //
+      cookies.set("authenticationStatus", "false");
+      console.log("updated to false");
       toast({
         description: `Signed out successfully!`,
       });
@@ -84,7 +87,7 @@ const useHome = () => {
     } catch (error) {
       console.log(error);
     }
-  }, [toast, router, currentUser, clearReduxData]);
+  }, [toast, router, currentUser, clearReduxData, cookies]);
 
   const handleAuthStateChange = useCallback(() => {}, []);
 

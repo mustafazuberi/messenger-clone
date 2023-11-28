@@ -1,17 +1,11 @@
 import {
-  CollectionReference,
-  DocumentData,
-  Query,
   addDoc,
   collection,
   deleteDoc,
   doc,
   onSnapshot,
-  query,
   setDoc,
-  where,
 } from "firebase/firestore";
-import { Unsubscribe } from "firebase/messaging";
 import { db } from "@/db/firebase.config";
 import { useToast } from "@/components/ui/use-toast";
 import { RootState } from "@/store";

@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { CALLS_INITIAL_STATE } from "../intialState";
-import { Call } from "@/types/types.miscellaneous";
+import { Call } from "@/types/types.call";
 
 const callsSlice = createSlice({
   name: "callsSlice",

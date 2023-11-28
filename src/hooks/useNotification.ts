@@ -65,6 +65,7 @@ const useNotification = () => {
   );
 
   const fetchNotifications = useCallback(() => {
+    if (!currentUser.uid) return;
     const myNotificationQuery = query(
       collection(db, "notifications"),
       where("to", "==", currentUser.uid)
@@ -118,7 +119,7 @@ const useNotification = () => {
 
       if (!isFriend && notification.type === "Request Received")
         router.push("?tab=requests");
-        
+
       if (isFriend) handleOnChatUser(isFriend);
     },
     [handleOnChatUser, friends, router]

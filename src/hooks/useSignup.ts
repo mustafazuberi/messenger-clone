@@ -19,6 +19,7 @@ import { auth, db } from "@/db/firebase.config";
 import { updateUserDetails } from "@/store/slice/userSlice";
 import { setAuthenticationStatus } from "@/store/slice/authenticationStatusSlice";
 import { FirebaseError } from "firebase/app";
+import cookies from "js-cookie";
 import formSchema from "@/schema/schema.signupForm";
 import User from "@/types/types.user";
 import handleFirebaseError from "@/services/firebaseErrorHandling";
@@ -132,6 +133,9 @@ const useSignup = () => {
 
       dispatch(updateUserDetails({ ...userObj }));
       dispatch(setAuthenticationStatus(true));
+      cookies.set("authenticationStatus", JSON.stringify(true), {
+        httpOnly: false,
+      });
 
       toast({
         description: `Welcome ,${userObj.displayName}!`,
@@ -185,6 +189,9 @@ const useSignup = () => {
 
       dispatch(updateUserDetails({ ...userObj }));
       dispatch(setAuthenticationStatus(true));
+      cookies.set("authenticationStatus", JSON.stringify(true), {
+        httpOnly: false,
+      });
 
       toast({
         description: `Welcome ,${userObj.displayName}!`,

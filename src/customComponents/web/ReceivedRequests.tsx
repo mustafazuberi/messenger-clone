@@ -6,6 +6,7 @@ import UserImageAvatar from "./UserImageAvatar";
 import { useTheme } from "next-themes";
 import ChatRequest from "@/types/types.request";
 import { STATUSES } from "@/store/intialState";
+import { Key } from "react";
 
 const ReceivedRequests = () => {
   const receivedReqs = useSelector(
@@ -15,9 +16,11 @@ const ReceivedRequests = () => {
   return (
     <section className="min-w-full flex flex-col items-center flex-1 max-h-full overflow-y-auto scrollbar scrollbar-thumb-gray-500 scrollbar-thumb-rounded-[10px] scrollbar-w-3 scrollbar-track-inherit">
       {receivedReqs.status === STATUSES.IDLE && receivedReqs.data.length ? (
-        receivedReqs.data?.map((req, i) => (
-          <ReceivedReqUser key={i} req={req} />
-        ))
+        receivedReqs.data?.map(
+          (req: ChatRequest, i: Key | null | undefined) => (
+            <ReceivedReqUser key={i} req={req} />
+          )
+        )
       ) : (
         <section className="flex flex-col justify-center gap-y-2 items-center mt-4 px-4">
           <h1 className="text-[19px] font-light text-gray-700 dark:text-gray-300">

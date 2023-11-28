@@ -79,12 +79,13 @@ const useChat = () => {
     []
   );
 
-  const getMyRooms = useCallback((): Unsubscribe => {
+  const getMyRooms = useCallback((): Unsubscribe | null => {
+    if (!currentUser.uid) return null;
     const unsubscribe = onSnapshot(
       query(
         query(
           collection(db, "chatrooms"),
-          where(`users.${currentUser.uid}`, "==", true)
+          where(`users.${currentUser?.uid}`, "==", true)
         )
       ),
       (querySnapshot) => {
