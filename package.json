@@ -55,7 +55,6 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.4",
-    "@types/js-cookie": "^3.0.6",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",

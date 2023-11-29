@@ -61,15 +61,14 @@ const useSignin = () => {
       if (!dbUser.emailVerified) {
         toast({
           variant: "destructive",
-          title: `Your email is not verified. Please check your email at ${email} We have sent a verification email while creating the account."`,
+          title: `Your email is not verified. Please check your email at ${email}. We have sent a verification email while creating the account."`,
         });
         setIsSubmitting(false);
         return;
       }
-
+      console.log("dsads");
       dispatch(updateUserDetails({ ...dbUser }));
       dispatch(setAuthenticationStatus(true));
-
       toast({
         description: `Welcome, ${dbUser.displayName}!`,
       });

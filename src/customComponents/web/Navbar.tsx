@@ -14,17 +14,18 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const path = usePathname();
   const { roomDetails } = useSelector((state: RootState) => state.activeRoom);
+  const allUsers = useSelector((state: RootState) => state.allUsers);
   const hideNavbar = path.includes("messages") && roomDetails?.id;
   const { handleProtectedRouting } = useProtectedRouting();
 
   useLayoutEffect(() => {
     handleProtectedRouting();
-  }, []);
+  }, [path]);
 
   // Firebase on auth state change listener
   useEffect(() => {
     return onAuthStateChanged(auth, (user) => {
-      user
+      user && allUsers.data.find((u) => u.uid === user.uid)?.emailVerified
         ? dispatch(setAuthenticationStatus(true))
         : dispatch(setAuthenticationStatus(false));
     });
