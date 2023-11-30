@@ -34,8 +34,10 @@ const ChatRoom = () => {
   } = useChat();
 
   useEffect(() => {
-    scrollSectionToBottom();
-  }, [roomMessages?.length, activeRoom.roomDetails?.id!]);
+    if (activeRoom.roomDetails?.id) {
+      scrollSectionToBottom();
+    }
+  }, [roomMessages?.length, activeRoom.roomDetails?.id]);
 
   useEffect(() => {
     if (roomMessages?.length && isVisible) updateMessagesOnSeen();

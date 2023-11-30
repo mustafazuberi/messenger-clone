@@ -61,8 +61,6 @@
     "@types/react-page-visibility": "^6.4.3",
     "@types/recorder-js": "^1.0.4",
     "autoprefixer": "latest",
-    "eslint": "latest",
-    "eslint-config-next": "latest",
     "postcss": "latest",
     "tailwindcss": "latest",
     "typescript": "latest"

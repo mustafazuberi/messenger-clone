@@ -139,12 +139,14 @@ export const LastActive: React.FC<{ friend: Friend }> = React.memo(
           </section>
         ) : (
           <section className="flex flex-row gap-x-1">
-            <span className="text-gray-700 dark:text-gray-300 text-[12px] flex flex-row gap-x-1">
-              <span className="lg:flex md:hidden hidden">Active</span>
-              <span>
-                {getTimeDifference(activeUsers[friend.uid]?.lastActive)} ago
+            {getTimeDifference(activeUsers[friend.uid]?.lastActive) && (
+              <span className="text-gray-700 dark:text-gray-300 text-[12px] flex flex-row gap-x-1">
+                <span className="lg:flex md:hidden hidden">Active</span>
+                <span>
+                  {getTimeDifference(activeUsers[friend.uid]?.lastActive)} ago
+                </span>
               </span>
-            </span>
+            )}
           </section>
         )}
       </section>

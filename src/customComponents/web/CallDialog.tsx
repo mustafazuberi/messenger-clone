@@ -108,7 +108,7 @@ const CallDialog = () => {
     <div>
       <section>
         <Dialog open={!!activeCall}>
-          <DialogContent hideCrossBtn={true}>
+          <DialogContent>
             <section className="min-w-full max-w-full sm:h-[90vh] h-screen">
               <section className="px-6 flex flex-col justify-between items-center gap-y-4 min-h-[80vh]">
                 <section className="flex flex-col gap-y-3 flex-1 w-full justify-center items-center">

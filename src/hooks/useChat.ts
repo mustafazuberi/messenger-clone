@@ -227,12 +227,12 @@ const useChat = () => {
     }
   }, [activeRoom.roomDetails?.id]);
 
-  const scrollSectionToBottom = useCallback(() => {
+  const scrollSectionToBottom = () => {
     if (sectionRefMessagesDiv.current) {
       const element = sectionRefMessagesDiv.current as HTMLDivElement;
       const start = element.scrollTop;
       const end = element.scrollHeight;
-      const duration = 100; // 0.5 seconds
+      const duration = 500; // 0.5 seconds
 
       let startTime: number | null = null;
 
@@ -260,30 +260,33 @@ const useChat = () => {
 
       requestAnimationFrame(scroll);
     }
-  }, [sectionRefMessagesDiv.current]);
+  };
 
-  const getTimeDifference = useCallback((milliSeconds: number): string => {
-    const timeDifferenceMs = Date.now() - milliSeconds;
-    const seconds = Math.floor(timeDifferenceMs / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-    const years = Math.floor(days / 365);
+  const getTimeDifference = useCallback(
+    (milliSeconds: number): string | null => {
+      const timeDifferenceMs = Date.now() - milliSeconds;
+      const seconds = Math.floor(timeDifferenceMs / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
+      const years = Math.floor(days / 365);
 
-    if (years > 0) {
-      return `${years} yr`;
-    } else if (days > 0) {
-      return `${days} d`;
-    } else if (hours > 0) {
-      return `${hours} h`;
-    } else if (minutes > 0) {
-      return `${minutes} m`;
-    } else if (seconds > 1) {
-      return `${seconds} s`;
-    } else {
-      return "1 second";
-    }
-  }, []);
+      if (years > 0) {
+        return `${years} yr`;
+      } else if (days > 0) {
+        return `${days} d`;
+      } else if (hours > 0) {
+        return `${hours} h`;
+      } else if (minutes > 0) {
+        return `${minutes} m`;
+      } else if (seconds > 1) {
+        return `${seconds} s`;
+      } else {
+        return null;
+      }
+    },
+    []
+  );
 
   const handleOnBlock = useCallback(async () => {
     try {

@@ -20,8 +20,11 @@ import useVideoCall from "@/hooks/useVideoCall";
 const VideoCall = () => {
   const activeRoom = useSelector((state: RootState) => state.activeRoom);
   const chatWith = useMemo(() => activeRoom.chatWith, [activeRoom.chatWith]);
-  const { handleOnVideoCall, videoCallDialog, handleVideoCallHangup } =
-    useVideoCall();
+  const {
+    handleOnVideoCall,
+    videoCallDialog,
+    handleVideoCallHangup,
+  } = useVideoCall();
   return (
     <main>
       <AlertDialog>
@@ -49,7 +52,7 @@ const VideoCall = () => {
 
       {videoCallDialog ? (
         <Dialog open={videoCallDialog?.open}>
-          <DialogContent hideCrossBtn={true}>
+          <DialogContent>
             <section className="lg:max-w-[475px] md:max-w-[475px] max-w-[260px]">
               <section className="px-6 flex flex-col justify-between items-center gap-y-4 min-h-[80vh]">
                 <section className="flex flex-col gap-y-3 flex-1 w-full justify-center items-center">

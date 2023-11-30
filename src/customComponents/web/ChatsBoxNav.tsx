@@ -2,7 +2,6 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { FaUserFriends } from "react-icons/fa";
-import { IoMdCall } from "react-icons/io";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
