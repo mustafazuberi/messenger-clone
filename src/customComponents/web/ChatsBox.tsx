@@ -29,7 +29,7 @@ const ReceivedRequests = dynamic(() => import("./ReceivedRequests"), {
 const ChatsBox = () => {
   const params = useSearchParams();
   const currentUser = useSelector((state: RootState) => state.currentUser);
-  const { handleAuthStateChange, getAllUsers, getMyFriends } = useHome();
+  const { handleAuthStateChange, getMyFriends } = useHome();
   const { getChatRequests } = useReq();
   const {
     getMyRooms,
@@ -47,25 +47,18 @@ const ChatsBox = () => {
     () => handleAuthStateChange,
     []
   );
-  const memoizedGetAllUsers = useMemo(() => getAllUsers, []);
   const memoizedGetMyFriends = useMemo(() => getMyFriends, []);
 
   useEffect(() => {
     if (currentUser.uid) {
       memoizedHandleAuthStateChange();
-      memoizedGetAllUsers();
       memoizedGetMyFriends();
       getChatRequests();
       getMyRooms();
     }
     detectingConnectionState();
     handleOnDisconnectAndConnect();
-  }, [
-    currentUser.uid,
-    memoizedHandleAuthStateChange,
-    memoizedGetAllUsers,
-    memoizedGetMyFriends,
-  ]);
+  }, [currentUser.uid, memoizedHandleAuthStateChange, memoizedGetMyFriends]);
 
   const isFindFriendsTab = params?.get("tab") === "findFriends";
   const isRequestsTab = params?.get("tab") === "requests";

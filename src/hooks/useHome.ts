@@ -30,9 +30,8 @@ const useHome = () => {
       const users: User[] = [];
       querySnapshot.forEach((doc) => {
         const userData = doc.data() as User;
-        if (userData.uid !== currentUser.uid) users.push(userData);
+        users.push(userData);
       });
-
       dispatch(setAllUsers({ status: STATUSES.IDLE, data: users }));
     });
     return unsubscribe;

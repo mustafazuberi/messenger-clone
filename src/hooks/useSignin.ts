@@ -66,7 +66,6 @@ const useSignin = () => {
         setIsSubmitting(false);
         return;
       }
-      console.log("dsads");
       dispatch(updateUserDetails({ ...dbUser }));
       dispatch(setAuthenticationStatus(true));
       toast({

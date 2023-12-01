@@ -26,6 +26,7 @@ const FindFriends: React.FC<FindFriendsProps> = ({
     (state: RootState) => state.chatRequests
   );
   const myFriends = useSelector((state: RootState) => state.friends);
+  const currentUser = useSelector((state: RootState) => state.currentUser);
   const allUsers: UsersState = useSelector(
     (state: RootState) => state.allUsers
   );
@@ -42,7 +43,7 @@ const FindFriends: React.FC<FindFriendsProps> = ({
         .toLowerCase()
         .includes(findFriendsSearchInput.toLowerCase())
     );
-    setUnknownUsers(filtered);
+    setUnknownUsers(filtered.filter((fU) => fU.uid !== currentUser.uid));
   }, [
     myFriends.data,
     sentRequests.data,
