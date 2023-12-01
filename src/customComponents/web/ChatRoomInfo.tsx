@@ -234,7 +234,10 @@ const UnblockOption = () => {
                 <AlertDialogCancel onClick={() => setOpenUnblockModal(false)}>
                   Cancel
                 </AlertDialogCancel>
-                <Button onClick={() => handleOnUnblockButton()}>
+                <Button
+                  onClick={() => handleOnUnblockButton()}
+                  disabled={blockingOper}
+                >
                   {blockingOper ? "Please wait..." : "Unblock"}
                 </Button>
               </AlertDialogFooter>

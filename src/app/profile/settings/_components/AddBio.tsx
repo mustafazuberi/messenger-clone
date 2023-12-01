@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import useSettings from "@/hooks/useSettings";
 import { RootState } from "@/store";
+import { Loader2 } from "lucide-react";
 import { useSelector } from "react-redux";
 
 const AddBio = () => {
@@ -42,13 +43,15 @@ const AddBio = () => {
               </FormItem>
             )}
           />
-          <Button
-            type="submit"
-            className="mt-[33px] w-[160px]"
-            disabled={updating}
-          >
-            {updating ? "Please wait..." : currentUser.bio ? "Update" : "Add"}
-          </Button>
+          {updating ? (
+            <Button disabled className="mt-[33px] w-[160px] text-center">
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Wait
+            </Button>
+          ) : (
+            <Button type="submit" className="mt-[33px] w-[160px]">
+              {currentUser.bio ? "Update" : "Add"}
+            </Button>
+          )}
         </form>
       </Form>
     </main>

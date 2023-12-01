@@ -142,6 +142,7 @@ const useSettings = () => {
       toast({
         description: "Display name updated successfully!",
       });
+      formFullName.reset();
     } catch (error) {
       console.log(error);
       setUpdating(false);
@@ -174,6 +175,7 @@ const useSettings = () => {
       toast({
         description: "Date of Birth updated successfully!",
       });
+      formDOB.reset();
     } catch (error) {
       console.log(error);
       setUpdating(false);
@@ -206,6 +208,7 @@ const useSettings = () => {
       toast({
         description: "Gender updated successfully!",
       });
+      formGender.reset();
     } catch (error) {
       console.log(error);
       setUpdating(false);
@@ -277,6 +280,7 @@ const useSettings = () => {
       toast({
         description: "Bio updated successfully!",
       });
+      formAddBio.reset();
     } catch (error) {
       console.log(error);
       setUpdating(false);

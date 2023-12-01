@@ -22,6 +22,7 @@ import useSignup from "@/hooks/useSignup";
 import EmailSentDialog from "../auth/EmailSentDialog";
 import { PasswordInput } from "../../components/ui/PasswordInput";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Loader2 } from "lucide-react";
 
 const SignupForm = () => {
   const [isClient, setIsClient] = useState(false); // this is for solving hydration UI error on dialog
@@ -122,9 +123,15 @@ const SignupForm = () => {
             )}
           />
 
-          <Button type="submit" className="mt-6" variant={"default"}>
-            {loading ? "Please Wait..." : "Continue"}
-          </Button>
+          {loading ? (
+            <Button disabled className="mt-6">
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Please Wait
+            </Button>
+          ) : (
+            <Button type="submit" className="mt-6" variant={"default"}>
+              Continue
+            </Button>
+          )}
         </form>
       </Form>
 

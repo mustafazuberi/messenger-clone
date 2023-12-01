@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Loader2 } from "lucide-react";
 
 const UpdateGender = () => {
   const { formGender, onSubmitGender, updating } = useSettings();
@@ -32,7 +33,9 @@ const UpdateGender = () => {
             name="gender"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel className="text-gray-700 dark:text-gray-300">Gender</FormLabel>
+                <FormLabel className="text-gray-700 dark:text-gray-300">
+                  Gender
+                </FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -52,13 +55,16 @@ const UpdateGender = () => {
               </FormItem>
             )}
           />
-          <Button
-            type="submit"
-            className="mt-[33px] w-[160px]"
-            disabled={updating}
-          >
-            {updating ? "Please wait..." : "Update"}
-          </Button>
+
+          {updating ? (
+            <Button disabled className="mt-[33px] w-[160px] text-center">
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Wait
+            </Button>
+          ) : (
+            <Button type="submit" className="mt-[33px] w-[160px]">
+              Update
+            </Button>
+          )}
         </form>
       </Form>
     </main>

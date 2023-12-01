@@ -1,6 +1,6 @@
 "use client";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -34,7 +34,9 @@ const UpdateDOB = () => {
             name="dob"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel className="text-gray-700 dark:text-gray-300">Date of birth</FormLabel>
+                <FormLabel className="text-gray-700 dark:text-gray-300">
+                  Date of birth
+                </FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -73,13 +75,15 @@ const UpdateDOB = () => {
               </FormItem>
             )}
           />
-          <Button
-            type="submit"
-            className="mt-[33px] w-[160px]"
-            disabled={updating}
-          >
-            {updating ? "Please wait..." : "Update"}
-          </Button>
+          {updating ? (
+            <Button disabled className="mt-[33px] w-[160px] text-center">
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Wait
+            </Button>
+          ) : (
+            <Button type="submit" className="mt-[33px] w-[160px]">
+              Update
+            </Button>
+          )}
         </form>
       </Form>
     </main>

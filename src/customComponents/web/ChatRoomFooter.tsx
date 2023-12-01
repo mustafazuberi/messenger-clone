@@ -187,7 +187,8 @@ const FooterIfChatRoomBlocked = () => {
                 <AlertDialogHeader>
                   <AlertDialogDescription>
                     {activeRoom.chatWith?.displayName.split(" ")[0]} has blocked
-                    you, you cannot engage in conversation until he unblocks you.
+                    you, you cannot engage in conversation until he unblocks
+                    you.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter className="mt-3">
@@ -226,7 +227,10 @@ const FooterIfChatRoomBlocked = () => {
                   <AlertDialogCancel onClick={() => setOpenUnblockModal(false)}>
                     Cancel
                   </AlertDialogCancel>
-                  <Button onClick={() => handleOnUnblockButton()}>
+                  <Button
+                    onClick={() => handleOnUnblockButton()}
+                    disabled={blockingOper}
+                  >
                     {blockingOper ? "Please wait..." : "Unblock"}
                   </Button>
                 </AlertDialogFooter>
