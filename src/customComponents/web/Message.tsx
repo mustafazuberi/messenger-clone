@@ -33,7 +33,7 @@ const Message: React.FC<{ msg: Message }> = React.memo(({ msg }) => {
       >
         <section
           className={`${
-            byMe ? "bg-[#005c4b]" : "bg-[#1e293b]"
+            byMe ? "bg-[#3b82f6]" : "bg-[#1e293b]"
           } lg:max-w-[70%] md:max-w-[70%] max-w-[90%] px-2 py-2 text-white`}
         >
           <section className="flex flex-col">
