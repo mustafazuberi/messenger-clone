@@ -21,7 +21,6 @@ const useProtectedRouting = () => {
       "/auth/emailVerification",
     ];
     if (!isAuthenticated && protectedRoutes.includes(pathName)) {
-      alert("redirecting from protected routing handler");
       return redirect("/auth/signin");
     }
     if (isAuthenticated && publicRoutes.includes(pathName)) {

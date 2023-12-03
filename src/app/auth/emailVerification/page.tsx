@@ -51,7 +51,7 @@ const EmailVerification = async ({ searchParams }: Props) => {
   return (
     <div className="flex justify-center items-center w-full h-[90vh]">
       <EmailVerifiedCard
-        email={verificationInfo.data.email}
+        email={verificationInfo?.data?.email}
         displayName={verifiedUserName}
       />
     </div>
