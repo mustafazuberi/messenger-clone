@@ -6,9 +6,12 @@ import { useSelector } from "react-redux";
 
 const useProtectedRouting = () => {
   const pathName = usePathname();
-  const isAuthenticated = useSelector(
+  const authenticationStatus = useSelector(
     (state: RootState) => state.authenticationStatus
   );
+  const allUsers = useSelector((state: RootState) => state.allUsers);
+  const isAuthenticated =
+    authenticationStatus && allUsers.data.find((u) => u.emailVerified === true);
 
   const handleProtectedRouting = useCallback(() => {
     const protectedRoutes = ["/messages", "profile/settings"];
@@ -18,6 +21,7 @@ const useProtectedRouting = () => {
       "/auth/emailVerification",
     ];
     if (!isAuthenticated && protectedRoutes.includes(pathName)) {
+      alert("redirecting from protected routing handler");
       return redirect("/auth/signin");
     }
     if (isAuthenticated && publicRoutes.includes(pathName)) {

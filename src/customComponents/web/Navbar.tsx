@@ -41,17 +41,11 @@ const Navbar = () => {
         const cUser = allUsers.data.find((u) => u.uid === user.uid);
         if (cUser?.emailVerified) {
           dispatch(setAuthenticationStatus(true));
-          dispatch(updateUserDetails({ ...cUser }));
-          // router.push("/messages");
+          dispatch(updateUserDetails({ ...cUser }));  
         } else {
           dispatch(setAuthenticationStatus(false));
           dispatch(clearCurrentUser());
-          router.push("/auth/signin");
         }
-      } else {
-        dispatch(setAuthenticationStatus(false));
-        dispatch(clearCurrentUser());
-        router.push("/auth/signin");
       }
     });
   }, []);
